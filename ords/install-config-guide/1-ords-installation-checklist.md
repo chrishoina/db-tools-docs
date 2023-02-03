@@ -39,6 +39,8 @@ Oracle REST Data Services supports the currently supported versions of APEX.
 
 Can we just use this [link](https://www.oracle.com/us/assets/lifetime-support-technology-069183.pdf#%5B%7B%22num%22%3A154%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22Fit%22%7D%5D)?
 
+Version premium support
+
 ## 1.3 Prerequisites
 
 
