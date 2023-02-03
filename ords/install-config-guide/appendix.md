@@ -1,175 +1,3 @@
-# Appendix 
-## 2.1 Java EE Application Servers
-Oracle REST Data Services supports Java EE application servers:
-
-| Application Server | Supported Releases |
-| --- | --- | 
-|Oracle WebLogic Server | 14c or later | 
-| Apache Tomcat | 8.5.x - 9.0.x | 
-
-> Note: Tomcat Release 10 (in current docs says no, is that true?)
-
-## 2.2 Oracle Application Express (APEX)
-
-Oracle REST Data Services supports the currently supported versions of APEX. 
-
-Can we just use this [link](https://www.oracle.com/us/assets/lifetime-support-technology-069183.pdf#%5B%7B%22num%22%3A154%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22Fit%22%7D%5D)?
-
-## 1.3 Prerequisites
-
-
-
-### 1.3.2 
-
-### 1.3.1 
-## 1.3 Downloading ORDS
-
-
-
-# Appendix 
-
-## 2.1 Java EE Application Servers
-Oracle REST Data Services supports Java EE application servers:
-
-| Application Server | Supported Releases |
-| --- | --- | 
-|Oracle WebLogic Server | 14c or later | 
-| Apache Tomcat | 8.5.x - 9.0.x | 
-
-> Note: Tomcat Release 10 (in current docs says no, is that true?)
-
-## 2.2 Oracle Application Express (APEX)
-
-Oracle REST Data Services supports the currently supported versions of APEX. 
-
-Can we just use this [link](https://www.oracle.com/us/assets/lifetime-support-technology-069183.pdf#%5B%7B%22num%22%3A154%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22Fit%22%7D%5D)?
-
-## 1.3 Prerequisites
-
-
-
-### 1.3.2 
-
-### 1.3.1 
-## 1.3 Downloading ORDS
-
-
-
-# Appendix 
-
-## 2.1 Java EE Application Servers
-Oracle REST Data Services supports Java EE application servers:
-
-| Application Server | Supported Releases |
-| --- | --- | 
-|Oracle WebLogic Server | 14c or later | 
-| Apache Tomcat | 8.5.x - 9.0.x | 
-
-> Note: Tomcat Release 10 (in current docs says no, is that true?)
-
-## 2.2 Oracle Application Express (APEX)
-
-Oracle REST Data Services supports the currently supported versions of APEX. 
-
-Can we just use this [link](https://www.oracle.com/us/assets/lifetime-support-technology-069183.pdf#%5B%7B%22num%22%3A154%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22Fit%22%7D%5D)?
-
-## 1.3 Prerequisites
-
-
-
-### 1.3.2 
-
-### 1.3.1 
-## 1.3 Downloading ORDS
-
-
-
-# Appendix 
-
-## 2.1 Java EE Application Servers
-Oracle REST Data Services supports Java EE application servers:
-
-| Application Server | Supported Releases |
-| --- | --- | 
-|Oracle WebLogic Server | 14c or later | 
-| Apache Tomcat | 8.5.x - 9.0.x | 
-
-> Note: Tomcat Release 10 (in current docs says no, is that true?)
-
-## 2.2 Oracle Application Express (APEX)
-
-Oracle REST Data Services supports the currently supported versions of APEX. 
-
-Can we just use this [link](https://www.oracle.com/us/assets/lifetime-support-technology-069183.pdf#%5B%7B%22num%22%3A154%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22Fit%22%7D%5D)?
-
-## 1.3 Prerequisites
-
-
-
-### 1.3.2 
-
-### 1.3.1 
-## 1.3 Downloading ORDS
-
-
-
-# Appendix 
-
-## 2.1 Java EE Application Servers
-Oracle REST Data Services supports Java EE application servers:
-
-| Application Server | Supported Releases |
-| --- | --- | 
-|Oracle WebLogic Server | 14c or later | 
-| Apache Tomcat | 8.5.x - 9.0.x | 
-
-> Note: Tomcat Release 10 (in current docs says no, is that true?)
-
-## 2.2 Oracle Application Express (APEX)
-
-Oracle REST Data Services supports the currently supported versions of APEX. 
-
-Can we just use this [link](https://www.oracle.com/us/assets/lifetime-support-technology-069183.pdf#%5B%7B%22num%22%3A154%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22Fit%22%7D%5D)?
-
-## 1.3 Prerequisites
-
-
-
-### 1.3.2 
-
-### 1.3.1 
-## 1.3 Downloading ORDS
-
-
-
-# Appendix 
-
-## 2.1 Java EE Application Servers
-Oracle REST Data Services supports Java EE application servers:
-
-| Application Server | Supported Releases |
-| --- | --- | 
-|Oracle WebLogic Server | 14c or later | 
-| Apache Tomcat | 8.5.x - 9.0.x | 
-
-> Note: Tomcat Release 10 (in current docs says no, is that true?)
-
-## 2.2 Oracle Application Express (APEX)
-
-Oracle REST Data Services supports the currently supported versions of APEX. 
-
-Can we just use this [link](https://www.oracle.com/us/assets/lifetime-support-technology-069183.pdf#%5B%7B%22num%22%3A154%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22Fit%22%7D%5D)?
-
-## 1.3 Prerequisites
-
-
-
-### 1.3.2 
-
-### 1.3.1 
-## 1.3 Downloading ORDS
-
-
 
 # Appendix 
 
@@ -199,4 +27,28 @@ Perform the following steps:
 
 You must use the specified database user to install, upgrade, repair, and uninstall ORDS.
 
-> [Return to the Guide](./1-ords-installation-checklist.md#12-user-requirements)
+> [Return to the Guide](./1-ords-installation-checklist.md#1.2userrequirements)
+
+#### Review Privileges
+
+When the ORDS Installer Privileges script is used, a user is granted equal privileges to install, upgrade, repair, and uninstall ORDS for either/both:
+
+- Oracle Pluggable Database<sup>1</sup>
+- Oracle 11g 
+
+<sup>1</sup>Learn about [PDBs](https://docs.oracle.com/en/database/oracle/oracle-database/21/cncpt/introduction-to-oracle-database.html#GUID-ED16D715-761B-4F8B-8503-BC058E216D2F)
+
+> [Return to the Guide](./1-ords-installation-checklist.md#1.2userrequirements)
+
+
+## 1.3 Command Line Tool
+
+
+> [Return to the Guide](./1-ords-installation-checklist.md#1.2userrequirements)
+
+## 2.1 Java EE Application Servers
+
+### Tomcat 10 experimental settings
+
+
+> [Return to the Guide](./1-ords-installation-checklist.md##1.2userrequirements)
