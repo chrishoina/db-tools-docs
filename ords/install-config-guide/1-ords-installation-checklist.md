@@ -1,5 +1,3 @@
-changes
-
 # 1  Oracle REST Data Services Installation Checklist
 
 ## 1.1 System Requirements
