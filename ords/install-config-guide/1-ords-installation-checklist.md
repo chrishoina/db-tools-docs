@@ -85,3 +85,6 @@ Oracle REST Data Services supports all APEX versions in Premier Support status<s
 # 5 Upgrading Oracle REST Data Services
 # 6 Uninstalling Oracle REST Data Services
 
+Uninstall and install in same chapter
+Maybe have (depending on template) upgrade, repair, and uninstall (this depends on the length as well).
+
