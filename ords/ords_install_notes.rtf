@@ -1,0 +1,226 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2708
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fnil\fcharset0 Menlo-Bold;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red255\green255\blue255;}
+{\*\expandedcolortbl;;\csgray\c0;\csgray\c100000;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf2 \CocoaLigature0 Last login: Thu Apr 20 14:06:56 on ttys000\
+choina@choina-mac ~ % sql sys/password1234@localhost:1521/ORCLPDB1 as sysdba \
+\
+\
+SQLcl: Release 23.1 Production on Thu Apr 20 14:12:08 2023\
+\
+Copyright (c) 1982, 2023, Oracle.  All rights reserved.\
+\
+Connected to:\
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production\
+Version 21.3.0.0.0\
+\
+SQL> create user chris identified by oracle;\
+\
+User CHRIS created.\
+\
+SQL> grant connect, dba, pdb_dba, resource\
+  2* ;\
+\
+Error starting at line : 1 in command -\
+grant connect, dba, pdb_dba, resource\
+Error report -\
+ORA-00990: missing or invalid privilege\
+00990. 00000 -  "missing or invalid privilege"\
+*Cause:    \
+                                                                                                 \
+SQL> grant connect, dba, pdb_dba, resource to chris;\
+\
+Grant succeeded.\
+\
+SQL> connect chris/oracle\
+Connected.\
+SQL> ords.enable_schema;\
+\
+Error starting at line : 1 in command -\
+ords.enable_schema\
+Error report -\
+Unknown Command\
+\
+SQL> exec ords.enable_schema\
+\
+PL/SQL procedure successfully completed.\
+\
+SQL> connect/sys as sysdba\
+\
+Error starting at line : 1 in command -\
+connect/sys as sysdba\
+Error report -\
+Unknown Command\
+\
+SQL> connect sys as sysdba\
+\
+\
+\
+\
+\
+\
+\
+Last login: Thu Apr 20 14:05:49 on ttys000\
+choina@choina-mac ~ % ords serve\
+\
+ORDS: Release 23.1 Production on Thu Apr 20 18:07:02 2023\
+\
+Copyright (c) 2010, 2023, Oracle.\
+\
+Configuration:\
+  /Applications/ords/ords_config_23.1.0.086.1423/\
+\
+2023-04-20T18:07:02.365Z INFO        HTTP and HTTP/2 cleartext listening on host: 0.0.0.0 port: 8181\
+2023-04-20T18:07:02.392Z INFO        Disabling document root because the specified folder does not exist: /Applications/ords/ords_config_23.1.0.086.1423/global/doc_root\
+Could not start Standalone Mode because the listen port: 8181 is already in use by another process. Check if another instance of ords is already running\
+choina@choina-mac ~ % ps -ef | grep ords\
+  501 10885     1   0  1:32PM ??         0:16.96 /usr/bin/java -Doracle.dbtools.cmdline.home=/Applications/ords/ords_product_23.1.0.086.1423 -Duser.language=en -Duser.region=US -Dfile.encoding=UTF-8 -Djava.awt.headless=true -Dnashorn.args=--no-deprecation-warning -Doracle.dbtools.cmdline.ShellCommand=ords -Duser.timezone=UTC -jar /Applications/ords/ords_product_23.1.0.086.1423/ords.war serve\
+  501 12356     1   0  1:59PM ??         0:15.36 /usr/bin/java -Doracle.dbtools.cmdline.home=/Applications/ords/ords_product_23.1.0.086.1423 -Duser.language=en -Duser.region=US -Dfile.encoding=UTF-8 -Djava.awt.headless=true -Dnashorn.args=--no-deprecation-warning -Doracle.dbtools.cmdline.ShellCommand=ords -Duser.timezone=UTC -jar /Applications/ords/ords_product_23.1.0.086.1423/ords.war serve\
+  501 13830 13386   0  2:07PM ttys000    0:00.01 grep ords\
+choina@choina-mac ~ % kill -9\
+kill: not enough arguments\
+choina@choina-mac ~ % kill -9 10885 12356 \
+choina@choina-mac ~ % ps -ef | grep ords  \
+  501 13841 13386   0  2:08PM ttys000    0:00.00 grep ords\
+choina@choina-mac ~ % ords serve\
+\
+ORDS: Release 23.1 Production on Thu Apr 20 18:08:38 2023\
+\
+Copyright (c) 2010, 2023, Oracle.\
+\
+Configuration:\
+  /Applications/ords/ords_config_23.1.0.086.1423/\
+\
+2023-04-20T18:08:39.186Z INFO        HTTP and HTTP/2 cleartext listening on host: 0.0.0.0 port: 8181\
+2023-04-20T18:08:39.206Z INFO        Disabling document root because the specified folder does not exist: /Applications/ords/ords_config_23.1.0.086.1423/global/doc_root\
+2023-04-20T18:08:42.489Z WARNING     The pool named: |default|lo| is invalid and will be ignored: The database password secret in the wallet associated with the pool named: |default|lo| is missing\
+2023-04-20T18:08:42.489Z INFO        \
+\
+Mapped local pools from /Applications/ords/ords_config_23.1.0.086.1423/databases:\
+  /ords/                              => default                        => INVALID   \
+\
+\
+2023-04-20T18:08:42.592Z INFO        Oracle REST Data Services initialized\
+Oracle REST Data Services version : 23.1.0.r0861423\
+Oracle REST Data Services server info: jetty/10.0.12\
+Oracle REST Data Services java info: Java HotSpot(TM) 64-Bit Server VM 19.0.1+10-21\
+\
+^C
+\f1\b \cf3 \cb2 %
+\f0\b0 \cf2 \cb1                                                                                                                                                                       choina@choina-mac ~ % ps -ef | grep ords  \
+  501 13872 13386   0  2:09PM ttys000    0:00.00 grep ords\
+choina@choina-mac ~ % ords config secret db.password\
+\
+ORDS: Release 23.1 Production on Thu Apr 20 18:10:48 2023\
+\
+Copyright (c) 2010, 2023, Oracle.\
+\
+Configuration:\
+  /Applications/ords/ords_config_23.1.0.086.1423/\
+\
+Enter the database password: \
+Confirm password: \
+The setting named: db.password was set to: ****** in configuration: default\
+choina@choina-mac ~ % ords serve\
+\
+ORDS: Release 23.1 Production on Thu Apr 20 18:11:09 2023\
+\
+Copyright (c) 2010, 2023, Oracle.\
+\
+Configuration:\
+  /Applications/ords/ords_config_23.1.0.086.1423/\
+\
+2023-04-20T18:11:09.465Z INFO        HTTP and HTTP/2 cleartext listening on host: 0.0.0.0 port: 8181\
+2023-04-20T18:11:09.486Z INFO        Disabling document root because the specified folder does not exist: /Applications/ords/ords_config_23.1.0.086.1423/global/doc_root\
+2023-04-20T18:11:13.195Z INFO        Configuration properties for: |default|lo|\
+db.servicename=ORCLPDB1\
+java.specification.version=19\
+conf.use.wallet=true\
+sun.jnu.encoding=UTF-8\
+user.region=US\
+java.class.path=/Applications/ords/ords_product_23.1.0.086.1423/ords.war\
+java.vm.vendor=Oracle Corporation\
+sun.arch.data.model=64\
+nashorn.args=--no-deprecation-warning\
+java.vendor.url=https://java.oracle.com/\
+resource.templates.enabled=false\
+user.timezone=UTC\
+db.port=1521\
+java.vm.specification.version=19\
+os.name=Mac OS X\
+sun.java.launcher=SUN_STANDARD\
+user.country=US\
+sun.boot.library.path=/Library/Java/JavaVirtualMachines/jdk-19.jdk/Contents/Home/lib\
+sun.java.command=/Applications/ords/ords_product_23.1.0.086.1423/ords.war serve\
+jdk.debug=release\
+sun.cpu.endian=little\
+user.home=/Users/choina\
+oracle.dbtools.launcher.executable.jar.path=/Applications/ords/ords_product_23.1.0.086.1423/ords.war\
+user.language=en\
+java.specification.vendor=Oracle Corporation\
+java.version.date=2022-10-18\
+database.api.enabled=true\
+java.home=/Library/Java/JavaVirtualMachines/jdk-19.jdk/Contents/Home\
+db.username=ORDS_PUBLIC_USER\
+file.separator=/\
+java.vm.compressedOopsMode=Zero based\
+line.separator=\
+\
+restEnabledSql.active=true\
+java.specification.name=Java Platform API Specification\
+java.vm.specification.vendor=Oracle Corporation\
+feature.sdw=true\
+java.awt.headless=true\
+apple.awt.application.name=ExecutableJarEntrypoint\
+standalone.context.path=/ords\
+db.hostname=0.0.0.0\
+db.password=******\
+sun.management.compiler=HotSpot 64-Bit Tiered Compilers\
+security.requestValidationFunction=ords_util.authorize_plsql_gateway\
+java.runtime.version=19.0.1+10-21\
+user.name=choina\
+stdout.encoding=UTF-8\
+path.separator=:\
+standalone.http.port=8181\
+os.version=13.2.1\
+java.runtime.name=Java(TM) SE Runtime Environment\
+file.encoding=UTF-8\
+java.vm.name=Java HotSpot(TM) 64-Bit Server VM\
+standalone.doc.root=/Applications/ords/ords_config_23.1.0.086.1423/global/doc_root\
+java.vendor.url.bug=https://bugreport.java.com/bugreport/\
+java.io.tmpdir=/var/folders/_q/8_9zff9s6n13vl1qz1_dpfc80000gn/T/\
+oracle.dbtools.cmdline.ShellCommand=ords\
+java.version=19.0.1\
+user.dir=/Users/choina\
+os.arch=x86_64\
+java.vm.specification.name=Java Virtual Machine Specification\
+oracle.dbtools.cmdline.home=/Applications/ords/ords_product_23.1.0.086.1423\
+native.encoding=UTF-8\
+java.library.path=/Users/choina/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.\
+java.vendor=Oracle Corporation\
+java.vm.info=mixed mode, sharing\
+stderr.encoding=UTF-8\
+java.vm.version=19.0.1+10-21\
+sun.io.unicode.encoding=UnicodeBig\
+db.connectionType=basic\
+java.class.version=63.0\
+\
+2023-04-20T18:11:13.196Z WARNING     *** jdbc.MaxLimit in configuration |default|lo| is using a value of 20, this setting may not be sized adequately for a production environment ***\
+2023-04-20T18:11:13.197Z WARNING     *** jdbc.InitialLimit in configuration |default|lo| is using a value of 3, this setting may not be sized adequately for a production environment ***\
+2023-04-20T18:11:21.869Z INFO        \
+\
+Mapped local pools from /Applications/ords/ords_config_23.1.0.086.1423/databases:\
+  /ords/                              => default                        => VALID     \
+\
+\
+2023-04-20T18:11:21.984Z INFO        Oracle REST Data Services initialized\
+Oracle REST Data Services version : 23.1.0.r0861423\
+Oracle REST Data Services server info: jetty/10.0.12\
+Oracle REST Data Services java info: Java HotSpot(TM) 64-Bit Server VM 19.0.1+10-21\
+\
+\
+\
+}

@@ -18,4 +18,5 @@ Can I break out the following into separate chapters:
 
 ## To-do
 
-Start building out Ch 2. 
+- Start building out Ch 2. 
+- Need to include conventions for the code, see [here](https://docs.oracle.com/en/database/oracle/oracle-database/21/arpls/preface.html#GUID-823CBDED-EF90-4A66-9231-33ED2FB2A444).
