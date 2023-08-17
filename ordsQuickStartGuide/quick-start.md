@@ -104,7 +104,7 @@ This section will guide you through the following steps:
    ![Create the ORDSTEST user with role, privilege, and tablespace quota](../ordsQuickStartGuideImages/ordstest-user-roles-privileges-tablespace-quota.png)
    *Creating the ORDSTEST user with role, privilege, and tablespace quota*
 
-3. Next, execute the `ORDS_ADMIN.ENABLE_SCHEMA` PL/SQL Procedure. This procedure grants the 'ORDSTEST' user REST access.
+3. Next, execute the `ORDS_ADMIN.ENABLE_SCHEMA` PL/SQL Procedure. This procedure grants the `ORDSTEST` user REST access.
 
    ```pl/sql
    BEGIN
