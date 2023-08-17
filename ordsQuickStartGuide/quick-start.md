@@ -124,7 +124,7 @@ This section will guide you through the following steps:
 
 > NOTE: The P_URL_MAPPING_PATTERN parameter *must be* lowercase.
 
-> NOTE: Notice how the `+P_AUTO_REST_AUTH+` parameter is set to `+FALSE+`. Setting this parameter to FALSE allows any user access to the ORDS metadata catalogue without the need for user authentication.
+> NOTE: Notice how the `P_AUTO_REST_AUTH` parameter is set to `FALSE`. Setting this parameter to FALSE allows any user access to the ORDS metadata catalogue without the need for user authentication.
 
 > TIP: Additional information on the ORDS PL/SQL Package can be found in [this section](https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/23.1/orddg/ORDS-reference.html#GUID-E4476C14-01B1-4EA4-94D3-73B92C8C9AB3) of the Oracle REST Data Services Developer's Guide.
 
@@ -137,7 +137,7 @@ Now that the `ORDSTEST` user schema has been REST-enabled. You may access Databa
    ![Navigating to the Database Actions Launchpad](../ordsQuickStartGuideImages/log-in-database-actions-as-ordstest.png)
 *Navigating to SQL Developer Web*
 
-2. Next, sign in as the `ORDSTEST` user with the username `ORDSTEST` and Password (your password may differ) `oracle`. And click the `Sign in` button.
+2. Next, sign in as the `ORDSTEST` user with the username `ORDSTEST` and Password `oracle` (your password may differ). And click the `Sign in` button.
 
    Once the page loads, you will see the Database Actions Launchpad, as well as the various categories available to the `ORDSTEST` user.
 
@@ -159,7 +159,7 @@ image::connect-as-ordstest-with-sqlcl.png[]  -->
     ![selecting-the-sql-worksheet-as-ordstest-user](../ordsQuickStartGuideImages/selecting-the-sql-worksheet-as-ordstest-user.png)
     *Navigating to the SQL Worksheet*
 
-2. From the SQL Worksheet loads, use the SQL below to create the `EMP` table.
+2. Once the SQL Worksheet loads, use the SQL below to create the `EMP` table.
 
    ```sql
    CREATE TABLE EMP (
@@ -175,7 +175,7 @@ image::connect-as-ordstest-with-sqlcl.png[]  -->
        );
    ```
 
-3. With the `EMP` table successfully created, next insert the following sample data:
+3. With the `EMP` table successfully created, insert the following sample data:
 
     ```sql
     Insert into EMP (EMPNO,ENAME,JOB,MGR,HIREDATE,SAL,COMM,DEPTNO) values
@@ -255,7 +255,7 @@ image::connect-as-ordstest-with-sqlcl.png[]  -->
     * `PUT`
     * `DELETE`
 
-   Copy the URL portion of the GET ALL cURL command.
+   Copy the URL portion of the `GET ALL` cURL command.
 
    ![copying-get-all-uri-for-emp-table](../ordsQuickStartGuideImages/copying-get-all-uri-for-emp-table.png)
    *Copying the `GET ALL` URL from the `cURL command`*
