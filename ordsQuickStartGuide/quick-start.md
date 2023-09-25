@@ -85,11 +85,11 @@ This section will guide you through the following steps:
 
   > NOTE: We recommend you follow the steps in this tutorial as closely as possible, including using the specified names for schemas and database objects. Once you have completed the tutorial as prescribed, feel free to try it again using alternate schema and database object names.
 
-### Create a new user and REST-enable their schema
+#### Create a new user and REST-enable their schema
 
 1. Using SQLcl, connect to your database as the `SYS` user.
 
-   ![Logging in with SQLcl as the `SYS` user](../ordsQuickStartGuideImages/sql-cl-login-as-sys.png)
+   ![Logging in with SQLcl as the `SYS` user](./ordsQuickStartGuideImages/sql-cl-login-as-sys.png)
    *Logging in with SQLcl as the `SYS` user*
 
 2. Next, create a new `ORDSTEST` user with the following Privileges, Roles, and Tablespace Quota:
@@ -101,7 +101,7 @@ This section will guide you through the following steps:
    GRANT UNLIMITED TABLESPACE TO ORDSTEST;
    ```
 
-   ![Create the ORDSTEST user with role, privilege, and tablespace quota](../ordsQuickStartGuideImages/ordstest-user-roles-privileges-tablespace-quota.png)
+   ![Create the ORDSTEST user with role, privilege, and tablespace quota](./ordsQuickStartGuideImages/ordstest-user-roles-privileges-tablespace-quota.png)
    *Creating the ORDSTEST user with role, privilege, and tablespace quota*
 
 3. Next, execute the `ORDS_ADMIN.ENABLE_SCHEMA` PL/SQL Procedure. This procedure grants the `ORDSTEST` user REST access.
@@ -119,7 +119,7 @@ This section will guide you through the following steps:
    END;
    ```
 
-   ![Executing the ORDS.ENABLE_SCHEMA PL/SQL Procedure](../ordsQuickStartGuideImages/ords-enable-ordstest-schema-pl-sql-proc.png)
+   ![Executing the ORDS.ENABLE_SCHEMA PL/SQL Procedure](./ordsQuickStartGuideImages/ords-enable-ordstest-schema-pl-sql-proc.png)
    *Executing the ORDS.ENABLE_SCHEMA PL/SQL Procedure*
 
 > NOTE: The P_URL_MAPPING_PATTERN parameter *must be* lowercase.
@@ -128,25 +128,25 @@ This section will guide you through the following steps:
 
 > TIP: Additional information on the ORDS PL/SQL Package can be found in [this section](https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/23.1/orddg/ORDS-reference.html#GUID-E4476C14-01B1-4EA4-94D3-73B92C8C9AB3) of the Oracle REST Data Services Developer's Guide.
 
-### Connect as the new user and auto-REST-enable a table
+#### Connect as the new user and auto-REST-enable a table
 
 Now that the `ORDSTEST` user schema has been REST-enabled. You may access Database Actions, as the `ORDSTEST` user.
 
 1. Navigate to this URL: `http://localhost:8080/ords/sql-developer`
 
-   ![Navigating to the Database Actions Launchpad](../ordsQuickStartGuideImages/log-in-database-actions-as-ordstest.png)
+   ![Navigating to the Database Actions Launchpad](./ordsQuickStartGuideImages/log-in-database-actions-as-ordstest.png)
 *Navigating to SQL Developer Web*
 
 2. Next, sign in as the `ORDSTEST` user with the username `ORDSTEST` and Password `oracle` (your password may differ). And click the `Sign in` button.
 
    Once the page loads, you will see the Database Actions Launchpad, as well as the various categories available to the `ORDSTEST` user.
 
-   ![The Database Actions Launchpad](../ordsQuickStartGuideImages/database-actions-launchpad-as-ordstest-user.png)
+   ![The Database Actions Launchpad](./ordsQuickStartGuideImages/database-actions-launchpad-as-ordstest-user.png)
    *The Database Actions Launchpad*
 
 <!-- - You may sign out of Database Actions and continue to the next section of this tutorial.  -->
 
-### Connect as the new user and auto REST-enable a table
+#### Connect as the new user and auto REST-enable a table
 
 > IMPORTANT: The following tasks will be completed as the `ORDSTEST` user.
 
@@ -156,7 +156,7 @@ Now that the `ORDSTEST` user schema has been REST-enabled. You may access Databa
 image::connect-as-ordstest-with-sqlcl.png[]  -->
 1. From the Database Actions Launchpad, select SQL, under the Development category of the dashboard.
 
-    ![selecting-the-sql-worksheet-as-ordstest-user](../ordsQuickStartGuideImages/selecting-the-sql-worksheet-as-ordstest-user.png)
+    ![selecting-the-sql-worksheet-as-ordstest-user](./ordsQuickStartGuideImages/selecting-the-sql-worksheet-as-ordstest-user.png)
     *Navigating to the SQL Worksheet*
 
 2. Once the SQL Worksheet loads, use the SQL below to create the `EMP` table.
@@ -209,41 +209,41 @@ image::connect-as-ordstest-with-sqlcl.png[]  -->
     commit;
     ```
 
-   ![inserting-emp-data-into-sql-worksheet-as-ordstest-user](../ordsQuickStartGuideImages/inserting-emp-data-into-sql-worksheet-as-ordstest-user.png)
+   ![inserting-emp-data-into-sql-worksheet-as-ordstest-user](./ordsQuickStartGuideImages/inserting-emp-data-into-sql-worksheet-as-ordstest-user.png)
    *Inserting data into the `EMP` table*
 
 4. With the `EMP` table created and populated with data, you will now auto-REST enable it. From the Navigator Panel, right mouse-click on the table name, navigate to `REST`, then click `Enable`.
 
-   ![selecting-rest-enable-from-navigator-panel](../ordsQuickStartGuideImages/selecting-rest-enable-from-navigator-panel.png)
+   ![selecting-rest-enable-from-navigator-panel](./ordsQuickStartGuideImages/selecting-rest-enable-from-navigator-panel.png)
    *Using the Navigator Panel to select `REST` > `Enable`*
 
    A `REST Enable Object` slider will appear. After inspecting the parameters that have automatically been generated for you, click the `Enable` button located at the bottom of the slider.
 
-   ![inspecting-parameters-of-emp-auto-rest-slider](../ordsQuickStartGuideImages/inspecting-parameters-of-emp-auto-rest-slider.png)
+   ![inspecting-parameters-of-emp-auto-rest-slider](./ordsQuickStartGuideImages/inspecting-parameters-of-emp-auto-rest-slider.png)
    *Reviewing the `REST Enable Object` Slider*`
 
    A message slider will appear, confirming that the `EMP` table has been REST-enabled.
 
-   ![ords-confirming-successful-auto-rest-of-emp-table](../ordsQuickStartGuideImages/ords-confirming-successful-auto-rest-of-emp-table.png)
+   ![ords-confirming-successful-auto-rest-of-emp-table](./ordsQuickStartGuideImages/ords-confirming-successful-auto-rest-of-emp-table.png)
    *Confirmation that the `EMP` table has been REST-enabled*
 
    <!-- > NOTE: Alternatively, t  For this   n a previous step the `+SYS+` user enabled the `+ORDSTEST+` _schema_. However in this step the `+ORDSTEST+` user will now REST-enable the `+EMP+` with the following PL/SQL Procedure:  -->
 
-### Testing the auto REST-enabled endpoint
+#### Testing the auto REST-enabled endpoint
 
 1. You can quickly identify database objects that have been auto-REST enabled by looking for the plug icon next to it's name.
 
-   ![plug-icon-indicating-auto-rest-enabled-table](../ordsQuickStartGuideImages/plug-icon-indicating-auto-rest-enabled-table.png)
+   ![plug-icon-indicating-auto-rest-enabled-table](./ordsQuickStartGuideImages/plug-icon-indicating-auto-rest-enabled-table.png)
    *Plug icon indicating a database object has been auto-REST enabled*
 
    > NOTE: Click you may need to click the `Refresh` button in the Navigator Panel to display this icon.
 
-   ![click-refresh-in-the-navigator-panel](../ordsQuickStartGuideImages/click-refresh-in-the-navigator-panel.png)
+   ![click-refresh-in-the-navigator-panel](./ordsQuickStartGuideImages/click-refresh-in-the-navigator-panel.png)
    *Clicking the `Refresh` button to display database objects*
 
 2. You can review and retrieve the REST endpoints for the `EMP` table by right-clicking on the object's name then `REST` then `cURL command`.
 
-   ![locating-curl-command-to-test-rest-endpoint](../ordsQuickStartGuideImages/locating-curl-command-to-test-rest-endpoint.png)
+   ![locating-curl-command-to-test-rest-endpoint](./ordsQuickStartGuideImages/locating-curl-command-to-test-rest-endpoint.png)
    *Navigating to the `cURL command` menu item*
 
 3. A slider will appear. You'll notice the various HTTP Methods available to an auto-REST enabled resource.
@@ -257,20 +257,120 @@ image::connect-as-ordstest-with-sqlcl.png[]  -->
 
    Copy the URL portion of the `GET ALL` cURL command.
 
-   ![copying-get-all-uri-for-emp-table](../ordsQuickStartGuideImages/copying-get-all-uri-for-emp-table.png)
+   ![copying-get-all-uri-for-emp-table](./ordsQuickStartGuideImages/copying-get-all-uri-for-emp-table.png)
    *Copying the `GET ALL` URL from the `cURL command`*
 
 4. Open a new browser tab, paste the URL into the Address Bar, and press Enter on your keyboard.
 
-   ![results-testing-emp-uri-in-browser](../ordsQuickStartGuideImages/results-testing-emp-uri-in-browser.png)
+   ![results-testing-emp-uri-in-browser](./ordsQuickStartGuideImages/results-testing-emp-uri-in-browser.png)
    *Reviewing the results of the `GET ALL` URI in the browser*
 
 5. You will notice a list of the first 25 items in the `EMP` table. Collapsing the `items` array, will reveal other helpful links, automatically included with all auto-REST enabled resources.
 
-   ![collapsing-items-to-reveal-provided-links](../ordsQuickStartGuideImages/collapsing-items-to-reveal-provided-links.png)
+   ![collapsing-items-to-reveal-provided-links](./ordsQuickStartGuideImages/collapsing-items-to-reveal-provided-links.png)
    *Collapsing `items` to reveal additional, helpful links*
 
    > NOTE: ORDS automatically sets pagination to 25 results, although this setting can be changed later if required. This configuration falls outside the scope of this Quick Start Guide.
+
+### Creating a RESTful Service through the REST Workshop
+
+This section explains how to create a RESTful service using REST Workshop in Database Actions. The REST Workshop enables you to create and edit RESTful service definitions.
+
+#### Navigating to the REST Workshop
+
+To create and test a RESTful service in the REST Workshop, follow these steps:
+
+1. While logged in as the `ORDSTEST` user, navigate to the Database Actions Launchpad. From there select the `REST`card, located in the Development category.
+
+   ![navigating-to-rest-workshop-from-launchpad](./ordsQuickStartGuideImages/navigating-to-rest-workshop-from-launchpad.png )
+   *Selecting the `REST` card from the Launchpad*
+
+2. Once the REST Workshop screen loads, click the `Modules` widget. A `Modules` dashboard will load. Next, click the `+ Create Module` button, located in the upper right-hand corner of the dashboard.
+
+     ![locating-the-modules-card-in-rest-workshop](./ordsQuickStartGuideImages/locating-the-modules-card-in-rest-workshop.png)
+     *Locating the Modules widget*
+
+     ![create-new-module-in-module-dashboard](./ordsQuickStartGuideImages/create-new-module-in-module-dashboard.png)
+     *Selecting the `+ Create Module` button*
+
+3. A **Create Module** slider will appear. Enter in the following information:
+
+   * **Module Name**: Any desired name for the connection. For example, `demo.module`
+   * **URI Prefix**: `/demo/`
+   * **Pagination Size**: `25`
+
+     ![adding-values-to-module-fields](./ordsQuickStartGuideImages/adding-values-to-module-fields.png)
+     *Adding values to the Module fields*
+
+   * In the **Protected by Privilege** field select `Not Protected`.
+
+     ![selecting-not-protected-to-module](./ordsQuickStartGuideImages/selecting-not-protected-to-module.png)
+     *Publishing the Module without requiring a Privilege*
+
+4. Click `Create`, your Module settings will be saved, and you'll be taken to the Resource Templates page. Click the `+ Create Template` button.
+
+   ![create-template-screen](./ordsQuickStartGuideImages/create-template-screen.png)
+   *Confirmation notification for Module creation*
+
+   ![clicking-create-template-button](./ordsQuickStartGuideImages/clicking-create-template-button.png)
+   *Clicking the `Create Template` button*
+
+5. A **Create Template** slider will appear. In the `URI Template` field, enter: `emp/`. For this demonstration, you'll retain the detault settings. Click the `Create` button.
+
+   ![create-template-slider](./ordsQuickStartGuideImages/create-template-slider.png)
+   *Entering in the URI `Template`*
+
+6. You'll be automatically taken to the **Create Handler** page. For this tutorial, you will create a `GET` method. Click the `+ Create Handler` button.
+
+   ![clicking-create-handler-button](./ordsQuickStartGuideImages/clicking-create-handler-button.png)
+   *Clicking the `Create Handler` button*
+
+7. A **Create Handler** slider will appear. Verify the following settings:
+
+   * **Method**: `GET`
+   * **Items Per Page**: `7`
+   * **Source Type**: `Collection Query`
+
+     ![entering-initial-fields-in-handler-slider](./ordsQuickStartGuideImages/entering-initial-fields-in-handler-slider.png)
+     *Verifying fields of the Resource Handler*
+
+8. In the **Source** field, place the following SQL query:
+
+   ```sql
+   <copy>
+   SELECT
+     INITCAP(ENAME) name,
+     lower(job) job,
+     TO_CHAR(sal,'9G999','NLS_NUMERIC_CHARACTERS=",."') salary,
+     hiredate
+   FROM
+   emp
+   </copy> 
+   ```
+  
+   ![adding-sql-query-to-handler-field](./ordsQuickStartGuideImages/adding-sql-query-to-handler-field.png)
+   *`SQL` query added to the Source field*
+
+9. Click the **Create** button. You'll be taken to the Resource Handler page.
+
+   ![handler-successfully-created](./ordsQuickStartGuideImages/handler-successfully-created.png)
+   *Confirmation that Resource Handler was created*
+
+10. To test the SQL query you may click the `Play` icon. The results of the query will appear in the output window below.
+
+    ![clicking-play-button-for-query-results](./ordsQuickStartGuideImages/clicking-play-button-for-query-results.png)
+    *Reviewing results of the Handler `SQL` query*
+
+11. To test the RESTful service, click the `Open in a new tab` icon. A new browser tab will appear, with the results from the `GET` method.
+
+    ![open-in-new-tab-icon-to-test-endpoint](./ordsQuickStartGuideImages/open-in-new-tab-icon-to-test-endpoint.png)
+    *Opening the URI in a new browser tab*
+
+    ![reviewing-results-in-separate-broweser-tab](./ordsQuickStartGuideImages/reviewing-results-in-separate-broweser-tab.png)
+    *Reviewing the `JSON` response in the browser window*
+
+#### Creating a Privilege using Database Actions
+
 
 <!-- [source,PL/SQL,indent=0]
 ----
