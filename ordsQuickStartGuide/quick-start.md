@@ -371,126 +371,20 @@ To create and test a RESTful service in the REST Workshop, follow these steps:
 
 #### Creating a Privilege using Database Actions
 
+Controlling access to protected resources is done by defining privileges. Privileges restrict access to only users having at least one of a set of specified roles. A privilege is then associated with one or more resource modules: before those resource modules can be accessed, the user must be authenticated and then authorized to ensure that the user has one of the required roles.  
 
-<!-- [source,PL/SQL,indent=0]
-----
-BEGIN
-    ORDS.ENABLE_OBJECT(
-        P_ENABLED => TRUE,
-        P_SCHEMA => 'ORDSTEST',
-        P_OBJECT => 'EMP',
-        P_OBJECT_TYPE => 'TABLE',
-        P_OBJECT_ALIAS => 'emp',
-        P_AUTO_REST_AUTH => FALSE
-    );
-    COMMIT;
-END;
-----
-+
-.REST-enable the `+EMP+` table.
-image::ords-enable-object-pl-sql-procedure.png[]
-+
-IMPORTANT: Notice how the `+P_OBJECT_ALIAS+` parameter in this example is lowercase. This is because the alias will soon be appended to the Base URI, like this: `+http://
-localhost:8080/ords/ordstest/emp/+`. Character casing is important, and lowercase required.
-+
+1. To protect a resource, begin by creating a Privilege. Navigate to the `REST` Workshop.
 
-NOTE: Executing this PL/SQL Procedure also _automatically_ enables `+GET+`,`+PUT+`,`+POST+`,`+DELETE+` methods, as well as the creation of metadata-catalog endpoints.
+2. Under the Security menu item, click on Privileges.
 
-5. The `+EMP+` table is now exposed as an _auto_ REST-enabled HTTP endpoint. To test this endpoint, open a web browser and navigate to the following URL: `+http://
-localhost:8080/ords/ordstest/emp/+`.
-+
-.Reviewing the `+GET+` endpoint.
-image::reviewing-emp-get-endpoint-in-browser.png[]
-+
-- Notice how the `+ORDSTEST+` schema has been exposed at the `+/ordstest+` path and the `+EMP+` table has been exposed at the `+/emp/+` path.
-- If you were to scroll to the bottom of this page, you'll see that ORDS has provided additional links for reference. btn:[Click] the `+metadata-catalog+` link: `+http://localhost:80808/ords/ordstest/metadata-catalog/emp+`
-+
-.Reviewing additional links provided by ORDS.
-image::reviewing-emp-links-from-get-endpoint.png[]
-+
-- If you've worked with the OpenAPI Specification, then these fileds may look familiar. Oracle REST Data Services conforms to the OpenAPI Specification. In particular, you'll see the OpenAPI object fields described in this endpoint. 
-+
-TIP: More information on the OpenAPI Specification can be found https://swagger.io/specification/[here]. 
-+
+3. Then, click the `+ Create Privilege` button. A `Create Privilege` slider will appear.
 
-.Reviewing the `+EMP+` metadata catalog.
-image::viewing-emp-ords-metadata.png[]
+4. Enter the following for the field values:
 
-=== Creating custom Oracle REST APIs using ORDS-packaged PL/SQL procedures 
+   * `Label`: Demo module Privilege
+   * `Name`: demo.module.privilege
+   * `Description`: A Privilege created for demonstrating privileges for the `demo.module` Resource Module.
 
-ORDS installation will include the addition of a PL/SQL Package. In it contains many PL/SQL procedures and functions used for developing RESTful services for your Oracle database. In this secion you will learn how to create a basic custom Oracle REST API. The PL/SQL procedures used are: 
+5. Next, navigate to the **Protected Modules** tab. Ensure the `demo.module` Resource Module is moved from the available to the column on the right. This ensures that the `demo.module` Resource Module is associated with this Privilege.
 
-- `+ORDS.DEFINE_MODULE+`
-- `+ORDS.DEFINE_TEMPLATE+`
-- `+ORDS.DEFINE_HANDLER+`
-
-1. First, we'll define a simple Resource Module using the `+ORDS.DEFINE_MODULE+` procedure. For this example, most of the default parameter will remain unmodified. However,`+P_MODULE_NAME+` and `+P_BASE_PATH+` parameters will be changed for this tutorial:
-+
-[source,PL/SQL,indent=0]
-----
-BEGIN
-    ORDS.DEFINE_MODULE(
-        p_module_name => 'Demo',
-        p_base_path => '/demo/'
-    );
-END;
-----
-+
-
-2. Next, you'll define a Resource Template for the `+my.tickets+` Resource Module. In this example, you will retain many of the default parameters, with the exception of the Resource Module name and Template Pattern parameters:
-+
-[source,PL/SQL,indent=0]
-----
-BEGIN
-  ORDS.DEFINE_TEMPLATE(
-    p_module_name => 'Demo',
-    p_pattern => 'emp/'
-  );
-END;
-----
-+
-
-3. Finally, you'll define the Handler parameters for this Resource Template (and by association the Resource Module as well). Unlike the previous steps, many of the default parameters will be slightly modified: 
-+
-[source,PL/SQL,indent=0]
-----
-BEGIN
-  ORDS.DEFINE_HANDLER(
-    p_module_name => 'my.tickets',
-    p_pattern => '.',
-    p_method  => 'POST',
-    p_mimes_allowed => 'application/json',
-    p_source_type => ords.source_type_plsql,
-    p_source => '
-      declare
-        l_owner varchar2(255);
-        l_payload blob;
-        l_id number;
-      begin
-        l_payload := :body;
-        l_owner := :owner;
-        if ( l_owner is null ) then
-          l_owner := :current_user;
-        end if;
-        l_id := ticket_api.create_ticket(
-          p_json_entity => l_payload,
-          p_author => l_owner
-        );
-        :location := ''./'' || l_id;
-        :status := 201;
-      end;
-      '
-  );
-END;
-----
-+
-+
-[source,PL/SQL,indent=0]
-----
-----
-+
-+
-[source,PL/SQL,indent=0]
-----
-----
-+ -->
+Need to 
