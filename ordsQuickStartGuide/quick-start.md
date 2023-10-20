@@ -385,6 +385,13 @@ Controlling access to protected resources is done by defining privileges. Privil
    * `Name`: demo.module.privilege
    * `Description`: A Privilege created for demonstrating privileges for the `demo.module` Resource Module.
 
-5. Next, navigate to the **Protected Modules** tab. Ensure the `demo.module` Resource Module is moved from the available to the column on the right. This ensures that the `demo.module` Resource Module is associated with this Privilege.
+5. Next, navigate to the **Protected Modules** table. Move the `demo.module` Resource Module from the left column to the right column. This ensures that the `demo.module` Resource Module is associated with this Privilege.
 
-Need to 
+6. Once complete, click `Save`.
+
+7. To test this Privilege, navigate to the `Path`, and copy the URI.
+
+8. Next, `Sign Out` of Database actions. Open a new browser window. Paste the URI in the address bar and click `Return / Enter`.
+
+9. You'll notice that a `Sign in` prompt appears. Since this Privilege has not been associated with a specific role, any user that has been granted the `Connect` role may sign-in to view the response from this request. 
+
