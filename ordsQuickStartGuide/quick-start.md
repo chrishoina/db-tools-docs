@@ -377,21 +377,167 @@ Controlling access to protected resources is done by defining privileges. Privil
 
 2. Under the Security menu item, click on Privileges.
 
+   ![clicking-create-privileges-menu-option](./ordsQuickStartGuideImages/navigating-to-privileges-menu-option.png)
+   *Selecting `Privileges` under Security*
+
 3. Then, click the `+ Create Privilege` button. A `Create Privilege` slider will appear.
+
+   ![clicking-create-privileges-button](./ordsQuickStartGuideImages/clicking-the-create-privileges-button.png)
+
+   ![privileges-slider-appears](./ordsQuickStartGuideImages/privileges-slider-appears.png)
 
 4. Enter the following for the field values:
 
-   * `Label`: Demo module Privilege
+   * `Label`: Demo module privilege
    * `Name`: demo.module.privilege
    * `Description`: A Privilege created for demonstrating privileges for the `demo.module` Resource Module.
 
+     ![privileges-definition-fields](./ordsQuickStartGuideImages/creating-privilege-definition-for-module.png)
+
 5. Next, navigate to the **Protected Modules** table. Move the `demo.module` Resource Module from the left column to the right column. This ensures that the `demo.module` Resource Module is associated with this Privilege.
 
-6. Once complete, click `Save`.
+   ![demo-module-available-column](./ordsQuickStartGuideImages/demo-module-available-column.png)
 
-7. To test this Privilege, navigate to the `Path`, and copy the URI.
+   ![demo-module-selected-column](./ordsQuickStartGuideImages/demo-module-selected-column.png)
+
+6. Once complete, click `Create`. You will see a confirmation message appear, indicating the successful creation of a new Privilege. You should also see the newly created Privilege in your Privileges dashboard.
+
+   ![privilege-creation-confirmation](./ordsQuickStartGuideImages/privilege-creation-confirmation.png)
+
+7. To test this Privilege, navigate to the `Path` of the `demo.module` and copy the `emp/` URI.
+
+   ![navigate-to-demo-module-to-test-privilege](./ordsQuickStartGuideImages/navigate-to-demo-module-to-test-privilege.png)
+
+   ![navigate-to-path-to-copy-uri-to-test-privilege](./ordsQuickStartGuideImages/navigate-to-path-to-copy-uri-to-test-privilege.png)
 
 8. Next, `Sign Out` of Database actions. Open a new browser window. Paste the URI in the address bar and click `Return / Enter`.
 
-9. You'll notice that a `Sign in` prompt appears. Since this Privilege has not been associated with a specific role, any user that has been granted the `Connect` role may sign-in to view the response from this request. 
+   ![sign-out-of-database-actions-to-test-privilege](./ordsQuickStartGuideImages/sign-out-of-database-actions-to-test-privilege.png)
 
+9. You'll receive a `401 Unauthorized` error, with a message indicating that the resource is now protected. Notice that a `Sign in` prompt appears. Since this Privilege has not been associated with a specific role, any user that has been granted the `Connect` role may sign-in to view the response from this request. Sign-in with your database credentials to view the resource.
+
+   ![navigating-to-path-forces-sign-in-to-view-emp-path](./ordsQuickStartGuideImages/navigating-to-path-forces-sign-in-to-view-emp-path.png)
+
+   ![sign-in-with-credentials-to-test-path-privilege](./ordsQuickStartGuideImages/sign-in-with-credentials-to-test-path-privilege.png)
+
+10. The contents of the JSON document should now be visible.
+
+   ![after-sign-in-emp-path-visible-testing-privilege](./ordsQuickStartGuideImages/after-sign-in-emp-path-visible-testing-privilege.png)
+
+### Register an OAuth Client Application
+
+This topic explains how to register your applications (called "third-party" applications here) to access a REST API.
+
+OAuth 2.0 is a standard Internet protocol that provides a means for HTTP servers providing REST APIs to give limited access to third party applications on behalf of an end user.
+
+    The author of the third-party application must register the application to gain client credentials.
+
+    Using the client credentials the third party application starts a web flow that prompts the end-user to approve access.
+
+So, before a third party application can access a REST API, it must be registered and the user must approve access. And before the application can be registered, it must be assigned a user identity that enables the user to register applications. Users possessing the SQL Developer role (such as the test_developer user created in Creating a RESTful Service from a SQL Query) are permitted to register OAuth clients.
+
+Tip:
+
+In a real application, you may want to provision specific users that can register OAuth clients; these users should be granted the OAuth Client Developer role.
+
+This topic outlines how to complete these actions. It is not a full-featured demonstration of how to create and integrate a third party application; it just outlines the concepts involved.
+
+    Register the client application.
+
+        In a web browser enter the following URL:
+
+    http://localhost:8080/ords/ordstest/oauth/clients/
+
+    At the prompt, click the link to sign in and enter the credentials for the test_developer user.
+
+    Click New Client and enter the following information:
+
+    Name: Test Client
+
+    Description: An example OAuth Client
+
+    Redirect URI: http://example.org/redirect
+
+    Support e-mail: info@example.org
+
+    Support URI: http://example.org/support
+
+    Required Privileges: Example Privilege
+
+    Click Create.
+
+    The client registration is created, and the Authorization URI for the client is displayed. You have created a client that will use the Implicit Grant authorization flow (explained at https://tools.ietf.org/html/rfc6749#section-4.2).
+
+    Note the Client Identifier assigned to the client and the Authorization URI value. These values are used to start the authorization flow (next major step).
+
+Approve the client application.
+
+In a real third-party client application, the client will initiate the approval flow by directing a web browser to the Authorization URI. The end user will be prompted to sign in and approve access to the client application. The browser will be redirected back to the client's registered Redirect URI with a URI fragment containing the access_token for the approval. To simulate this process:
+
+    In a web browser, enter the Authorization URI that you noted in the previous step. The URL should look like the following (though you should not copy and paste in this example value):
+
+http://localhost:8080/ords/ordstest/oauth/auth?response_type=token&client_id=5B77A34A266EFB0056BE3497ED7099.&state=d5b7944-d27d-8e2c-4d5c-fb80e1114490&_auth_=force
+
+The client_id value must be the value of the client identifier assigned to the application. Be sure you are using the correct client_id value. Do not use the value in the preceding example; replace it with the client identifier assigned to your application.
+
+The state value should be a unique, unguessable value that the client remembers, and can use later to confirm that the redirect received from Oracle REST Data Services is in response to this authorisation request. This value is used to prevent Cross Site Request Forgery attacks; it is very important, cannot be omitted, and must not be guessable or discoverable by an attacker.
+
+At the prompt, click the link to sign in and enter the credentials for the test_developer user.
+
+Review the access being requested, and click Approve.
+
+The browser is redirected to a URL similar to the following:
+
+    http://example.org/redirect#token_type=bearer&access_token=-i_Ows8j7JYu0p07jOFMEA..&expires_in=3600
+
+    When registering the OAuth client, you specified http://example.org/redirect as the Redirect URI. On completion of the approval request, the browser is redirected to this registered redirect URI. Appended to the URI is the information about the access token that was generated for the approval.
+
+    In a real application, the third party application would respond to the redirect to the redirect URI by caching the access token, redirecting to another page to show the user that they are now authorized to access the REST API, and including the access token in every subsequent request to the REST API. However, in this tutorial you just make note of the access token value and manually create a HTTP request with the access token included, as explained in the next major step.
+
+    The value of the access token (which in the preceding example is -i_Ows8j7JYu0p07jOFMEA..) will change on every approval.
+
+    Note that the access token expires. In the preceding example it expires after 3600 seconds (&expires_in=3600), that is, one hour.
+
+Issue an authorized request.
+
+After an access token has been acquired, the client application must remember the access token and include it with every request to the protected resource. The access token must be included in the HTTP Authorization request header (explained at https://datatracker.ietf.org/doc/html/rfc2616#section-14.8) as in the following example:
+
+Host: localhost:8080
+GET /ords/ordstest/test/emp/
+Authorization: Bearer -i_Ows8j7JYu0p07jOFMEA..
+
+To emulate creating a valid HTTP request, use the cURL command line tool (if necessary, install cURL). In a real application this request would be performed by the client making an HTTP request, such as an XMLHttpRequest. For example:
+
+curl -i -H'Authorization: Bearer -i_Ows8j7JYu0p07jOFMEA..' http://localhost:8080/ords/ordstest/test/emp/
+
+However, in this example replace -i_Ows8j7JYu0p07jOFMEA.. with the access token value that you previously noted.
+
+Output similar to the following JSON document should be displayed:
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+Transfer-Encoding: chunked
+ 
+{
+ "items":[
+  {"empno":7369,"ename":"SMITH","job":"CLERK","mgr":7902,"hiredate":"1980-12-17T00:00:00Z","sal":800,"comm":null,"deptno":20},
+  {"empno":7499,"ename":"ALLEN","job":"SALESMAN","mgr":7698,"hiredate":"1981-02-20T00:00:00Z","sal":1600,"comm":300,"deptno":30},
+  {"empno":7521,"ename":"WARD","job":"SALESMAN","mgr":7698,"hiredate":"1981-02-22T00:00:00Z","sal":1250,"comm":500,"deptno":30},
+  {"empno":7566,"ename":"JONES","job":"MANAGER","mgr":7839,"hiredate":"1981-04-01T23:00:00Z","sal":2975,"comm":null,"deptno":20},
+  {"empno":7654,"ename":"MARTIN","job":"SALESMAN","mgr":7698,"hiredate":"1981-09-27T23:00:00Z","sal":1250,"comm":1400,"deptno":30},
+  {"empno":7698,"ename":"BLAKE","job":"MANAGER","mgr":7839,"hiredate":"1981-04-30T23:00:00Z","sal":2850,"comm":null,"deptno":30},
+  {"empno":7782,"ename":"CLARK","job":"MANAGER","mgr":7839,"hiredate":"1981-06-08T23:00:00Z","sal":2450,"comm":null,"deptno":10}
+ ],
+ "hasMore":true,
+ "limit":7,
+ "offset":0,
+ "count":7,
+ "links":[
+  {"rel":"self","href":"http://localhost:8080/ords/ordstest/test/emp/"},
+  {"rel":"describedby","href":"http://localhost:8080/metadata-catalog/test/emp/"},
+  {"rel":"first","href":"http://localhost:8080/ords/ordstest/test/emp/"},
+  {"rel":"next","href":"http://localhost:8080/ords/ordstest/test/emp/?offset=7"}
+ ]
+}
+
+However, if the Authorization header is omitted, then the status 401 Unauthorized is returned instead. 
