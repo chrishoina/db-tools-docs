@@ -14,9 +14,9 @@ Before you perform the actions in this tutorial, note the following prerequisite
   * Oracle SQL Developer
   * SQLcl
 
-> NOTE: The latest version of SQLcl can be obtained [here](https://www.oracle.com/database/sqldeveloper/technologies/sqlcl/download/) *or* through Homebrew with the following `brew install --cask sqlcl` command. Additional SQLcl installation information can be found on [Homebrew](https://formulae.brew.sh/cask/sqlcl#default).
+  > **NOTE:** The latest version of SQLcl can be obtained [here](https://www.oracle.com/database/sqldeveloper/technologies/sqlcl/download/) *or* through Homebrew with the following `brew install --cask sqlcl` command. Additional SQLcl installation information can be found on [Homebrew](https://formulae.brew.sh/cask/sqlcl#default).
 
-> NOTE: The latest version of Oracle SQL Developer can be obtained [here](https://www.oracle.com/database/sqldeveloper/technologies/download/).
+  > **NOTE:** The latest version of Oracle SQL Developer can be obtained [here](https://www.oracle.com/database/sqldeveloper/technologies/download/).
 
 * It is strongly recommended that you install a browser extension that enables you to view
 `JSON` in the web browser. Popular browser extensions include:
@@ -33,7 +33,7 @@ Before you perform the actions in this tutorial, note the following prerequisite
   * Port: `1521`
   * Service name:`ORCLPDB1`
 
->IMPORTANT: The examples in this tutorial assume that Oracle REST Data Services has been installed and configured in a single instance database *or* Pluggable Database (PDB). The examples and images in this guide will refer to the PDB as `ORCLPDB1`.
+  > **IMPORTANT:** The examples in this tutorial assume that Oracle REST Data Services has been installed and configured in a single instance database *or* Pluggable Database (PDB). The examples and images in this guide will refer to the PDB as `ORCLPDB1`.
 
 ### Available client applications for this tutorial
 
@@ -44,7 +44,7 @@ The examples in this tutorial can be completed with the choice of your client ap
 * Oracle SQL Developer
 * Additionally, certain sections of this tutorial will require the use of a web browser.
 
-> NOTE: For a complete list of currently supported web browsers, please refer [here](https://www.oracle.com/middleware/technologies/browser-policy.html).
+  > **NOTE:** For a complete list of currently supported web browsers, please refer [here](https://www.oracle.com/middleware/technologies/browser-policy.html).
 
 <!-- #### Oracle SQL Developer
 
@@ -73,7 +73,7 @@ If you are completing this tutorial using the Oracle SQLcl command line applicat
 
 ## Using SQLcl -->
 
-### Getting Started with Oracle RESTful Services
+### Getting Started with Oracle RESTful Services 
 
 This section will guide you through the following steps:
 
@@ -83,9 +83,9 @@ This section will guide you through the following steps:
 * Creating a *Resource* by auto-REST-enabling the newly-created database table
 * Accessing this new Resource via `localhost`
 
-  > NOTE: We recommend you follow the steps in this tutorial as closely as possible, including using the specified names for schemas and database objects. Once you have completed the tutorial as prescribed, feel free to try it again using alternate schema and database object names.
+  > **NOTE:** We recommend you follow the steps in this tutorial as closely as possible, including using the specified names for schemas and database objects. Once you have completed the tutorial as prescribed, feel free to try it again using alternate schema and database object names.
 
-#### Create a new user and REST-enable their schema
+#### Create a new user and REST-enable their schema <a id="create-a-new-user"></a>
 
 1. Using SQLcl, connect to your database as the `SYS` user.
 
@@ -95,10 +95,12 @@ This section will guide you through the following steps:
 2. Next, create a new `ORDSTEST` user with the following Privileges, Roles, and Tablespace Quota:
 
    ```sql
+   <copy>
    CREATE USER ORDSTEST IDENTIFIED BY <password>;
    GRANT "CONNECT" TO ORDSTEST;
    GRANT "RESOURCE" TO ORDSTEST;
    GRANT UNLIMITED TABLESPACE TO ORDSTEST;
+   </copy>
    ```
 
    ![Create the ORDSTEST user with role, privilege, and tablespace quota](./ordsQuickStartGuideImages/ordstest-user-roles-privileges-tablespace-quota.png)
@@ -107,6 +109,7 @@ This section will guide you through the following steps:
 3. Next, execute the `ORDS_ADMIN.ENABLE_SCHEMA` PL/SQL Procedure. This procedure grants the `ORDSTEST` user REST access.
 
    ```pl/sql
+   <copy>
    BEGIN
     ORDS_ADMIN.ENABLE_SCHEMA(
         P_ENABLED => TRUE,
@@ -117,16 +120,17 @@ This section will guide you through the following steps:
     );
     COMMIT;
    END;
+   </copy>
    ```
 
    ![Executing the ORDS.ENABLE_SCHEMA PL/SQL Procedure](./ordsQuickStartGuideImages/ords-enable-ordstest-schema-pl-sql-proc.png)
    *Executing the ORDS.ENABLE_SCHEMA PL/SQL Procedure*
 
-> NOTE: The P_URL_MAPPING_PATTERN parameter *must be* lowercase.
+   > **NOTE:** The P_URL_MAPPING_PATTERN parameter *must be* lowercase.
 
-> NOTE: Notice how the `P_AUTO_REST_AUTH` parameter is set to `FALSE`. Setting this parameter to FALSE allows any user access to the ORDS metadata catalogue without the need for user authentication.
+   > **NOTE:** Notice how the `P_AUTO_REST_AUTH` parameter is set to `FALSE`. Setting this parameter to FALSE allows any user access to the ORDS metadata catalogue without the need for user authentication.
 
-> TIP: Additional information on the ORDS PL/SQL Package can be found in [this section](https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/23.1/orddg/ORDS-reference.html#GUID-E4476C14-01B1-4EA4-94D3-73B92C8C9AB3) of the Oracle REST Data Services Developer's Guide.
+   > **TIP:** Additional information on the ORDS PL/SQL Package can be found in [this section](https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/23.1/orddg/ORDS-reference.html#GUID-E4476C14-01B1-4EA4-94D3-73B92C8C9AB3) of the Oracle REST Data Services Developer's Guide.
 
 #### Connect as the new user and auto-REST-enable a table
 
@@ -135,7 +139,7 @@ Now that the `ORDSTEST` user schema has been REST-enabled. You may access Databa
 1. Navigate to this URL: `http://localhost:8080/ords/sql-developer`
 
    ![Navigating to the Database Actions Launchpad](./ordsQuickStartGuideImages/log-in-database-actions-as-ordstest.png)
-*Navigating to SQL Developer Web*
+   *Navigating to SQL Developer Web*
 
 2. Next, sign in as the `ORDSTEST` user with the username `ORDSTEST` and Password `oracle` (your password may differ). And click the `Sign in` button.
 
@@ -148,7 +152,7 @@ Now that the `ORDSTEST` user schema has been REST-enabled. You may access Databa
 
 #### Connect as the new user and auto REST-enable a table
 
-> IMPORTANT: The following tasks will be completed as the `ORDSTEST` user.
+  > **IMPORTANT:** The following tasks will be completed as the `ORDSTEST` user.
 
 <!-- 1. Log out as SYS and using SQLcl reconnect as the `ORDSTEST` user. The tutorial uses the following connection string: `+sql ordstest/oracle@localhost:1521/ORCLPDB1+`
 +
@@ -162,6 +166,7 @@ image::connect-as-ordstest-with-sqlcl.png[]  -->
 2. Once the SQL Worksheet loads, use the SQL below to create the `EMP` table.
 
    ```sql
+   <copy>
    CREATE TABLE EMP (
        EMPNO NUMBER(4,0),
        ENAME VARCHAR2(10 BYTE),
@@ -173,11 +178,13 @@ image::connect-as-ordstest-with-sqlcl.png[]  -->
        DEPTNO NUMBER(2,0),
        CONSTRAINT PK_EMP PRIMARY KEY (EMPNO)
        );
+   </copy>
    ```
 
 3. With the `EMP` table successfully created, insert the following sample data:
 
     ```sql
+    <copy>
     Insert into EMP (EMPNO,ENAME,JOB,MGR,HIREDATE,SAL,COMM,DEPTNO) values
     (7369,'SMITH','CLERK',7902,to_date('17-DEC-80','DD-MON-RR'),800,null,20);
     Insert into EMP (EMPNO,ENAME,JOB,MGR,HIREDATE,SAL,COMM,DEPTNO) values
@@ -207,6 +214,7 @@ image::connect-as-ordstest-with-sqlcl.png[]  -->
     Insert into EMP (EMPNO,ENAME,JOB,MGR,HIREDATE,SAL,COMM,DEPTNO) values
     (7934,'MILLER','CLERK',7782,to_date('23-JAN-82','DD-MON-RR'),1300,null,10);
     commit;
+    </copy>
     ```
 
    ![inserting-emp-data-into-sql-worksheet-as-ordstest-user](./ordsQuickStartGuideImages/inserting-emp-data-into-sql-worksheet-as-ordstest-user.png)
@@ -236,7 +244,7 @@ image::connect-as-ordstest-with-sqlcl.png[]  -->
    ![plug-icon-indicating-auto-rest-enabled-table](./ordsQuickStartGuideImages/plug-icon-indicating-auto-rest-enabled-table.png)
    *Plug icon indicating a database object has been auto-REST enabled*
 
-   > NOTE: Click you may need to click the `Refresh` button in the Navigator Panel to display this icon.
+   > **NOTE:** Click you may need to click the `Refresh` button in the Navigator Panel to display this icon.
 
    ![click-refresh-in-the-navigator-panel](./ordsQuickStartGuideImages/click-refresh-in-the-navigator-panel.png)
    *Clicking the `Refresh` button to display database objects*
@@ -388,9 +396,9 @@ Controlling access to protected resources is done by defining privileges. Privil
 
 4. Enter the following for the field values:
 
-   * `Label`: Demo module privilege
-   * `Name`: demo.module.privilege
-   * `Description`: A Privilege created for demonstrating privileges for the `demo.module` Resource Module.
+   * `Label:` Demo module privilege
+   * `Name:` demo.module.privilege
+   * `Description:` A Privilege created for demonstrating privileges for the `demo.module` Resource Module.
 
      ![privileges-definition-fields](./ordsQuickStartGuideImages/creating-privilege-definition-for-module.png)
 
@@ -414,7 +422,7 @@ Controlling access to protected resources is done by defining privileges. Privil
 
    ![sign-out-of-database-actions-to-test-privilege](./ordsQuickStartGuideImages/sign-out-of-database-actions-to-test-privilege.png)
 
-9. You'll receive a `401 Unauthorized` error, with a message indicating that the resource is now protected. Notice that a `Sign in` prompt appears. Since this Privilege has not been associated with a specific role, any user that has been granted the `Connect` role may sign-in to view the response from this request. Sign-in with your database credentials to view the resource.
+9. You'll receive a `401 Unauthorized` error, with a message indicating that the resource is now protected. Notice that a `Sign In` prompt appears. Since this Privilege has not been associated with a specific role, any user that has been granted the `Connect` role may sign-in to view the response from this request. Sign-in with your database credentials to view the resource.
 
    ![navigating-to-path-forces-sign-in-to-view-emp-path](./ordsQuickStartGuideImages/navigating-to-path-forces-sign-in-to-view-emp-path.png)
 
@@ -430,114 +438,123 @@ This topic explains how to register your applications (called "third-party" appl
 
 OAuth 2.0 is a standard Internet protocol that provides a means for HTTP servers providing REST APIs to give limited access to third party applications on behalf of an end user.
 
-    The author of the third-party application must register the application to gain client credentials.
+OAuth 2.0 protocol provides a means for HTTP servers, like those that provide access to REST APIs, to give limited access of these REST APIs to third party applications on behalf of an authenticated end user.
 
-    Using the client credentials the third party application starts a web flow that prompts the end-user to approve access.
+Before a third party application can access a REST API, it must:
 
-So, before a third party application can access a REST API, it must be registered and the user must approve access. And before the application can be registered, it must be assigned a user identity that enables the user to register applications. Users possessing the SQL Developer role (such as the test_developer user created in Creating a RESTful Service from a SQL Query) are permitted to register OAuth clients.
+   1. be registered, *and*
+   2. the user must approve access
 
-Tip:
+And before the application can be registered, it must be assigned a user identity that enables the user to register applications. Users possessing the SQL Developer role (such as the user you created in [Chapter 1](#create-a-new-user)) of this guide are permitted to register OAuth 2.0 clients.
 
-In a real application, you may want to provision specific users that can register OAuth clients; these users should be granted the OAuth Client Developer role.
+  > **TIP:** In a real application, you may want to provision specific users that can register OAuth clients; these users should be granted the OAuth Client Developer role.
 
-This topic outlines how to complete these actions. It is not a full-featured demonstration of how to create and integrate a third party application; it just outlines the concepts involved.
+  > **NOTE:** The following example is not intended to serve as a full-featured demonstration for creation and integration for a third party application. The example simply outlines the core concepts of the OAuth 2.0 protocol.
 
-    Register the client application.
+1. From the REST Workshop dashboard, locate the `OAuth Clients` menu option from the `Security` tab. Select this option to be taken to the `OAuth Clients` dashboard.
 
-        In a web browser enter the following URL:
+   ![navigate-to-oauth-clients-menu-option](./ordsQuickStartGuideImages/navigate-to-oauth-clients-menu-option.png)
 
-    http://localhost:8080/ords/ordstest/oauth/clients/
+2. From the OAuth Client dashboard, click the `+ Create OAuth Client` button. A `Create OAuth Client` slider will appear.
 
-    At the prompt, click the link to sign in and enter the credentials for the test_developer user.
+      ![click-create-oauth-client](./ordsQuickStartGuideImages/click-create-oauth-client.png)
 
-    Click New Client and enter the following information:
+3. Ensure `CLIENT_CRED` has been selected for `Grant Type`.
 
-    Name: Test Client
+   ![ensure-client-credentials-has-been-selected](./ordsQuickStartGuideImages/ensure-client-credentials-has-been-selected.png)
 
-    Description: An example OAuth Client
+4. Next, enter in the following to the empty slider fields:
 
-    Redirect URI: http://example.org/redirect
+   * `Name:` example_oauth_client
+   * `Description:` An example OAuth 2.0 client using the Client Credentials grant type.
+   * `Support URI`: https://example.com  
+   * `Support Email:` email@example.com
 
-    Support e-mail: info@example.org
+     ![completing-oauth-slider-fields](./ordsQuickStartGuideImages/completing-oauth-slider-fields.png)
 
-    Support URI: http://example.org/support
+5. After competing the fields, navigate to the `Privileges` tab of the slider. Once there, locate the privilege you created in the previous section. Move it from the Available Privileges column (left) to the Selected Privileges column (right). Then click the `Create` button.
 
-    Required Privileges: Example Privilege
+   ![available-privileges-for-oauth-client](./ordsQuickStartGuideImages/available-privileges-for-oauth-client.png)
 
-    Click Create.
+   ![selected-privileges-for-oauth-client](./ordsQuickStartGuideImages/selected-privileges-for-oauth-client.png)
 
-    The client registration is created, and the Authorization URI for the client is displayed. You have created a client that will use the Implicit Grant authorization flow (explained at https://tools.ietf.org/html/rfc6749#section-4.2).
+   > **TIP:** The double arrow moves *all* available privileges to the Selected Privileges column. The single arrow moves *only the currently selected* privileges to the Selected Privileges column.
 
-    Note the Client Identifier assigned to the client and the Authorization URI value. These values are used to start the authorization flow (next major step).
+6. After returning to the OAuth Clients dashboard, you'll notice the newly-created OAuth client.
 
-Approve the client application.
+   ![newly-created-oauth-client-in-dashboard](./ordsQuickStartGuideImages/newly-created-oauth-client-in-dashboard.png)
 
-In a real third-party client application, the client will initiate the approval flow by directing a web browser to the Authorization URI. The end user will be prompted to sign in and approve access to the client application. The browser will be redirected back to the client's registered Redirect URI with a URI fragment containing the access_token for the approval. To simulate this process:
+7. To test the protected resource, navigate to your REST Modules dashboard, and click on your `demo.module`.
 
-    In a web browser, enter the Authorization URI that you noted in the previous step. The URL should look like the following (though you should not copy and paste in this example value):
+   ![navigating-to-demo-module-for-emp-uri](./ordsQuickStartGuideImages/navigating-to-demo-module-for-emp-uri.png)
 
-http://localhost:8080/ords/ordstest/oauth/auth?response_type=token&client_id=5B77A34A266EFB0056BE3497ED7099.&state=d5b7944-d27d-8e2c-4d5c-fb80e1114490&_auth_=force
+8. Next, copy the URI for the `emp/` endpoint.
 
-The client_id value must be the value of the client identifier assigned to the application. Be sure you are using the correct client_id value. Do not use the value in the preceding example; replace it with the client identifier assigned to your application.
+   ![copying-emp-uri-to-clipboard](./ordsQuickStartGuideImages/copying-emp-uri-to-clipboard.png)
 
-The state value should be a unique, unguessable value that the client remembers, and can use later to confirm that the redirect received from Oracle REST Data Services is in response to this authorisation request. This value is used to prevent Cross Site Request Forgery attacks; it is very important, cannot be omitted, and must not be guessable or discoverable by an attacker.
+9. Open a new terminal session and issue the following curl command:
 
-At the prompt, click the link to sign in and enter the credentials for the test_developer user.
+   ```bash
+   <copy>
+   curl curl http://localhost:8080/ords/ordstest/demo/emp/
+   </copy>
+   ```
 
-Review the access being requested, and click Approve.
+   > **NOTE:** Your REST endpoint will differ slightly.
 
-The browser is redirected to a URL similar to the following:
+10. The response should look something like the following:
+  
+    ![attempt-get-request-without-access-token-to-protected-emp-uri](./ordsQuickStartGuideImages/attempt-get-request-without-access-token-to-protected-emp-uri.png)
 
-    http://example.org/redirect#token_type=bearer&access_token=-i_Ows8j7JYu0p07jOFMEA..&expires_in=3600
+    ```bash
+    {
+    "code": "Unauthorized"
+    "message": "Unauthorized"
+    "type": "tag:oracle.com, 2020:error/Unauthorized"
+    "instance": "tag:oracle.com, 2020:ecid/KJPTrQ-tIKEPuMU31CoMyQ"
+    }
+    ```
 
-    When registering the OAuth client, you specified http://example.org/redirect as the Redirect URI. On completion of the approval request, the browser is redirected to this registered redirect URI. Appended to the URI is the information about the access token that was generated for the approval.
+    This `Unauthorized` message confirms that your REST endpoint has been protected by the privilege created in a previous section.
 
-    In a real application, the third party application would respond to the redirect to the redirect URI by caching the access token, redirecting to another page to show the user that they are now authorized to access the REST API, and including the access token in every subsequent request to the REST API. However, in this tutorial you just make note of the access token value and manually create a HTTP request with the access token included, as explained in the next major step.
+11. Next, we'll:
 
-    The value of the access token (which in the preceding example is -i_Ows8j7JYu0p07jOFMEA..) will change on every approval.
+    1. authenticate with, *and*
+    2. request an Access Token from
 
-    Note that the access token expires. In the preceding example it expires after 3600 seconds (&expires_in=3600), that is, one hour.
+    the OAuth 2.0 Authorization Server using the `Client ID` and `Client Secret`of the `example_oauth_client`.
 
-Issue an authorized request.
+12. From the OAuth Clients dashboard, click on the kebab icon <span>&#8942;</span> found in the `example_oauth_client` card and select `Get Bearer Token`.
 
-After an access token has been acquired, the client application must remember the access token and include it with every request to the protected resource. The access token must be included in the HTTP Authorization request header (explained at https://datatracker.ietf.org/doc/html/rfc2616#section-14.8) as in the following example:
+    ![get-bearer-token-option-from-kebab-menu](./ordsQuickStartGuideImages/get-bearer-token-option-from-kebab-menu.png)
 
-Host: localhost:8080
-GET /ords/ordstest/test/emp/
-Authorization: Bearer -i_Ows8j7JYu0p07jOFMEA..
+13. Once the `OAuth Token` modal appears, select the correct shell environment, and copy the curl command to your clipboard.
 
-To emulate creating a valid HTTP request, use the cURL command line tool (if necessary, install cURL). In a real application this request would be performed by the client making an HTTP request, such as an XMLHttpRequest. For example:
+    ![selecting-correct-shell-for-your-environment](./ordsQuickStartGuideImages/selecting-correct-shell-for-your-environment.png)
 
-curl -i -H'Authorization: Bearer -i_Ows8j7JYu0p07jOFMEA..' http://localhost:8080/ords/ordstest/test/emp/
+    ![copy-bearer-token-curl-command-from](./ordsQuickStartGuideImages/copy-bearer-token-curl-command-from.png)
 
-However, in this example replace -i_Ows8j7JYu0p07jOFMEA.. with the access token value that you previously noted.
+14. Using the `Client ID` and `Client Secret` provided to you, issue the following curl command to obtain an Access Token:
 
-Output similar to the following JSON document should be displayed:
+    ```bash
+    curl \
+    --user Bx2vfYZkLa9D8_CZXvFL0Q..:xH1nn_CPtitiW5vOUQXrrg.. \
+    --data 'grant_type=client_credentials' \
+    http://localhost:8080/ords/ordstest/oauth/token
+    ```
 
-HTTP/1.1 200 OK
-Content-Type: application/json
-Transfer-Encoding: chunked
- 
-{
- "items":[
-  {"empno":7369,"ename":"SMITH","job":"CLERK","mgr":7902,"hiredate":"1980-12-17T00:00:00Z","sal":800,"comm":null,"deptno":20},
-  {"empno":7499,"ename":"ALLEN","job":"SALESMAN","mgr":7698,"hiredate":"1981-02-20T00:00:00Z","sal":1600,"comm":300,"deptno":30},
-  {"empno":7521,"ename":"WARD","job":"SALESMAN","mgr":7698,"hiredate":"1981-02-22T00:00:00Z","sal":1250,"comm":500,"deptno":30},
-  {"empno":7566,"ename":"JONES","job":"MANAGER","mgr":7839,"hiredate":"1981-04-01T23:00:00Z","sal":2975,"comm":null,"deptno":20},
-  {"empno":7654,"ename":"MARTIN","job":"SALESMAN","mgr":7698,"hiredate":"1981-09-27T23:00:00Z","sal":1250,"comm":1400,"deptno":30},
-  {"empno":7698,"ename":"BLAKE","job":"MANAGER","mgr":7839,"hiredate":"1981-04-30T23:00:00Z","sal":2850,"comm":null,"deptno":30},
-  {"empno":7782,"ename":"CLARK","job":"MANAGER","mgr":7839,"hiredate":"1981-06-08T23:00:00Z","sal":2450,"comm":null,"deptno":10}
- ],
- "hasMore":true,
- "limit":7,
- "offset":0,
- "count":7,
- "links":[
-  {"rel":"self","href":"http://localhost:8080/ords/ordstest/test/emp/"},
-  {"rel":"describedby","href":"http://localhost:8080/metadata-catalog/test/emp/"},
-  {"rel":"first","href":"http://localhost:8080/ords/ordstest/test/emp/"},
-  {"rel":"next","href":"http://localhost:8080/ords/ordstest/test/emp/?offset=7"}
- ]
-}
+15. You will receive an Access Token, with expiration.
 
-However, if the Authorization header is omitted, then the status 401 Unauthorized is returned instead. 
+    ![curl-response-get-access-token](./ordsQuickStartGuideImages/curl-response-get-access-token.png)
+
+    You may now use this Access Token in a subsequent `GET` request to the `emp/` endpoint.
+
+16. You can now access the `emp/` endpoint. Model your curl command as the one below, ensuring you've included the Access Token as a Header in your curl command:
+
+    ```bash
+    curl -H "Authorization: Bearer PWMGyNYtzhg9J1r85_oJGQ" http://localhost:8080/ords/ordstest/demo/emp/ | jq
+    ```
+
+    ![jq-response-from-get-request](./ordsQuickStartGuideImages/jq-response-from-get-request.png)
+
+    > **NOTE:** You may *optionally* pipe in the `jq` command so the `JSON` response payload is structured in a more readable format.
