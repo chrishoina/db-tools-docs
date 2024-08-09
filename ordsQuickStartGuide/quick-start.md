@@ -106,7 +106,16 @@ This section will guide you through the following steps:
    ![Create the ORDSTEST user with role, privilege, and tablespace quota](./ordsQuickStartGuideImages/ordstest-user-roles-privileges-tablespace-quota.png)
    *Creating the ORDSTEST user with role, privilege, and tablespace quota*
 
-3. Next, execute the `ORDS_ADMIN.ENABLE_SCHEMA` PL/SQL Procedure. This procedure grants the `ORDSTEST` user REST access.
+3. Next, connect to your database as the `ORDSTEST` user and execute the `ORDS.ENABLE_SCHEMA;` PL/SQL Procedure. This procedure grants the `ORDSTEST` user REST access.
+
+   ```pl/sa;
+   <copy>
+   EXECUTE ORDS.ENABLE_SCHEMA;
+   </copy>
+   ```
+
+
+<!-- 3. Next, execute the `ORDS_ADMIN.ENABLE_SCHEMA` PL/SQL Procedure. This procedure grants the `ORDSTEST` user REST access.
 
    ```pl/sql
    <copy>
@@ -121,14 +130,14 @@ This section will guide you through the following steps:
     COMMIT;
    END;
    </copy>
-   ```
+   ``` -->
 
-   ![Executing the ORDS.ENABLE_SCHEMA PL/SQL Procedure](./ordsQuickStartGuideImages/ords-enable-ordstest-schema-pl-sql-proc.png)
+   ![Executing the ORDS.ENABLE_SCHEMA PL/SQL Procedure](./ordsQuickStartGuideImages/execute-ords-enable-schema-procedure-as-ordstest-user.png)
    *Executing the ORDS.ENABLE_SCHEMA PL/SQL Procedure*
 
-   > **NOTE:** The P_URL_MAPPING_PATTERN parameter *must be* lowercase.
+   <!-- > **NOTE:** The P_URL_MAPPING_PATTERN parameter *must be* lowercase.
 
-   > **NOTE:** Notice how the `P_AUTO_REST_AUTH` parameter is set to `FALSE`. Setting this parameter to FALSE allows any user access to the ORDS metadata catalogue without the need for user authentication.
+   > **NOTE:** Notice how the `P_AUTO_REST_AUTH` parameter is set to `FALSE`. Setting this parameter to FALSE allows any user access to the ORDS metadata catalogue without the need for user authentication. -->
 
    > **TIP:** Additional information on the ORDS PL/SQL Package can be found in [this section](https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/23.1/orddg/ORDS-reference.html#GUID-E4476C14-01B1-4EA4-94D3-73B92C8C9AB3) of the Oracle REST Data Services Developer's Guide.
 
