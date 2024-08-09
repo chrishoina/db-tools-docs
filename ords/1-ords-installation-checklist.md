@@ -28,9 +28,13 @@ Use \[of\] one of the following:
 
   You must set your `JAVA_HOME` to the appropriate version and update the `PATH` if required.
 
-  <details><summary style="color: dodgerblue;">What is <code>JAVA_HOME</code>?</summary><p></p>
-  <code>JAVA_HOME</code> is one of many "Environment" variables used by your operating system. This particular variable indicates the location where the Java Development Kit (JDK) software is installed on your computer.<sup>1</sup><p></p>
+  <details>
+  <summary>What is <code>JAVA_HOME</code>?</summary>
+  <p>
   
+  <code>JAVA_HOME</code> is one of many "Environment" variables used by your operating system. This particular variable indicates the location where the Java Development Kit (JDK) software is installed on your computer.<sup>1</sup>
+  </p>
+
   Within this location (the specific JDK directory, or folder) exist two more subdirectories:  
 
   - <code>bin/</code> - which contains the java executable, *and*
@@ -46,34 +50,26 @@ Use \[of\] one of the following:
   </details>
 
   <details>
-  <summary style="color: dodgerblue;">What is <code>PATH</code>?</summary><p></p>  
-  
+  <summary style="color: royalblue;">What is <code>PATH</code>?</summary>
+  <p>  
+
   > The *official* definition of `PATH`:
   >
-  > This variable shall represent the sequence of path prefixes that certain functions and utilities apply in searching for an executable file. The prefixes shall be separated by a colon `:`. If the pathname being sought contains no slash `/` characters, and hence is a filename, the list shall be searched from beginning to end, applying the filename to each prefix and attempting to resolve the resulting pathname, until an executable file with appropriate execution permissions is found.  
-  
-  <code>PATH</code> is simply an environment variable that stores "shortcuts."  
-  <p></p>
-  &emsp;&emsp;<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-right" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M14 13.5a.5.5 0 0 1-.5.5h-6a.5.5 0 0 1 0-1h4.793L2.146 2.854a.5.5 0 1 1 .708-.708L13 12.293V7.5a.5.5 0 0 1 1 0z"/></svg> efowfw f wfefff woefj
-  &emsp;&emsp;nonadvnadnvnvnvnqlnvnvnvnvnvnvnnnnnvnvnvnnvnvn
-  
+  > This variable shall represent the sequence of path prefixes that certain functions and utilities apply in searching for an executable file. The prefixes shall be separated by a colon `:`. If the pathname being sought contains no slash `/` characters, and hence is a filename, the list shall be searched from beginning to end, applying the filename to each prefix and attempting to resolve the resulting pathname, until an executable file with appropriate execution permissions is found.<sup>6</sup>  
+  </p>  
 
+  <code>PATH</code> is simply an environment variable that stores "shortcuts" to executable files (maybe you've seen these referred to as `.exe` files).<sup>7</sup> Paths to executables can be listed too, separated by a colon <code>:</code>, instead of say perhaps a comma <code>,</code>.  
   
-  
-  
-  
-  <sup>6</sup> https://www.geeksforgeeks.org/how-to-set-java-path-in-windows-and-linux/
+  This reference to <code>PATH</code> is something that you'll see consistently whenever you download a new command line program. As an example, when you issue a command, like `ords serve` (as you'll see later) your command language interpreter (e.g., shell, zsh, bash, Command Prompt) will look to the `PATH` to see if an executable exists for that command you just entered. Subprograms (programs executed after or during an initial program execution) can do this too.
   <p></p>
-   
-  
   </details>
 
-  On Windows systems, you will be redirected to the Java download page to download the latest JDK.
+On Windows systems, you will be redirected to the Java download page to download the latest JDK.
 
-<sup>1</sup>[JAVA_HOME](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/envvars001.html#CIHEEHEI)  
-<sup>2</sup>[NASA - Finding and Setting JAVA_HOME](https://pds.nasa.gov/datastandards/training/documents/Finding%20and%20Setting%20JAVA%20HOME.pdf)  
-<sup>3</sup>[JDK Installation on Linux](https://docs.oracle.com/en/java/javase/11/install/installation-jdk-linux-platforms.html#GUID-737A84E4-2EFF-4D38-8E60-3E29D1B884B8)  
-<sup>4</sup>[JDK Installation on macOS](https://docs.oracle.com/en/java/javase/11/install/installation-jdk-macos.html#GUID-2FE451B0-9572-4E38-A1A5-568B77B146DE)  
-<sup>5</sup>[JDK Installation on Windows](https://docs.oracle.com/en/java/javase/11/install/installation-jdk-microsoft-windows-platforms.html#GUID-A7E27B90-A28D-4237-9383-A58B416071CA)  
-<sup>6</sup>[How to Set Java Path in Windows and Linux?](https://www.geeksforgeeks.org/how-to-set-java-path-in-windows-and-linux/)
+<sup>1</sup> [JAVA_HOME](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/envvars001.html#CIHEEHEI)  
+<sup>2</sup> [NASA - Finding and Setting JAVA_HOME](https://pds.nasa.gov/datastandards/training/documents/Finding%20and%20Setting%20JAVA%20HOME.pdf)  
+<sup>3</sup> [JDK Installation on Linux](https://docs.oracle.com/en/java/javase/11/install/installation-jdk-linux-platforms.html#GUID-737A84E4-2EFF-4D38-8E60-3E29D1B884B8)  
+<sup>4</sup> [JDK Installation on macOS](https://docs.oracle.com/en/java/javase/11/install/installation-jdk-macos.html#GUID-2FE451B0-9572-4E38-A1A5-568B77B146DE)  
+<sup>5</sup> [JDK Installation on Windows](https://docs.oracle.com/en/java/javase/11/install/installation-jdk-microsoft-windows-platforms.html#GUID-A7E27B90-A28D-4237-9383-A58B416071CA)  
+<sup>6</sup> [Environment variables in POSIX.1-2024](https://pubs.opengroup.org/onlinepubs/9799919799/)  
+<sup>7</sup> [How to Set Java Path in Windows and Linux?](https://www.geeksforgeeks.org/how-to-set-java-path-in-windows-and-linux/)
