@@ -44,11 +44,11 @@ Use \[of\] one of the following:
 - <code>bin/</code> - which contains the java executable, *and*
 - <code>lib/</code> - which contains the core java libraries and properties files<sup>2</sup><p></p>
 
-The <code>JAVA_HOME</code> Environment variable has many uses. And for Java programs, such as ORDS, to execute properly they depend on the <code>JAVA_HOME</code>> variable to identify where the JDK is located.  
+The <code>JAVA_HOME</code> Environment variable has many uses. And for Java programs, such as ORDS, to execute properly they depend on the <code>JAVA_HOME</code> variable to identify where the JDK is located.  
   
 We'll revisit <code>JAVA_HOME</code>, but for now consider this brief illustration. Say you were dealing with JDK 11, then (depending on your operating system) you might find the JDK in these locations:
 
-- **Linux** `/usr/lib/jvm/jdk-11-oracle-x6` (or aarch64)<sup>3</sup>
+- **Linux** `/usr/lib/jvm/jdk-11-x64` (or aarch64 if not x64)<sup>3</sup>
 - **macOS** `/Library/Java/JavaVirtualMachines/jdk-11`<sup>4</sup>
 - **Windows** `/Program Files/Java/jdk-11`<sup>5</sup>
 
