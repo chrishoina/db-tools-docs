@@ -63,7 +63,7 @@ The *official* definition of `PATH`:
 >This variable shall represent the sequence of path prefixes that certain functions and utilities apply in searching for an executable file. The prefixes shall be separated by a colon `:`. If the pathname being sought contains no slash `/` characters, and hence is a filename, the list shall be searched from beginning to end, applying the filename to each prefix and attempting to resolve the resulting pathname, until an executable file with appropriate execution permissions is found.<sup>6</sup>  
 </p>  
 
-  <code>PATH</code> is simply an environment variable that stores "shortcuts" to executable files (maybe you've seen these referred to as `.exe` files).<sup>7</sup> Paths to executables can be listed too, separated by a colon <code>:</code>, instead of say perhaps a comma <code>,</code>.  
+  <code>PATH</code> is simply an environment variable that stores "shortcuts" to executable files (maybe you've seen these referred to as `.exe` files).<sup>7</sup> Paths to executables can be listed too, separated by a colon <code>:</code> instead of say perhaps a comma <code>,</code>.  
 
   This reference to <code>PATH</code> is something that you'll see consistently whenever you download a new command line program. As an example, when you issue a command, like `ords serve` (as you'll see later) your command language interpreter (e.g., shell, zsh, bash, Command Prompt) will look to the `PATH` to see if an executable exists for that command you just entered. Subprograms (programs executed after or during an initial program execution) can do this too.
 
