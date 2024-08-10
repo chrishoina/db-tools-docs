@@ -26,8 +26,7 @@ Use \[of\] one of the following:
   
   At the time of this writing there are archived releases, 19.3.1 - 22.3.5, of Oracle GraalVM Enterprise Edition. However, these archived versions, no longer in support, were and still are available for download for Java versions 8, 11, and 17. Although, I would not recommend using them since they are no longer being updated with security patches. Besides, any errors you experience in production would need to be reproduced with an ORDS-supported version of the Oracle JDK before a support request can even be filed!
 
-  This leaves you with two options, Oracle GraalVM Enterprise Edition 20 Long-Term-Support Release for Java 8, and 11 *or* Oracle GraalVM Enterprise Edition 21 Long-Term-Support Release for Java 8, 11, or 17. 
-
+  This leaves you with two options, Oracle GraalVM Enterprise Edition 20 Long-Term-Support Release for Java 8, and 11 *or* Oracle GraalVM Enterprise Edition 21 Long-Term-Support Release for Java 8, 11, or 17. Since Java 8 isn't supported by ORDS, then you are left with 11 or 17 
   GraalVM is a full-scale JDK distribution that can make Java applications run faster with a new advanced just-in-time compiler (Graal). As a platform it uses the Java HotSpot VM, so all tools and libraries that work on OpenJDK, work the same way on GraalVM JDK. In this context, GraalVM replaces the last-tier optimizing compiler in the JVM (C2) with the Graal compiler. This compiler is the outcome of 10+ years of research at Oracle Labs and includes several new optimizations, such as advanced inlining, partial escape analysis, code duplication, and speculative optimizations. GraalVM is itself written in Java, rather than C/C++, which simplifies maintenance and helps us develop and deliver new optimizations much faster.
 </details>
 
