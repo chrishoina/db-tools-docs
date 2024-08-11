@@ -45,23 +45,22 @@ You must set your `JAVA_HOME` to the appropriate version and update the `PATH` i
 ****
 
 .What is JAVA_HOME?
-[%collabsible]
+[%collapsible]
 ====
-<code>JAVA_HOME</code> is one of many "Environment" variables used by your operating system. This particular variable indicates the location where the Java Development Kit (JDK) software is installed on your computer.<sup>2</sup>
-  </p>
+`JAVA_HOME` is one of many "Environment" variables used by your operating system. This particular variable indicates the location where the Java Development Kit (JDK) software is installed on your computer.<sup>2</sup>
 
-  Within this location (the specific JDK directory, or folder) exist two more subdirectories:  
+Within this location (the specific JDK directory, or folder) exist two more subdirectories:  
 
-- <code>bin/</code> - which contains the java executable, *and*
-- <code>lib/</code> - which contains the core java libraries and properties files<sup>3</sup><p></p>
+* `bin/`` - which contains the java executable, _and_
+* `lib/` - which contains the core java libraries and properties files<sup>3</sup>
 
-The <code>JAVA_HOME</code> Environment variable has many uses. And for Java programs, such as ORDS, to execute properly they depend on the <code>JAVA_HOME</code> variable to identify where the JDK is located.  
+The `JAVA_HOME` Environment variable has many uses. And for Java programs, such as ORDS, to execute properly they depend on the `JAVA_HOME` variable to identify where the JDK is located.  
   
-We'll revisit <code>JAVA_HOME</code>, but for now consider this brief illustration. Say you were dealing with JDK 11, then (depending on your operating system) you might find the JDK in these locations:
-
-- **Linux** `/usr/lib/jvm/jdk-11-x64` (or aarch64 if not x64)<sup>4</sup>
-- **macOS** `/Library/Java/JavaVirtualMachines/jdk-11`<sup>5</sup>
-- **Windows** `/Program Files/Java/jdk-11`<sup>6</sup>
+We'll revisit `JAVA_HOME`, but for now consider this brief illustration. Say you were dealing with JDK 11, then (depending on your operating system) you might find the JDK in these locations:
+[horizontal]
+**Linux**:: `/usr/lib/jvm/jdk-11-x64` (or aarch64 if not x64)<sup>4</sup>
+**macOS**:: `/Library/Java/JavaVirtualMachines/jdk-11`<sup>5</sup>
+**Windows**:: `/Program Files/Java/jdk-11`<sup>6</sup>
 ====
 
 .What is PATH?
