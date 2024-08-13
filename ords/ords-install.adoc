@@ -20,7 +20,7 @@ Oracle Java version:: 11, 17, or 21
 Oracle GraalVM Enterprise Edition for Java version:: 11, 17, or 21
 
 .Should I use the Java JDK or GraalVM JDK?
-[%collapsible]
+[%collapsible.addition]
 ====
 First of all, here is something you should know: Oracle GraalVM Enterprise Edition for Java has *several* releases across *several* versions of Java. For instance, consider Oracle GraalVM Enterprise Edition 21. Its referenced as 21 because of the year when it was first releases; a numbering convention observed through 2023.<sup>1</sup> But that 21 should *not* be confused with the version of Java it supports.  
   
@@ -45,7 +45,7 @@ You must set your `JAVA_HOME` to the appropriate version and update the `PATH` i
 ****
 
 .What is JAVA_HOME?
-[%collapsible]
+[%collapsible.addition]
 ====
 `JAVA_HOME` is one of many "Environment" variables used by your operating system. This particular variable indicates the location where the Java Development Kit (JDK) software is installed on your computer.<sup>2</sup>
 
@@ -64,7 +64,7 @@ We'll revisit `JAVA_HOME`, but for now consider this brief illustration. Say you
 ====
 
 .What is PATH?
-[%collapsible]
+[%collapsible.addition]
 ====
 .The official definition of `PATH`:
 [quote, The IEEE and The Open Group]
