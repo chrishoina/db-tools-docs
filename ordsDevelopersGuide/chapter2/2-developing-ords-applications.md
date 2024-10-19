@@ -1,5 +1,87 @@
-# 2.9 JWT Bearer Token Authentication and Authorization Using JWT Profile
+# 2 Developing Oracle REST Data Services Applications
 
+## 2.18 About HTTP Error Responses
+
+ORDS can be configured to generate HTTP error responses *exclusively* in JSON or HTML format (the default setting is "Auto"). You can modify the error response format by issuing the following ORDS CLI commands:
+
+| Format | Command |
+| ------ | ------- |
+| JSON   | `ords config set error.responseFormat json` |
+| HTML   | `ords config set error.responseFormat html` |
+| Auto (*default*) | `ords config set error.responseFormat auto`|  
+
+> **NOTE:** Prior to ORDS 20.4, *only* HTML responses were supported. To preserve this backward compatibility, by default (i.e., via the `Auto` setting), ORDS attempts to automatically determines the best format to render error responses.
+
+### 2.18.1 About error.responseFormat
+
+The `error.responseFormat` setting is a *global*<sup>1</sup> setting that supports the following values:
+
+- `HTML` - error responses are returned in `HTML` format.
+- `JSON` - error responses are returned in `JSON` format.
+- `Auto` (*default setting*) - Automatically determines the most appropriate format for error responses.
+
+You may use the following ORDS command line command to review your existing configuration settings:
+
+```sh
+<copy>ords config list --include-defaults</copy>
+```
+
+![error-response-format-auto](./images/ords-config-list-include-defaults.png " ")
+
+> <sup><sup>1</sup>Global settings are those settings found in the `/[your ORDS configuration folder]/global/settings.xml` file. These settings apply to *all* ORDS instances, regardless of whether they are installed at the Container database (CDB) or Pluggable database (PDB) level.</sup>
+>
+> **NOTE:** An ORDS best practice is to install ORDS at the *PDB level*. This configuration supports High-Availability, Fast Failover, rolling updates, etc. See our Best Practices page for [more details](https://www.oracle.com/database/technologies/appdev/rest/best-practices/).
+
+#### 2.18.1.1 HTML Mode
+
+![error-response-format-html](./images/error-response-format-html.png " ")
+
+When the `error.responseFormat` value is set to `html`, all error responses are rendered in `HTML` format. This setting can be used to match the behavior of ORDS 20.3.1 *and prior* releases. The HTML format displays properly in web-browsers. However, for *non-human* clients, the HTML format is verbose and may be challenging to parse. The JSON format may be a better alternative for these applications.
+
+#### 2.18.1.2 JSON Mode
+
+![error-response-format-json](./images/error-response-format-json.png " ")
+
+When the `error.responseFormat` value is set to `json`, error responses are rendered in `JSON` format. The JSON format complies with the Problem Details for HTTP APIs standard<sup>2</sup>.
+
+While the JSON format may not display properly in browsers and can be challenging for non-technical users to decipher, it is terse and straightforward for *non-human* clients to parse. An exception to this may be in a command line environment; tools such as curl<sup>3</sup> make inspecting JSON simple.
+
+> <sup><sup>2</sup>Learn more: [RFC 7807 Problem Details for HTTP APIs](https://datatracker.ietf.org/doc/html/rfc7807)</sup>  
+> <sup><sup>3</sup>[Download curl](https://curl.se)</sup>
+
+#### 2.18.1.3 Auto Mode
+
+![error-response-format-json](./images/error-response-format-auto.png " ")
+
+The default value for ORDS' `error.responseFormat` setting is `auto`. When this value is set, ORDS automatically applies rules according to various conditions and returns responses in the appropriate format. The following conditions and their dispositions are below:
+
+##### JSON
+
+The JSON format will be returned when the client supplies an...
+
+- `Accept` request header and `application/json` or `application/problem+json` is the "most preferred" media type.<sup>5</sup>
+
+- `X-Requested-With` request header.<sup>4</sup>
+
+- `Origin`<sup>4</sup> request header.
+  - *If the request method is `POST` and`Content-Type` is `application/x-www-form-urlencoded` responses will be rendered in `HTML` format.*
+
+- `User-Agent` header whose value starts with `curl/`, then the response must be in JSON format.
+
+> <sup><sup>4</sup>[About q-factor weighting](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept#directives)</sup>  
+> <sup><sup>5</sup>The presence of this header indicates the request was initiated via JavaScript code. Accordingly, JSON is the most appropriate response format.</sup>
+
+##### HTML
+
+The JSON format will be returned when the client supplies an...
+
+- `Accept` request header where `text/html` is the "most preferred media" type.
+
+- `Origin`<sup>2</sup> header *and* the request method is a `POST` *and* the `Content-Type` is `application/x-www-form-urlencoded`.
+
+## 2.9 JWT Bearer Token Authentication and Authorization Using JWT Profile
+
+<!-- Still needs work -->
 ORDS release 23.3 introduces support for JSON Web Tokens (JWTs). JWT bearer tokens enables ORDS developers to delegate authentication and authorization to any OAuth2-compliant Identity Provider to issue a JWT access token that ORDS can validate to provide access to ORDS protected resources.
 
 ORDS acts as a resource server in a typical OpenID Connect<sup>1</sup> or OAuth2 Code Flow<sup>2</sup>, making it convenient for developers to access ORDS APIs from their web applications.
@@ -21,7 +103,7 @@ You can create a JWT Profile for any REST-Enabled schema to provide ORDS with a 
 2.9.4 JWT Identity Provider Details  
 2.9.5 Making Requests to ORDS Using a JWT Bearer Token
 
-## 2.9.1 About JSON Web Tokens (JWTs)
+### 2.9.1 About JSON Web Tokens (JWTs)
 
 This section introduces you to the JSON Web Tokens.
 
@@ -64,7 +146,7 @@ exp (expiration time) identifies the expiration time when or after which the JWT
 nbf (not before) if present, identifies the time before which the JWT is not accepted for processing.
 When a JWT is validated and the payload of JWT contains the scope claim, the ORDS privilege name protecting the resource is verified as being provided in the scope claim before processing.
 
-## 2.9.2 Prerequisites for JWT Authentication
+### 2.9.2 Prerequisites for JWT Authentication
 
 This section lists the prerequisites for JWT authentication.
 
@@ -88,7 +170,7 @@ The URI must be routable from the subnet containing ORDS
 Certain key parameters must be present in the JWKS to verify the signature of the JWT. See Parameters for Verifying JWT Signatures.
 By default, the JWKS can be up to 10000 bytes in size
 
-## 2.9.3 Creating an ORDS JWT Profile
+### 2.9.3 Creating an ORDS JWT Profile
 
 This section explains how to create an ORDS JWT Profile.
 
@@ -118,7 +200,8 @@ Note:A JWT scope claim is a JSON string containing a space-separated list of sco
 See Also:
 
 OAUTH PL/SQL Package Reference
-## 2.9.4 JWT Identity Provider Details
+
+### 2.9.4 JWT Identity Provider Details
 
 The identity provider that issued the JWT, determines the values that are allowed to specify for the issuer (iss), and the audience (aud) claims in the JWT. The identity provider that issued the JWT also determines the URI from where to retrieve the JSON Web Key Set (JWKS) to verify the signature of the JWT.
 
@@ -149,7 +232,7 @@ Validating Access Tokens in Oracle Identity Cloud Service documentation.
 Change Default Settings in Oracle Identity Cloud Service documentation.
 Managing Applications in OCI IAM with Identity Domains documentation.
 
-### 2.9.4.1 Parameters for Verifying JWT Signatures
+#### 2.9.4.1 Parameters for Verifying JWT Signatures
 
 This section lists the key parameters required to verify the JWT signatures.
 
@@ -162,7 +245,7 @@ n	The public key modulus.
 e	The public key exponent.
 alg	The signing algorithm (if present) must be set to one of RS256, RS384 or RS512.
 
-### 2.9.4.2 JWT Scopes and ORDS Privileges
+#### 2.9.4.2 JWT Scopes and ORDS Privileges
 
 You must configure the identity provider that issued the JWT, so as to provide the scope that matches the desired ORDS privilege. If a resource is protected in ORDS using an ORDS privilege, then that privilege name must be defined as a scope. The scope is then available for the application to request on behalf of the user. The issued JWT must then provide that as a scope claim.
 
@@ -170,18 +253,17 @@ Typically, identity providers allow APIs, resources, or scopes to be defined for
 
 More than one scope can be requested and provided in the JWT. The protected ORDS resource is accessible as long as one of the scopes matches the ORDS privilege protecting the resource.
 
-### 2.9.4.3 JWT Subject
+#### 2.9.4.3 JWT Subject
 
 ORDS accepts the subject (sub) claim in a valid JWT bearer token as the unique identifier for the user who consented for the application to access their data.
 
 The value of the subject claim in a valid JWT bearer token is bound to the :current_user implicit parameter and the REMOTE_IDENT OWA CGI environment variable.
 
-## 2.9.5 Making Requests to ORDS Using a JWT Bearer Token
+### 2.9.5 Making Requests to ORDS Using a JWT Bearer Token
 
 Once a JWT Profile has been created for a REST-Enabled schema, the protected ORDS resources in that schema can be accessed by providing a valid JWT bearer token with the request.
 
 Request to an ORDS protected resource is made from a third party application on behalf of a user. The third party application has configured its authentication using an Identity Provider. The same Identity Provider can be configured to issue JWT access tokens for ORDS. After the third party application has acquired a JWT access token from the Identity Provider, it can include the JWT as a bearer token in requests to ORDS. Third party application can request suitable JWT access tokens with the required scope to access the ORDS resource.
-
 
 Copy
 curl -X GET http://localhost:8080/ords/myapplication/api/sales /  --header "Authorization: Bearer
