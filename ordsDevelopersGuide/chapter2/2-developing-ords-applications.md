@@ -2,7 +2,7 @@
 
 ## 2.18 About HTTP Error Responses
 
-ORDS can be configured to generate HTTP error responses *exclusively* in `HTML` or `JSON` format (the default setting is "Auto"). You can modify the error response format by issuing the following ORDS CLI commands:
+You may configure ORDS to generate HTTP error responses exclusively in `HTML` or `JSON` format (the default setting is "Auto"). You can modify the error response format by issuing the following ORDS CLI commands:
 
 | Format | Command |
 | ------ | ------- |
@@ -10,7 +10,7 @@ ORDS can be configured to generate HTTP error responses *exclusively* in `HTML` 
 | `JSON`   | `ords config set error.responseFormat json` |
 | Auto (*default*) | `ords config set error.responseFormat auto`|  
 
-> **NOTE:** Prior to ORDS 20.4, *only* `HTML` responses were supported. To preserve this backward compatibility, by default (i.e., via the `Auto` setting), ORDS attempts to automatically determines the best format to render error responses.
+> **NOTE:** Prior to ORDS 20.4, only `HTML` responses were supported. To preserve this backward compatibility, by default (i.e., via the Auto setting), ORDS attempts to automatically determine the best format to render error responses.
 
 ### 2.18.1 About the error.responseFormat
 
@@ -28,23 +28,23 @@ You may use the following ORDS command line command to review your existing conf
 
 ![error-response-format-auto](./images/ords-config-list-include-defaults.png " ")
 
-> <sup><sup>1</sup>Global settings are those settings found in the `/[your ORDS configuration folder]/global/settings.xml` file. These settings apply to *all* ORDS instances, regardless of whether they are installed at the Container database (CDB) or Pluggable database (PDB) level.</sup>
+> <sup><sup>1</sup>Global settings are those settings found in the `/[your ORDS configuration folder]/global/settings.xml` file. These settings apply to all ORDS instances, regardless of whether they are installed at the Container database (CDB) or Pluggable database (PDB) level.</sup>
 >
-> **NOTE:** An ORDS best practice is to install ORDS at the *PDB level*. This configuration supports High-Availability, Fast Failover, rolling updates, etc. See our Best Practices page for [more details](https://www.oracle.com/database/technologies/appdev/rest/best-practices/).
+> **NOTE:** An ORDS best practice is to install ORDS at the *PDB leve*l*. This configuration supports High-Availability, Fast Failover, rolling updates, etc. See our Best Practices page for [more details](https://www.oracle.com/database/technologies/appdev/rest/best-practices/).
 
 #### 2.18.1.1 `HTML` Mode
 
 ![error-response-format-html](./images/error-response-format-html.png " ")
 
-When the `error.responseFormat` value is set to `html`, all error responses are rendered in `HTML` format. This setting can be used to match the behavior of ORDS 20.3.1 *and prior* releases. The `HTML` format displays properly in web-browsers. However, for *non-human* clients, the `HTML` format is verbose and may be challenging to parse. The `JSON` format may be a better alternative for these applications.
+ORDS will render error responses in `HTML` format when you set the `error.responseFormat` value to `html`. You may use this setting to match the behavior of ORDS 20.3.1 and prior releases. The HTML format displays properly in web browsers. However, the HTML format is verbose for non-human clients and may be challenging to parse. The JSON format may be a better alternative for these applications.
 
 #### 2.18.1.2 `JSON` Mode
 
 ![error-response-format-json](./images/error-response-format-json.png " ")
 
-When the `error.responseFormat` value is set to `json`, error responses are rendered in `JSON` format. The `JSON` format complies with the Problem Details for HTTP APIs standard<sup>2</sup>.
+ORDS will render error responses in `JSON` format when you set the `error.responseFormat` value to `json`. The `JSON` format complies with the Problem Details for HTTP APIs standard<sup>2</sup>.
 
-While the `JSON` format may not display properly in browsers and can be challenging for non-technical users to decipher, it is terse and straightforward for *non-human* clients to parse. An exception to this may be in a command line environment; tools such as curl<sup>3</sup> make inspecting `JSON` simple.
+While the `JSON` format may not display correctly in browsers and can be challenging for non-technical users to decipher. Although *it is* terse and straightforward for non-human clients to parse. An exception to this may be in a command line environment; tools such as curl<sup>3</sup> make inspecting JSON simple.
 
 > <sup><sup>2</sup>Learn more: [RFC 7807 Problem Details for HTTP APIs](https://datatracker.ietf.org/doc/html/rfc7807)</sup>  
 > <sup><sup>3</sup>[Download curl](https://curl.se)</sup>
@@ -53,7 +53,7 @@ While the `JSON` format may not display properly in browsers and can be challeng
 
 ![error-response-format-json](./images/error-response-format-auto.png " ")
 
-The default value for ORDS' `error.responseFormat` setting is `auto`. When this value is set, ORDS automatically applies rules according to various conditions and returns responses in the appropriate format. The following conditions and their dispositions are below:
+The default value for ORDS' `error.responseFormat` setting is `auto`. When `auto` is selected, ORDS automatically applies rules according to various conditions and returns responses in the appropriate format. The following conditions and their dispositions are below:
 
 ##### `HTML`
 
@@ -68,9 +68,9 @@ The `JSON` format will be returned when the client supplies an...
 
 - `Accept` request header and `application/json` or `application/problem+json` is the "most preferred" media type.<sup>4</sup>
 - `X-Requested-With` request header.<sup>5,6</sup>
-- `User-Agent` header whose value starts with `curl/`, then the response must be in `JSON` format.
+- `User-Agent` header whose value starts with `curl/`.
 - `Origin` request header.<sup>5</sup>
-  - ***EXCEPTION:** In cases where the request method is `POST` and`Content-Type` is `application/x-www-form-urlencoded` responses will be rendered in `HTML` format.*
+  - ***EXCEPTION:** Responses will be rendered in the `HTML` format when the request method is `POST` and `Content-Type` is `application/x-www-form-urlencoded`.*
 
 > <sup><sup>4</sup>[About q-factor weighting](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept#directives)</sup>  
 > <sup><sup>5</sup>The presence of this header indicates the request was initiated via JavaScript code. Accordingly, <code>JSON</code> is the most appropriate response format.</sup>  
