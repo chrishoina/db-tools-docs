@@ -12,7 +12,7 @@ ORDS can be configured to generate HTTP error responses *exclusively* in `HTML` 
 
 > **NOTE:** Prior to ORDS 20.4, *only* `HTML` responses were supported. To preserve this backward compatibility, by default (i.e., via the `Auto` setting), ORDS attempts to automatically determines the best format to render error responses.
 
-### 2.18.1 About error.responseFormat
+### 2.18.1 About the error.responseFormat
 
 The `error.responseFormat` setting is a *global*<sup>1</sup> setting that supports the following values:
 
