@@ -67,13 +67,14 @@ The `HTML` format will be returned when the client supplies an...
 The `JSON` format will be returned when the client supplies an...
 
 - `Accept` request header and `application/json` or `application/problem+json` is the "most preferred" media type.<sup>4</sup>
-- `X-Requested-With` request header.<sup>5</sup>
+- `X-Requested-With` request header.<sup>5,6</sup>
 - `User-Agent` header whose value starts with `curl/`, then the response must be in `JSON` format.
 - `Origin` request header.<sup>5</sup>
   - ***EXCEPTION:** In cases where the request method is `POST` and`Content-Type` is `application/x-www-form-urlencoded` responses will be rendered in `HTML` format.*
 
 > <sup><sup>4</sup>[About q-factor weighting](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept#directives)</sup>  
-> <sup><sup>5</sup>The presence of this header indicates the request was initiated via JavaScript code. Accordingly, <code>JSON</code> is the most appropriate response format.</sup>
+> <sup><sup>5</sup>The presence of this header indicates the request was initiated via JavaScript code. Accordingly, <code>JSON</code> is the most appropriate response format.</sup>  
+> <sup><sup>6</sup>When performing an asynchronous HTTP (Ajax) request, the header <code>X-Requested-With: XMLHttpRequest</code> is always added. [See Settings > headers for details](https://api.jquery.com/jQuery.ajax/#jQuery-ajax-settings).</sup>  
 
 ## 2.9 JWT Bearer Token Authentication and Authorization Using JWT Profile
 
