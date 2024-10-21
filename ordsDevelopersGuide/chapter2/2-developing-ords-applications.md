@@ -91,7 +91,7 @@ The `JSON` format will be returned when the client supplies an...
 > [^5]: The presence of this header indicates the request was initiated via JavaScript code. Accordingly, `JSON` is the most appropriate response format.
 > [^6]: When performing an asynchronous HTTP (Ajax) request, the header `X-Requested-With: XMLHttpRequest` is always added. [See Settings > headers for details](https://api.jquery.com/jQuery.ajax/#jQuery-ajax-settings).
 
-## ==2.9 JWT Bearer Token Authentication and Authorization Using JWT Profile ( In Process)==
+<mark>## 2.9 JWT Bearer Token Authentication and Authorization Using JWT Profile</mark>
 
 <!-- Still needs work -->
 ORDS release 23.3 introduces support for JSON Web Tokens (JWTs). JWT bearer tokens enables ORDS developers to delegate authentication and authorization to any OAuth2-compliant Identity Provider to issue a JWT access token that ORDS can validate to provide access to ORDS protected resources.
