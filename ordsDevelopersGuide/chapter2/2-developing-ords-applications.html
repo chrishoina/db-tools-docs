@@ -1,0 +1,399 @@
+<h1 id="developing-oracle-rest-data-services-applications">2 Developing
+Oracle REST Data Services Applications</h1>
+<h2 id="about-http-error-responses">2.18 About HTTP Error Responses</h2>
+<p>You may configure ORDS to generate HTTP error
+responses exclusively in <code>HTML</code> or <code>JSON</code> format
+(the default setting is “Auto”). You can modify the error response
+format by issuing the following ORDS CLI commands:</p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTML</td>
+<td><code>ords config set error.responseFormat html</code></td>
+</tr>
+<tr>
+<td>JSON</td>
+<td><code>ords config set error.responseFormat json</code></td>
+</tr>
+<tr>
+<td>Auto (<em>default</em>)</td>
+<td><code>ords config set error.responseFormat auto</code></td>
+</tr>
+</tbody>
+</table>
+<p>After issuing one of the above commands two things will occur:</p>
+<ol class="incremental" type="1">
+<li>The ORDS CLI will respond with a message that your configuration
+setting has been updated.</li>
+<li>Any <code>pool.xml</code> files associated with this ORDS
+installation will automatically update to reflect the changes.</li>
+<li>The following images illustrate these changes:
+<ul class="incremental">
+<li>HTML<br />
+![error-response-format-auto](./images/error-response-confirmation-html.png
+” “)<br />
+![error-response-format-auto](./images/pool-error-response-html.png”
+“)</li>
+<li>JSON<br />
+![error-response-format-auto](./images/error-response-confirmation-json.png
+” “)<br />
+![error-response-format-auto](./images/pool-error-response-json.png”
+“)<br />
+</li>
+<li>Auto<br />
+![error-response-format-auto](./images/error-response-confirmation-auto.png
+” “)<br />
+![error-response-format-auto](./images/pool-error-response-auto.png”
+“)</li>
+</ul></li>
+</ol>
+<blockquote>
+<p><strong>NOTE:</strong> Prior to ORDS
+20.4, only <code>HTML</code> responses were supported. To preserve this
+backward compatibility, by default (i.e., via the Auto setting), ORDS
+attempts to automatically determine the best format to render error
+responses.</p>
+</blockquote>
+<h3 id="about-the-error.responseformat">2.18.1 About the
+error.responseFormat</h3>
+<p>The <code>error.responseFormat</code> setting is a <em>global</em><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> setting that supports the following
+values:</p>
+<ul class="incremental">
+<li><code>HTML</code> - error responses are returned in
+<code>HTML</code> format.</li>
+<li><code>JSON</code> - error responses are returned in
+<code>JSON</code> format.</li>
+<li><code>Auto</code> (<em>default setting</em>) - Automatically
+determines the most appropriate format for error responses.</li>
+</ul>
+<p>You may use the following ORDS command line command to review your
+existing configuration settings:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ords</span> config list <span class="at">--include-defaults</span></span></code></pre></div>
+<p>![error-response-format-auto](./images/ords-config-list-include-defaults.png
+” “)</p>
+<blockquote>
+<p><strong>NOTE:</strong> An ORDS best practice is to install ORDS at
+the <em>PDB level</em>. This configuration supports High-Availability,
+Fast Failover, rolling updates, etc. See our Best Practices page for <a href="https://www.oracle.com/database/technologies/appdev/rest/best-practices/">more
+details</a>.</p>
+</blockquote>
+<h4 id="html-mode">2.18.1.1 <code>HTML</code> Mode</h4>
+<p>![error-response-format-html](./images/error-response-format-html.png
+” “)</p>
+<p>ORDS will render error responses in <code>HTML</code> format when you
+set the <code>error.responseFormat</code> value to <code>html</code>.
+You may use this setting to match the behavior of ORDS 20.3.1 and
+prior releases. The HTML format displays properly in web browsers.
+However, the HTML format is verbose for non-human clients and may be
+challenging to parse. The JSON format may be a better alternative for
+these applications.</p>
+<h4 id="json-mode">2.18.1.2 <code>JSON</code> Mode</h4>
+<p>![error-response-format-json](./images/error-response-format-json.png
+” “)</p>
+<p>ORDS will render error responses in <code>JSON</code> format when you
+set the <code>error.responseFormat</code> value to <code>json</code>.
+The <code>JSON</code> format complies with the Problem Details for HTTP
+APIs standard<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
+<p>While the <code>JSON</code> format may not display correctly in
+browsers and can be challenging for non-technical users to decipher.
+Meanwhile <em>it is</em> terse and straightforward for non-human clients
+to parse. An exception to this may be in a command line environment;
+tools such as curl<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> make inspecting JSON simple.</p>
+<blockquote>
+
+</blockquote>
+<h4 id="auto-mode">2.18.1.3 Auto Mode</h4>
+<p>![error-response-format-json](./images/error-response-format-auto.png
+” “)</p>
+<p>The default value for ORDS’ <code>error.responseFormat</code> setting
+is <code>auto</code>. When <code>auto</code> is selected, ORDS
+automatically applies rules according to various conditions and returns
+responses in the appropriate format. The following conditions and their
+dispositions are below:</p>
+<h5 id="html"><code>HTML</code></h5>
+<p>The <code>HTML</code> format will be returned when the client
+supplies an…</p>
+<ul class="incremental">
+<li><code>Accept</code> request header where <code>text/html</code> is
+the “most preferred” media type.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></li>
+<li><code>Origin</code> header <em>and</em> request method is a
+<code>POST</code> <em>and</em> <code>Content-Type</code> is
+<code>application/x-www-form-urlencoded</code>.</li>
+</ul>
+<h5 id="json"><code>JSON</code></h5>
+<p>The <code>JSON</code> format will be returned when the client
+supplies an…</p>
+<ul class="incremental">
+<li><code>Accept</code> request header and <code>application/json</code>
+or <code>application/problem+json</code> is the “most preferred” media
+type.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></li>
+<li><code>X-Requested-With</code> request header.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>,<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></li>
+<li><code>User-Agent</code> header whose value starts with
+<code>curl/</code>.</li>
+<li><code>Origin</code> request header.<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>
+<ul class="incremental">
+<li><em><strong>EXCEPTION:</strong> Responses will be rendered in the
+<code>HTML</code> format when the request method
+is <code>POST</code> and
+<code>Content-Type</code> is <code>application/x-www-form-urlencoded</code>.</em></li>
+</ul></li>
+</ul>
+<blockquote>
+
+</blockquote>
+<h2 id="in-process---jwt-bearer-token-authentication-and-authorization-using-jwt-profile---in-process">2.9
+<mark>IN PROCESS - JWT Bearer Token Authentication and Authorization
+Using JWT Profile - IN PROCESS</mark></h2>
+<!-- Still needs work -->
+<p>ORDS release 23.3 introduces support for JSON Web Tokens (JWTs). JWT
+bearer tokens enables ORDS developers to delegate authentication and
+authorization to any OAuth2-compliant Identity Provider to issue a JWT
+access token that ORDS can validate to provide access to ORDS protected
+resources.</p>
+<p>ORDS acts as a resource server in a typical OpenID
+Connect<sup>1</sup> or OAuth2 Code Flow<sup>2</sup>, making it
+convenient for developers to access ORDS APIs from their web
+applications.</p>
+<p><sup>1</sup><a href="https://openid.net/developers/how-connect-works/">OpenID
+Connect</a><br />
+<sup>2</sup>RFC 6750: <a href="https://datatracker.ietf.org/doc/html/rfc6750">The OAuth 2.0
+Authorization Framework</a><br />
+ RCC 6749: <a href="https://datatracker.ietf.org/doc/html/rfc6749">The
+OAuth 2.0 Authorization Framework: Bearer Token Usage</a></p>
+<p>You can create a JWT Profile for any REST-Enabled schema to provide
+ORDS with a mechanism to validate JWT bearer tokens. If a JWT bearer
+token is validated, then ORDS accepts the following:</p>
+<ul class="incremental">
+<li>The JWT subject claim as the authenticated user making the
+request</li>
+<li>The JWT scope claims as the REST-Enabled schemas ORDS privileges
+that the user has consented to the application using the privileges on
+their behalf</li>
+</ul>
+<p><strong>Topics:</strong></p>
+<p>2.9.1 About <code>JSON</code> Web Tokens (JWTs)<br />
+2.9.2 Prerequisites for JWT Authentication<br />
+2.9.3 Creating an ORDS JWT Profile<br />
+2.9.4 JWT Identity Provider Details<br />
+2.9.5 Making Requests to ORDS Using a JWT Bearer Token</p>
+<h3 id="about-json-web-tokens-jwts">2.9.1 About <code>JSON</code> Web
+Tokens (JWTs)</h3>
+<p>This section introduces you to the <code>JSON</code> Web Tokens.</p>
+<p>A <code>JSON</code> Web Token (JWT) is a compact, URL-safe means of
+representing claims to be transferred between two parties. The claims in
+a JWT are encoded as a <code>JSON</code> object. ORDS supports the use
+of any OAuth2-compliant identity providers such as, OCI IAM with
+Identity Domains, Oracle Identity Cloud Service (IDCS), Auth0, and Okta.
+If a JWT is required to access a resource, ORDS validates the JWT using
+a corresponding public verification key provided by the authorization
+server.</p>
+<p>A JWT comprises of the following: A header, that identifies the type
+of token and the cryptographic algorithm used to generate the signature.
+The header is required to contain the following reserved claims. Note:A
+claim is a key value pair, where the key is the name of the claim. alg
+(algorithm) kid (key id) The header can optionally contain the following
+reserved claims that ORDS takes into account x5t (x.509 certificate
+thumbprint) typ (type) The header can also contain custom claims with
+user-defined names. A payload containing claims about the identity of
+the end user, and the properties of the JWT. A payload is required to
+contain the following reserved names of the claims: sub (subject) aud
+(audience) iss (issuer) iat (issued at) exp (expiration time) The
+payload can optionally contain the following reserved claims that ORDS
+takes into account scope or scp nbf (not before) A payload can also
+contain custom claims with user-defined names A signature, to validate
+the authenticity of the JWT (derived by base64 encoding the header and
+the payload). When using JWTs to control access to the target schema
+APIs or resources, the JWT Profile in the REST-Enabled schema specifies
+that the reserved claims in the payload of the JWT must have particular
+values before ORDS considers the JWT to be valid.</p>
+<p>ORDS only accepts the following:</p>
+<p>alg (algorithm) values of RS256, RS384 and RS512 kid (key id) value
+that can be matched to a corresponding public verification key x5t
+(x.509 certificate thumbprint) if present to a corresponding public
+verification key typ (type) if present, requires the value to be JWT aud
+(audience) that matches the target schemas JWT Profile audience iss
+(issuer) that matches the target schema JWT Profile issuer iat (issued
+at ) identifies the time when the JWT was issued and is not be accepted
+before this time. This claim is used to determine the age of the JWT and
+enforce the JWT Profile allowed age if it is set. exp (expiration time)
+identifies the expiration time when or after which the JWT is not
+accepted for processing. nbf (not before) if present, identifies the
+time before which the JWT is not accepted for processing. When a JWT is
+validated and the payload of JWT contains the scope claim, the ORDS
+privilege name protecting the resource is verified as being provided in
+the scope claim before processing.</p>
+<h3 id="prerequisites-for-jwt-authentication">2.9.2 Prerequisites for
+JWT Authentication</h3>
+<p>This section lists the prerequisites for JWT authentication.</p>
+<p>Before ORDS can accept authentication and authorization using
+JWTs:</p>
+<p>An OAuth2-compliant identity provider (for example, OCI IAM with
+Identity Domains, Oracle Identity Cloud Service (IDCS), Auth0) must have
+already been set up to issue JWTs for users who are allowed to access
+the ORDS resources. If you want to use custom claims in authorization
+policies, the identity provider must be set up to add the custom claims
+to the JWTs that it issues. See Also:</p>
+<p>Managing Applications Oracle Identity Cloud Service Auth0, an
+identity platform to manage access to your applications. To validate a
+JWT using a corresponding public verification key provided by the
+issuing identity provider:</p>
+<p>the signing algorithm used to generate the signature of JWT must be
+one of RS256, RS384, or RS512 the public verification key must have a
+minimum length of 2048 bits and must not exceed 4096 bits the public
+verification key must be specified using the <code>JSON</code> Web Key
+(JWK) format and ORDS can access it without authentication The JWK
+URI</p>
+<p>The URI must be routable from the subnet containing ORDS Certain key
+parameters must be present in the JWKS to verify the signature of the
+JWT. See Parameters for Verifying JWT Signatures. By default, the JWKS
+can be up to 10000 bytes in size</p>
+<h3 id="creating-an-ords-jwt-profile">2.9.3 Creating an ORDS JWT
+Profile</h3>
+<p>This section explains how to create an ORDS JWT Profile.</p>
+<p>A JWT Profile can be created within a REST-Enabled schema using the
+OAUTH.CREATE_JWT_PROFILE procedure. Alternatively,
+OAUTH_ADMIN.CREATE_JWT_PROFILE can be used to create a JWT Profile in
+other REST-Enabled schemas as long as the user has the
+ORDS_ADMINISTRATOR role.</p>
+<p>Note:Only one JWT Profile can be defined per schema. To update an
+existing JWT Profile, the existing JWT Profile must be deleted before
+creating a new one. Example:</p>
+<p>Copy BEGIN OAUTH.CREATE_JWT_PROFILE( p_issuer =&gt;
+‘https://identity.oraclecloud.com/’, p_audience =&gt;
+‘ords/myapplication/api’ , p_jwk_url
+=&gt;‘https://idcs-10a10a10a10a10a10a10a10a.identity.oraclecloud.com/admin/v1/SigningCert/jwk’
+); COMMIT; END; / This JWT Profile specifies the issuer, audience, and
+the JWK URL.</p>
+<p>Additionally, an allowed skew and age can be specified. The p_issuer
+must be a non null value and must match the iss claim in the JWT bearer
+token. The p_audience must be a non null value and must match with the
+aud claim in the JWT bearer token.</p>
+<p>The p_jwk_url must be a non null value starting with https:// and
+identify the public verification key provided by the authorization
+server in a <code>JSON</code> Web Key (JWK) format.</p>
+<p>Once the JWT Profile has been created, requests made to the schema
+protected resources can be accessed by providing a valid JWT bearer
+token with the scope to access the protected resource. Note:A JWT scope
+claim is a <code>JSON</code> string containing a space-separated list of
+scopes. A protected ORDS resource is protected with a named ORDS
+privilege. To access the protected ORDS resource, the JWT scope claim
+must contain a scope with the same name as the protecting ORDS
+privilege. The scope of an ORDS privilege are case sensitive. See
+Also:</p>
+<p>OAUTH PL/SQL Package Reference</p>
+<h3 id="jwt-identity-provider-details">2.9.4 JWT Identity Provider
+Details</h3>
+<p>The identity provider that issued the JWT, determines the values that
+are allowed to specify for the issuer (iss), and the audience (aud)
+claims in the JWT. The identity provider that issued the JWT also
+determines the URI from where to retrieve the <code>JSON</code> Web Key
+Set (JWKS) to verify the signature of the JWT.</p>
+<p>Identity Provider Issuer (iss) claim Audience (aud) Claim Format of
+URI from which to Retrieve the JWKS Okta
+https://<your-okta-tenant-name>.com Customer-specific.</p>
+<p>The audience configured for the Authorization Server in the Okta
+Developer Console.
+https://<your-okta-tenant-name>.com/oauth2/<auth-server-id> /v1/keys
+IDCS https://identity.oraclecloud.com/<br />
+Customer-specific.</p>
+<p>Refer to “Validating Access Tokens” section in Oracle Identity Cloud
+Service documentation.
+https://<tenant-base-url>/admin/v1/SigningCert/jwk</p>
+<p>To obtain the JWKS without logging in to Oracle Identity Cloud
+Service, refer to “Change Default Settings” in Oracle Identity Cloud
+Service documentation. OCI IAM with Identity Domains
+https://identity.oraclecloud.com<br />
+Customer-specific.</p>
+<p>See “Managing Applications” section in OCI IAM with Identity Domains
+documentation. https://<tenant-base-url>/admin/v1/SigningCert/jwk Auth0
+https://<your-account-name>.auth0.com/<br />
+Customer-specific.
+https://<your-account-name>.auth0.com/.well-known/jwks.json See
+Also:</p>
+<p>Validating Access Tokens in Oracle Identity Cloud Service
+documentation. Change Default Settings in Oracle Identity Cloud Service
+documentation. Managing Applications in OCI IAM with Identity Domains
+documentation.</p>
+<h4 id="parameters-for-verifying-jwt-signatures">2.9.4.1 Parameters for
+Verifying JWT Signatures</h4>
+<p>This section lists the key parameters required to verify the JWT
+signatures.</p>
+<p>To verify the signature on a JWT, ORDS requires that the key
+parameters are present in the JWKS returned from an URI.</p>
+<p>Key Parameter Notes kid The identifier of the key used to sign the
+JWT. The value must match the kid claim in the JWT header. For example,
+master_key. kty The type of the key used to sign the JWT. Note that RSA
+is currently the only supported key type. n The public key modulus. e
+The public key exponent. alg The signing algorithm (if present) must be
+set to one of RS256, RS384 or RS512.</p>
+<h4 id="jwt-scopes-and-ords-privileges">2.9.4.2 JWT Scopes and ORDS
+Privileges</h4>
+<p>You must configure the identity provider that issued the JWT, so as
+to provide the scope that matches the desired ORDS privilege. If a
+resource is protected in ORDS using an ORDS privilege, then that
+privilege name must be defined as a scope. The scope is then available
+for the application to request on behalf of the user. The issued JWT
+must then provide that as a scope claim.</p>
+<p>Typically, identity providers allow APIs, resources, or scopes to be
+defined for a particular audience. For example: ORDS REST-Enabled schema
+defined API. These APIs, resources, or scopes can then be made available
+to specific applications or clients. The application can then request
+access tokens on behalf of an authenticated user for that audience and
+scope.</p>
+<p>More than one scope can be requested and provided in the JWT. The
+protected ORDS resource is accessible as long as one of the scopes
+matches the ORDS privilege protecting the resource.</p>
+<h4 id="jwt-subject">2.9.4.3 JWT Subject</h4>
+<p>ORDS accepts the subject (sub) claim in a valid JWT bearer token as
+the unique identifier for the user who consented for the application to
+access their data.</p>
+<p>The value of the subject claim in a valid JWT bearer token is bound
+to the :current_user implicit parameter and the REMOTE_IDENT OWA CGI
+environment variable.</p>
+<h3 id="making-requests-to-ords-using-a-jwt-bearer-token">2.9.5 Making
+Requests to ORDS Using a JWT Bearer Token</h3>
+<p>Once a JWT Profile has been created for a REST-Enabled schema, the
+protected ORDS resources in that schema can be accessed by providing a
+valid JWT bearer token with the request.</p>
+<p>Request to an ORDS protected resource is made from a third party
+application on behalf of a user. The third party application has
+configured its authentication using an Identity Provider. The same
+Identity Provider can be configured to issue JWT access tokens for ORDS.
+After the third party application has acquired a JWT access token from
+the Identity Provider, it can include the JWT as a bearer token in
+requests to ORDS. Third party application can request suitable JWT
+access tokens with the required scope to access the ORDS resource.</p>
+<p>Copy curl -X GET http://localhost:8080/ords/myapplication/api/sales /
+–header “Authorization: Bearer $JWT”</p>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Global settings are those settings found in
+the <code>/[your ORDS configuration folder]/global/settings.xml</code> file.
+These settings apply to all ORDS instances, regardless of whether they
+are installed at the Container database (CDB) or Pluggable database
+(PDB) level.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p><em>Learn more</em> <a href="https://datatracker.ietf.org/doc/html/rfc7807">RFC 7807 Problem
+Details for HTTP APIs</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p><a href="https://curl.se">Download curl</a><a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept#directives">About
+q-factor weighting</a>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept#directives">About
+q-factor weighting</a>.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>The presence of this header indicates the request was
+initiated via JavaScript code. Accordingly, <code>JSON</code> is the
+most appropriate response format.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>When performing an asynchronous HTTP (Ajax) request, the
+header <code>X-Requested-With: XMLHttpRequest</code> is always added. <a href="https://api.jquery.com/jQuery.ajax/#jQuery-ajax-settings">See
+Settings &gt; headers for details</a>.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>The presence of this header indicates the request was
+initiated via JavaScript code. Accordingly, <code>JSON</code> is the
+most appropriate response format.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
