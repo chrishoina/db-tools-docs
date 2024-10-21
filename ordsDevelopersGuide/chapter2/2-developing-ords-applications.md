@@ -37,7 +37,7 @@ After issuing one of the above commands two things will happen, the:
 
 ### 2.18.1 About the error.responseFormat
 
-The `error.responseFormat` setting is a *global*[^1] setting that supports the following values:
+The `error.responseFormat` setting is a *global* [^1] setting that supports the following values:
 
 - `HTML` - error responses are returned in `HTML` format.
 - `JSON` - error responses are returned in `JSON` format.
