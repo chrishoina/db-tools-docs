@@ -10,7 +10,32 @@ You may configure ORDS to generate HTTP error responses exclusively in `HTML`
 | `JSON`   | `ords config set error.responseFormat json` |
 | Auto (*default*) | `ords config set error.responseFormat auto`|  
 
+
+
 > **NOTE:** Prior to ORDS 20.4, only `HTML` responses were supported. To preserve this backward compatibility, by default (i.e., via the Auto setting), ORDS attempts to automatically determine the best format to render error responses.
+
+<div>
+<row>
+<col>
+
+![error-response-format-auto](./images/response-format-set-to-html.png " ")
+</col>
+<col>
+
+![error-response-format-auto](./images/response-format-set-to-html.png " ")
+
+</col>
+</row>
+</div>
+
+**Example *HTML***
+![error-response-format-auto](./images/response-format-set-to-html.png " ")
+
+**Example *JSON***
+![error-response-format-auto](./images/response-format-set-to-json.png " ")
+
+**Example *Auto***
+![error-response-format-auto](./images/response-format-set-to-auto.png " ")
 
 ### 2.18.1 About the error.responseFormat
 
