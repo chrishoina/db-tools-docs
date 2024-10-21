@@ -10,30 +10,20 @@ You may configure ORDS to generate HTTP error responses exclusively in `HTML`
 | JSON   | `ords config set error.responseFormat json` |
 | Auto (*default*) | `ords config set error.responseFormat auto`|  
 
-After issuing one of the above commands two things will happen, the:
+After issuing one of the above commands two things will occur:
 
-1. ORDS CLI will respond with a message that your configuration setting has been updated.
-2. `pool.xml` files associated with this ORDS installation will automatically update to reflect the changes.
-
-**HTML**
-<br></br>
-
-![error-response-format-auto](./images/error-response-confirmation-html.png "caption")
-![error-response-format-auto](./images/pool-error-response-html.png " ")
-
-**JSON**
-<br></br>
-
-![error-response-format-auto](./images/error-response-confirmation-json.png " ")
-![error-response-format-auto](./images/pool-error-response-json.png " ")
-
-
-
-**Auto**
-<br></br>
-
-![error-response-format-auto](./images/error-response-confirmation-auto.png " ")
-![error-response-format-auto](./images/pool-error-response-auto.png " ")
+1. The ORDS CLI will respond with a message that your configuration setting has been updated.
+2. Any `pool.xml` files associated with this ORDS installation will automatically update to reflect the changes.
+3. The following images illustrate these changes:
+   - HTML  
+   ![error-response-format-auto](./images/error-response-confirmation-html.png " ")  
+   ![error-response-format-auto](./images/pool-error-response-html.png " ")
+   - JSON  
+   ![error-response-format-auto](./images/error-response-confirmation-json.png " ")  
+   ![error-response-format-auto](./images/pool-error-response-json.png " ")  
+   - Auto  
+   ![error-response-format-auto](./images/error-response-confirmation-auto.png " ")  
+   ![error-response-format-auto](./images/pool-error-response-auto.png " ")
 
 > **NOTE:** Prior to ORDS 20.4, only `HTML` responses were supported. To preserve this backward compatibility, by default (i.e., via the Auto setting), ORDS attempts to automatically determine the best format to render error responses.
 
@@ -48,7 +38,7 @@ The `error.responseFormat` setting is a *global*[^1] setting that supports the f
 You may use the following ORDS command line command to review your existing configuration settings:
 
 ```sh
-<copy>ords config list --include-defaults</copy>
+ords config list --include-defaults
 ```
 
 ![error-response-format-auto](./images/ords-config-list-include-defaults.png " ")
