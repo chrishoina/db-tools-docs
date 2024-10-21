@@ -37,7 +37,7 @@ After issuing one of the above commands two things will happen, the:
 
 ### 2.18.1 About the error.responseFormat
 
-The `error.responseFormat` setting is a *global* [^1] setting that supports the following values:
+The `error.responseFormat` setting is a *global*[^1] setting that supports the following values:
 
 - `HTML` - error responses are returned in `HTML` format.
 - `JSON` - error responses are returned in `JSON` format.
@@ -51,7 +51,7 @@ You may use the following ORDS command line command to review your existing conf
 
 ![error-response-format-auto](./images/ords-config-list-include-defaults.png " ")
 
-> [^1]: Global settings are those settings found in the `/[your ORDS configuration folder]/global/settings.xml` file. These settings apply to all ORDS instances, regardless of whether they are installed at the Container database (CDB) or Pluggable database (PDB) level.</sup>
+> [^1]: Global settings are those settings found in the `/[your ORDS configuration folder]/global/settings.xml` file. These settings apply to all ORDS instances, regardless of whether they are installed at the Container database (CDB) or Pluggable database (PDB) level.
 >
 > **NOTE:** An ORDS best practice is to install ORDS at the *PDB leve*l*. This configuration supports High-Availability, Fast Failover, rolling updates, etc. See our Best Practices page for [more details](https://www.oracle.com/database/technologies/appdev/rest/best-practices/).
 
@@ -65,12 +65,12 @@ ORDS will render error responses in `HTML` format when you set the `error.res
 
 ![error-response-format-json](./images/error-response-format-json.png " ")
 
-ORDS will render error responses in `JSON` format when you set the `error.responseFormat` value to `json`. The `JSON` format complies with the Problem Details for HTTP APIs standard<sup>2</sup>.
+ORDS will render error responses in `JSON` format when you set the `error.responseFormat` value to `json`. The `JSON` format complies with the Problem Details for HTTP APIs standard[^2].
 
-While the `JSON` format may not display correctly in browsers and can be challenging for non-technical users to decipher. Although *it is* terse and straightforward for non-human clients to parse. An exception to this may be in a command line environment; tools such as curl<sup>3</sup> make inspecting JSON simple.
+While the `JSON` format may not display correctly in browsers and can be challenging for non-technical users to decipher. Although *it is* terse and straightforward for non-human clients to parse. An exception to this may be in a command line environment; tools such as curl[^3] make inspecting JSON simple.
 
-> <sup><sup>2</sup>Learn more: [RFC 7807 Problem Details for HTTP APIs](https://datatracker.ietf.org/doc/html/rfc7807)</sup>  
-> <sup><sup>3</sup>[Download curl](https://curl.se)</sup>
+> [^2]: *Learn more* [RFC 7807 Problem Details for HTTP APIs](https://datatracker.ietf.org/doc/html/rfc7807) 
+> [^3]: [Download curl](https://curl.se)
 
 #### 2.18.1.3 Auto Mode
 
@@ -82,22 +82,22 @@ The default value for ORDS' `error.responseFormat` setting is `auto`. When `a
 
 The `HTML` format will be returned when the client supplies an...
 
-- `Accept` request header where `text/html` is the "most preferred" media type.<sup>4</sup>
+- `Accept` request header where `text/html` is the "most preferred" media type.[^4]
 - `Origin` header *and* request method is a `POST` *and* `Content-Type` is `application/x-www-form-urlencoded`.
 
 ##### `JSON`
 
 The `JSON` format will be returned when the client supplies an...
 
-- `Accept` request header and `application/json` or `application/problem+json` is the "most preferred" media type.<sup>4</sup>
-- `X-Requested-With` request header.<sup>5,6</sup>
+- `Accept` request header and `application/json` or `application/problem+json` is the "most preferred" media type.[^4]
+- `X-Requested-With` request header.[^5],[^6]
 - `User-Agent` header whose value starts with `curl/`.
-- `Origin` request header.<sup>5</sup>
+- `Origin` request header.[^5]
   - ***EXCEPTION:** Responses will be rendered in the `HTML` format when the request method is `POST` and `Content-Type` is `application/x-www-form-urlencoded`.*
 
-> <sup><sup>4</sup>[About q-factor weighting](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept#directives)</sup>  
-> <sup><sup>5</sup>The presence of this header indicates the request was initiated via JavaScript code. Accordingly, <code>JSON</code> is the most appropriate response format.</sup>  
-> <sup><sup>6</sup>When performing an asynchronous HTTP (Ajax) request, the header <code>X-Requested-With: XMLHttpRequest</code> is always added. [See Settings > headers for details](https://api.jquery.com/jQuery.ajax/#jQuery-ajax-settings).</sup>  
+> [^4]: [About q-factor weighting](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept#directives).
+> [^5]: The presence of this header indicates the request was initiated via JavaScript code. Accordingly, `JSON` is the most appropriate response format.
+> [^6]: When performing an asynchronous HTTP (Ajax) request, the header `X-Requested-With: XMLHttpRequest` is always added. [See Settings > headers for details](https://api.jquery.com/jQuery.ajax/#jQuery-ajax-settings).
 
 ## 2.9 JWT Bearer Token Authentication and Authorization Using JWT Profile
 
