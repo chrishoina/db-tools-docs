@@ -18,11 +18,11 @@ You may configure ORDS to generate HTTP error responses exclusively in `HTML`
 <row>
 <col>
 
-![error-response-format-auto](./images/response-format-set-to-html.png " ")
+![error-response-format-auto](./images//error-response-auto-confirmation.png " ")
 </col>
 <col>
 
-![error-response-format-auto](./images/response-format-set-to-html.png " ")
+![error-response-format-auto](./images/error-response-auto-confirmation.png " ")
 
 </col>
 </row>
