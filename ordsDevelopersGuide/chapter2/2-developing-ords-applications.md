@@ -18,21 +18,21 @@ After issuing one of the above commands two things will happen, the:
 **HTML**
 <br></br>
 
-![error-response-format-auto](./images/error-response-html-confirmation.png "caption")
+![error-response-format-auto](./images/error-response-confirmation-html.png "caption")
 ![error-response-format-auto](./images/pool-error-response-html.png " ")
 
 **JSON**
 <br></br>
 
-![error-response-format-auto](./images/error-response-json-confirmation.png " ")
+![error-response-format-auto](./images/error-response-confirmation-json.png " ")
 ![error-response-format-auto](./images/pool-error-response-json.png " ")
-![error-response-format-auto](./images/Untitled%203/Untitled%203.001.png " ")
-![error-response-format-auto](./images/Untitled%203.1/Untitled%203.1.001.png " ")
+
+
 
 **Auto**
 <br></br>
 
-![error-response-format-auto](./images/error-response-auto-confirmation.png " ")
+![error-response-format-auto](./images/error-response-confirmation-auto.png " ")
 ![error-response-format-auto](./images/pool-error-response-auto.png " ")
 
 > **NOTE:** Prior to ORDS 20.4, only `HTML` responses were supported. To preserve this backward compatibility, by default (i.e., via the Auto setting), ORDS attempts to automatically determine the best format to render error responses.
