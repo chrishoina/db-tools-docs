@@ -26,6 +26,8 @@ After issuing one of the above commands two things will happen, the:
 
 ![error-response-format-auto](./images/error-response-json-confirmation.png " ")
 ![error-response-format-auto](./images/pool-error-response-json.png " ")
+![error-response-format-auto](./images/Untitled%203/Untitled%203.001.png " ")
+![error-response-format-auto](./images/Untitled%203.1/Untitled%203.1.001.png " ")
 
 **Auto**
 <br></br>
