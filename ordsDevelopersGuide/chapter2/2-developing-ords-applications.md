@@ -18,7 +18,7 @@ After issuing one of the above commands two things will happen, the:
 **HTML**
 <br></br>
 
-![error-response-format-auto](./images/error-response-html-confirmation.png " ")
+![error-response-format-auto](./images/error-response-html-confirmation.png "caption")
 ![error-response-format-auto](./images/pool-error-response-html.png " ")
 
 **JSON**
