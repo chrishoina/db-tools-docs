@@ -45,7 +45,7 @@ ords config list --include-defaults
 
 > [^1]: Global settings are those settings found in the `/[your ORDS configuration folder]/global/settings.xml` file. These settings apply to all ORDS instances, regardless of whether they are installed at the Container database (CDB) or Pluggable database (PDB) level.
 >
-> **NOTE:** An ORDS best practice is to install ORDS at the *PDB leve*l*. This configuration supports High-Availability, Fast Failover, rolling updates, etc. See our Best Practices page for [more details](https://www.oracle.com/database/technologies/appdev/rest/best-practices/).
+> **NOTE:** An ORDS best practice is to install ORDS at the *PDB level*. This configuration supports High-Availability, Fast Failover, rolling updates, etc. See our Best Practices page for [more details](https://www.oracle.com/database/technologies/appdev/rest/best-practices/).
 
 #### 2.18.1.1 `HTML` Mode
 
@@ -59,7 +59,7 @@ ORDS will render error responses in `HTML` format when you set the `error.res
 
 ORDS will render error responses in `JSON` format when you set the `error.responseFormat` value to `json`. The `JSON` format complies with the Problem Details for HTTP APIs standard[^2].
 
-While the `JSON` format may not display correctly in browsers and can be challenging for non-technical users to decipher. Although *it is* terse and straightforward for non-human clients to parse. An exception to this may be in a command line environment; tools such as curl[^3] make inspecting JSON simple.
+While the `JSON` format may not display correctly in browsers and can be challenging for non-technical users to decipher. Meanwhile *it is* terse and straightforward for non-human clients to parse. An exception to this may be in a command line environment; tools such as curl[^3] make inspecting JSON simple.
 
 > [^2]: *Learn more* [RFC 7807 Problem Details for HTTP APIs](https://datatracker.ietf.org/doc/html/rfc7807) 
 > [^3]: [Download curl](https://curl.se)
