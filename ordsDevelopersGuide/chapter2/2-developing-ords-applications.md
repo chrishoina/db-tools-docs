@@ -6,40 +6,38 @@ You may configure ORDS to generate HTTP error responses exclusively in `HTML`
 
 | Format | Command |
 | ------ | ------- |
-| `HTML`   | `ords config set error.responseFormat html` |
-| `JSON`   | `ords config set error.responseFormat json` |
+| HTML   | `ords config set error.responseFormat html` |
+| JSON   | `ords config set error.responseFormat json` |
 | Auto (*default*) | `ords config set error.responseFormat auto`|  
 
+After issuing one of the above commands two things will happen, the:
 
+1. ORDS CLI will respond with a message that your configuration setting has been updated.
+2. `pool.xml` files associated with this ORDS installation will automatically update to reflect the changes.
+
+**HTML**
+<br></br>
+
+![error-response-format-auto](./images/error-response-html-confirmation.png " ")
+![error-response-format-auto](./images/pool-error-response-html.png " ")
+
+**JSON**
+<br></br>
+
+![error-response-format-auto](./images/error-response-json-confirmation.png " ")
+![error-response-format-auto](./images/pool-error-response-json.png " ")
+
+**Auto**
+<br></br>
+
+![error-response-format-auto](./images/error-response-auto-confirmation.png " ")
+![error-response-format-auto](./images/pool-error-response-auto.png " ")
 
 > **NOTE:** Prior to ORDS 20.4, only `HTML` responses were supported. To preserve this backward compatibility, by default (i.e., via the Auto setting), ORDS attempts to automatically determine the best format to render error responses.
 
-<div>
-<row>
-<col>
-
-![error-response-format-auto](./images//error-response-auto-confirmation.png " ")
-</col>
-<col>
-
-![error-response-format-auto](./images/error-response-auto-confirmation.png " ")
-
-</col>
-</row>
-</div>
-
-**Example *HTML***
-![error-response-format-auto](./images/response-format-set-to-html.png " ")
-
-**Example *JSON***
-![error-response-format-auto](./images/response-format-set-to-json.png " ")
-
-**Example *Auto***
-![error-response-format-auto](./images/response-format-set-to-auto.png " ")
-
 ### 2.18.1 About the error.responseFormat
 
-The `error.responseFormat` setting is a *global*<sup>1</sup> setting that supports the following values:
+The `error.responseFormat` setting is a *global*[^1] setting that supports the following values:
 
 - `HTML` - error responses are returned in `HTML` format.
 - `JSON` - error responses are returned in `JSON` format.
@@ -53,7 +51,7 @@ You may use the following ORDS command line command to review your existing conf
 
 ![error-response-format-auto](./images/ords-config-list-include-defaults.png " ")
 
-> <sup><sup>1</sup>Global settings are those settings found in the `/[your ORDS configuration folder]/global/settings.xml` file. These settings apply to all ORDS instances, regardless of whether they are installed at the Container database (CDB) or Pluggable database (PDB) level.</sup>
+> [^1]: Global settings are those settings found in the `/[your ORDS configuration folder]/global/settings.xml` file. These settings apply to all ORDS instances, regardless of whether they are installed at the Container database (CDB) or Pluggable database (PDB) level.</sup>
 >
 > **NOTE:** An ORDS best practice is to install ORDS at the *PDB leve*l*. This configuration supports High-Availability, Fast Failover, rolling updates, etc. See our Best Practices page for [more details](https://www.oracle.com/database/technologies/appdev/rest/best-practices/).
 
