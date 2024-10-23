@@ -77,7 +77,7 @@ It is recommended to use :body_text ( a character representation ) rather than :
 
 The :body_json implicit parameter is used in resource handlers to receive the contents of a POST request body *as a CLOB data type*[^1], formatted as a JSON string.
 Resource Handlers can accept multi-file POST requests when using the :body_json implicit parameter, along with the ORDS.body_file_count function and ORDS.get_body_file procedure.
-Note: Like the :body implicit parameter, the :body_json implicit parameter must be dereferenced exactly once in a PL/SQL block. To upload multiple files, the :body_json implicit parameter must be assigned a local variable. The local variable should then be dereferenced. 
+Note: Like the :body implicit parameter, the :body_json implicit parameter must be dereferenced exactly once in a PL/SQL block. To upload multiple files, the :body_json implicit parameter must be assigned a local variable. The local variable should then be dereferenced.
 
 As long as the :body_json is present in the pl/sql, ORDS will populate the files to the ORDS packages. There's no specific need to assign it to a local variable (i.e. it can be printed somewhere). Also, there is no need to re-use the local variable.
 In short, as long as the :body_json bind variable is present in the pl/sql (and the pl/sql is valid) it'll work.
@@ -137,7 +137,7 @@ BEGIN
 END;
 ```
 
-[^1]: Although you can store JSON in the Oracle database as `JSON`, `VARCHAR2`, `CLOB`, and `BLOB`, ORDS uses the `CLOB` data type, to ensure backwards compatibility with earlier releases of the Oracle database. 
+> [^1]: Although you can store JSON in the Oracle database as `JSON`, `VARCHAR2`, `CLOB`, and `BLOB`, ORDS uses the `CLOB` data type, to ensure backwards compatibility with earlier releases of the Oracle database. 
 ### 3.1.3 About the :content_type Parameter
 
 The :content_type implicit parameter provides the value of the Content-Type request header supplied with the request. If no Content-Type header is present in the request, then a null value is returned.
