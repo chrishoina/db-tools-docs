@@ -137,7 +137,7 @@ BEGIN
 END;
 ```
 
-[^1Although you can store JSON in the Oracle database as `JSON`, `VARCHAR2`, `CLOB`, and `BLOB`, ORDS uses the `CLOB` data type, to ensure backwards compatibility with earlier releases of the Oracle database. ]
+[^1]Although you can store JSON in the Oracle database as `JSON`, `VARCHAR2`, `CLOB`, and `BLOB`, ORDS uses the `CLOB` data type, to ensure backwards compatibility with earlier releases of the Oracle database. 
 ### 3.1.3 About the :content_type Parameter
 
 The :content_type implicit parameter provides the value of the Content-Type request header supplied with the request. If no Content-Type header is present in the request, then a null value is returned.
