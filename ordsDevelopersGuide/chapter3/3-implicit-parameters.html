@@ -1,0 +1,557 @@
+<h1 id="implicit-parameters">3 Implicit Parameters</h1>
+<p>This chapter describes the implicit parameters used in REST service
+handlers that are not explicitly declared. Oracle REST Data Services
+(ORDS) adds these parameters automatically to the resource handlers.</p>
+<h2 id="list-of-implicit-parameters">3.1 List of Implicit
+Parameters</h2>
+<p>The following table lists the implicit parameters:</p>
+<p>Note:Parameter names are case sensitive. For example, :CURRENT_USER
+is not a valid implicit parameter.</p>
+<p>Table 3-1 List of Implicit Parameters</p>
+<table>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 18%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Access Mode</th>
+<th>HTTP Header</th>
+<th>Description</th>
+<th>Introduced</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>:body</td>
+<td>BLOB</td>
+<td>IN</td>
+<td>N/A</td>
+<td>Specifies the body of the request as a temporary BLOB.</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>:body_text</td>
+<td>CLOB</td>
+<td>IN</td>
+<td>N/A</td>
+<td>Specifies the body of the request as a temporary CLOB.</td>
+<td>18.3</td>
+</tr>
+<tr>
+<td>:body_json</td>
+<td>CLOB</td>
+<td>IN</td>
+<td>N/A</td>
+<td>Specifies the body of the request as a temporary CLOB in JSON
+format.</td>
+<td>24.1</td>
+</tr>
+<tr>
+<td>:content_type</td>
+<td>VARCHAR</td>
+<td>IN</td>
+<td>Content-Type</td>
+<td>Specifies the MIME type of the request body, as indicated by the
+Content-Type request header.</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>:current_user</td>
+<td>VARCHAR</td>
+<td>IN</td>
+<td>N/A</td>
+<td>Specifies the authenticated user for the request. If no user is
+authenticated, then the value is set to null.</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>:forward_location</td>
+<td>VARCHAR</td>
+<td>OUT</td>
+<td>X-ORDS-FORWARD-LOCATION</td>
+<td>Specifies the location where Oracle REST Data Services must forward
+a GET request to produce the response for this request.</td>
+<td>18.3</td>
+</tr>
+<tr>
+<td>:fetch_offset</td>
+<td>NUMBER</td>
+<td>IN</td>
+<td>N/A</td>
+<td>Specifies the zero-based offset of the first row to be displayed on
+a page.</td>
+<td>18.3</td>
+</tr>
+<tr>
+<td>:fetch_size</td>
+<td>NUMBER</td>
+<td>IN</td>
+<td>N/A</td>
+<td>Specifies the maximum number of rows to be retrieved on a page.</td>
+<td>18.3</td>
+</tr>
+<tr>
+<td>:page_offset</td>
+<td>NUMBER</td>
+<td>IN</td>
+<td>N/A</td>
+<td>Specifies the zero based page offset in a paginated request. Note:
+The :page_offset parameter is deprecated. Use :row_offset parameter
+instead.</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>:page_size</td>
+<td>NUMBER</td>
+<td>IN</td>
+<td>N/A</td>
+<td>Specifies the maximum number of rows to be retrieved on a page.
+Note: The :page_size parameter is deprecated. Use :fetch_size parameter
+instead.</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>:row_offset</td>
+<td>NUMBER</td>
+<td>IN</td>
+<td>N/A</td>
+<td>Specifies the one-based index of the first row to be displayed in a
+paginated request.</td>
+<td>3.0</td>
+</tr>
+<tr>
+<td>:row_count</td>
+<td>NUMBER</td>
+<td>IN</td>
+<td>N/A</td>
+<td>Specifies the one-based index of the last row to be displayed in a
+paginated request.</td>
+<td>3.0</td>
+</tr>
+<tr>
+<td>:status_code</td>
+<td>NUMBER</td>
+<td>OUT</td>
+<td>X-ORDS-STATUS-CODE</td>
+<td>Specifies the HTTP status code for the request.</td>
+<td>18.3</td>
+</tr>
+</tbody>
+</table>
+<h3 id="about-the-body-parameter">3.1.1 About the :body parameter</h3>
+<p>The :body implicit parameter is used in the resource handlers to
+receive the contents of the request body as a temporary BLOB.</p>
+<p>Note:Only POST or PUT requests can have a request body. The HTTP
+specification does not permit request bodies on GET or DELETE
+requests.</p>
+<p>Example 3-1 Example The following example illustrates a PL/SQL block
+that stores the request body in a database table:</p>
+<p>begin insert into tab (content) values (:body); end;</p>
+<p>Note:</p>
+<p>The :body implicit parameter must be dereferenced exactly once in a
+PL/SQL block. If it is dereferenced more than once, then the second and
+subsequent dereferences will appear to be empty. This is because the
+client sends the request body only once. If you need this value more
+than once, then assign it to a local variable, and dereference the local
+variable instead.</p>
+<p>You can use either one of the implicit parameters :body or
+:body_text. Otherwise, the PL/SQL block displays an error message
+“Duplicate steam parameter’’.</p>
+<p>If you use either :body or :body_text, then you cannot use :bind
+notation to read attributes of the JSON payload of the request.</p>
+<p>The following example will not work as intended because it
+dereferences the :body parameter twice:</p>
+<p>begin insert into tab1(content) values (:body); – request body will
+be inserted insert into tab2(content) values (:body); – an empty blob
+will be inserted end;</p>
+<p>To avoid this limitation, the :body parameter value must be assigned
+to a local PL/SQL variable before it is used. This enables the local
+variable to be dereferenced more than once:</p>
+<p>declare l_content blob := :body; begin insert into tabl(content)
+values(l_content); insert into tab2(content) values(l_content); end;</p>
+<h3 id="about-the-body_text-parameter">3.1.2 About the :body_text
+parameter</h3>
+<p>The :body_text implicit parameter is used in the resource handlers to
+receive the contents of the request body as a temporary CLOB. Typically,
+the content of the request body is textual (for example JSON or HTML
+content) and so, receiving the request body as a CLOB saves the resource
+handler author from the effort of converting the :body BLOB parameter to
+a CLOB instance.</p>
+<p>Note::body_text implicit parameter must only be dereferenced once
+inside the entire PL/SQL block. If you need this value more than once,
+assign it to a local variable, and dereference the local variable
+instead.</p>
+<p>You can use either one of the implicit parameters :body or
+:body_text. Otherwise, the PL/SQL block displays an error message
+“Duplicate steam parameter’’.</p>
+<p>It is recommended to use :body_text ( a character representation )
+rather than :body ( a binary representation ) particularly where the
+PL/SQL block uses JSON functions to process the request body
+efficiently.</p>
+<h3 id="about-the-body_json-parameter">3.1.2 About the :body_json
+parameter</h3>
+<p>The <code>:body_json</code> implicit parameter can be used in
+Resource Handlers to receive <code>multipart/form-data</code>
+<code>POST</code> requests where multiple files are expected to be
+processed <em>and</em> form data should be formatted as a JSON string
+(<em>as a CLOB data type</em>)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<blockquote>
+
+</blockquote>
+<p>When the<code>:body_json</code> implicit parameter is included for
+Resource Handlers that process multiple files, the
+<code>:body_json</code> implicit parameter must be invoked. The
+<code>:body_json</code> parameter can be invoked in various ways, such
+as:</p>
+<ul class="incremental">
+<li>The <code>DBMS_OUTPUT</code> package such as
+<code>dbms_output.put_line(:body_json);</code></li>
+<li>The hypertext procedures (htp) and functions (htf) packages, such as
+in <code>htp.print(:body_json);</code></li>
+<li>Assigning the <code>:body_json</code> implicit parameter as
+variable, e.g. l_body_json <code>:= :body_json;</code></li>
+</ul>
+<blockquote>
+<p><strong>NOTE:</strong> There is no specific requirement to assign
+<code>:body_json</code> to a local variable. Similarly, there is no
+requirement to re-use the local variable, should you choose to assign
+one.</p>
+</blockquote>
+<h4 id="example">Example</h4>
+<p>A table (<code>DEMO_TABLE</code>) has been created with the following
+attributes:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> ORDSDEMO.DEMO_TABLE </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    ( </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>     <span class="kw">ID</span>              <span class="dt">NUMBER</span> (<span class="op">*</span>,<span class="dv">0</span>) <span class="kw">GENERATED</span> <span class="kw">BY</span> <span class="kw">DEFAULT</span> <span class="kw">AS</span> IDENTITY </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        ( <span class="kw">START</span> <span class="kw">WITH</span> <span class="dv">1</span> <span class="kw">CACHE</span> <span class="dv">20</span> )  <span class="kw">NOT</span> <span class="kw">NULL</span> , </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>     FILE_NAME       <span class="dt">VARCHAR2</span> (<span class="dv">200</span>) , </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>     FILE_BODY       <span class="dt">BLOB</span> , </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>     CONTENT_TYPE    <span class="dt">VARCHAR2</span> (<span class="dv">200</span>) , </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>     FILE_VISIBILITY <span class="dt">VARCHAR2</span> (<span class="dv">10</span>) , </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>     SUBMITTED_BY    <span class="dt">VARCHAR2</span> (<span class="dv">200</span>) , </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>     SUBMITTED_ON    <span class="dt">TIMESTAMP</span> <span class="kw">DEFAULT</span> <span class="fu">systimestamp</span> </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    ) </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">TABLESPACE</span> <span class="kw">DATA</span> </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">LOGGING</span> </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>;</span></code></pre></div>
+<blockquote>
+<p><strong>NOTE:</strong> Columns such as <code>FILE_VISIBILITY</code>,
+<code>SUBMITTED_BY</code>, and <code>SUBMITTED_ON</code> are for
+<em>demonstration purposes only</em>. They are not required.</p>
+</blockquote>
+<p>An ORDS Endpoint has been created (with the below Resource Handler
+code).</p>
+<ul class="incremental">
+<li>The endpoint expects multiple files and form data <em>in a
+<code>JSON</code> format</em> (i.e., the use of the
+<code>:body_json</code> implicit parameter).</li>
+<li>The <code>ORDS.BODY_FILE_COUNT</code> function will be used to count
+the total files in the <code>POST</code> request.</li>
+<li>The <code>ORDS.GET_BODY_FILE</code> procedure will be used to store,
+in session, the files.</li>
+</ul>
+<p>The following code example then performs an <code>INSERT</code> on
+the <code>DEMO_TABLE</code> and relies upon various HTP procedures to
+“print” the results to a user, client, or application.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">DECLARE</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    L_PARAMETER_NAME  <span class="dt">VARCHAR2</span>(<span class="dv">4000</span>);</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    L_FILE_NAME       <span class="dt">VARCHAR2</span>(<span class="dv">4000</span>);</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    L_CONTENT_TYPE    <span class="dt">VARCHAR2</span>(<span class="dv">200</span>);</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    L_FILE_BODY       <span class="dt">BLOB</span>;</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    L_FILE_VISIBILITY <span class="dt">CLOB</span>;</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    L_SUBMITTED_BY    <span class="dt">CLOB</span>;</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    L_SUBMITTED_BY <span class="op">:=</span> JSON_VALUE(<span class="ch">:BODY_JSON</span>, <span class="st">&#39;$.submitted_by&#39;</span>);</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    L_FILE_VISIBILITY <span class="op">:=</span> JSON_VALUE(<span class="ch">:BODY_JSON</span>, <span class="st">&#39;$.file_visibility&#39;</span>);</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    HTP.PARAGRAPH;</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    HTP.PRINT(<span class="st">&#39;Submitted By: &#39;</span> <span class="op">||</span> L_SUBMITTED_BY);</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    HTP.BR;</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    HTP.PARAGRAPH;</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    HTP.PRINT(<span class="st">&#39;File visibility status: &#39;</span> <span class="op">||</span> L_FILE_VISIBILITY);</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    HTP.BR;</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">FOR</span> I <span class="kw">IN</span> <span class="dv">1</span><span class="op">..</span>ORDS.BODY_FILE_COUNT <span class="cf">LOOP</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        ORDS.GET_BODY_FILE(</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>            P_FILE_INDEX     <span class="op">=&gt;</span> I,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>            P_PARAMETER_NAME <span class="op">=&gt;</span> L_PARAMETER_NAME,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>            P_FILE_NAME      <span class="op">=&gt;</span> L_FILE_NAME,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>            P_CONTENT_TYPE   <span class="op">=&gt;</span> L_CONTENT_TYPE,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>            P_FILE_BLOB      <span class="op">=&gt;</span> L_FILE_BODY</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        );</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        <span class="kw">INSERT</span> <span class="kw">INTO</span> DEMO_TABLE (</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>            FILE_NAME,</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>            FILE_BODY,</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>            CONTENT_TYPE,</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>            FILE_VISIBILITY,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>            SUBMITTED_BY</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        ) <span class="kw">VALUES</span> ( L_FILE_NAME,</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>                   L_FILE_BODY,</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>                   L_CONTENT_TYPE,</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>                   L_FILE_VISIBILITY,</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>                   L_SUBMITTED_BY );</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>        HTP.PARAGRAPH;</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        HTP.PRINT(<span class="st">&#39;Inserted File: &#39;</span> <span class="op">||</span> L_FILE_NAME);</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">END</span> <span class="cf">LOOP</span>;</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="cf">END</span>;</span></code></pre></div>
+<p>To test this <code>:body_json</code> implicit parameter a curl
+command such as the one below may be used:</p>
+<pre class="shell"><code>curl --location &#39;https://localhost:8080/ords/ordsdemo/demo_api/demo&#39; \
+--form &#39;file_one=@&quot;/Users/file_one.txt&quot;&#39; \
+--form &#39;file_two=@&quot;/Users/ile_two.txt&quot;&#39; \
+--form &#39;submitted_by=&quot;chris&quot;&#39; \
+--form &#39;file_visibility=&quot;public&quot;&#39;</code></pre>
+<p>Accordingly, a client may respond with the following:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="dt">&gt;</span>Submitted By: chris</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="ot"> </span><span class="dt">/&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="dt">&gt;</span>File visibility status: public</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="ot"> </span><span class="dt">/&gt;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="dt">&gt;</span>Inserted File: demo-3.sql</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="dt">&gt;</span>Inserted File: demo-2.sql</span></code></pre></div>
+<p>Along with an update to target <code>DEMO_TABLE</code>:</p>
+<table>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 13%" />
+<col style="width: 16%" />
+<col style="width: 20%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">ID FILE_NAME</th>
+<th style="text-align: center;">FILE_BODY</th>
+<th style="text-align: center;">CONTENT_TYPE</th>
+<th style="text-align: center;">FILE_VISIBILITY</th>
+<th style="text-align: center;">SUBMITTED_BY</th>
+<th style="text-align: center;">SUBMITTED_ON</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">144</td>
+<td style="text-align: center;">demo-3.sql</td>
+<td style="text-align: center;">REVDTEFS…</td>
+<td style="text-align: center;">application/x-sql</td>
+<td style="text-align: center;">public</td>
+<td style="text-align: center;">chris</td>
+</tr>
+<tr>
+<td style="text-align: center;">145</td>
+<td style="text-align: center;">demo-2.sql</td>
+<td style="text-align: center;">Q1JFQVRF…</td>
+<td style="text-align: center;">application/x-sql</td>
+<td style="text-align: center;">public</td>
+<td style="text-align: center;">chris</td>
+</tr>
+</tbody>
+</table>
+<h3 id="about-the-content_type-parameter">3.1.3 About the :content_type
+Parameter</h3>
+<p>The :content_type implicit parameter provides the value of the
+Content-Type request header supplied with the request. If no
+Content-Type header is present in the request, then a null value is
+returned.</p>
+<h3 id="about-the-current_user-parameter">3.1.4 About the :current_user
+parameter</h3>
+<p>The :current_user implicit parameter provides the identity of the
+user authenticated for the request.</p>
+<p>Note:In a scenario, where the user is not authenticated, the value is
+set to null. For example, if the request is for a public resource, then
+the value will be set to null.</p>
+<h3 id="about-the-status_code-parameter">3.1.5 About the :status_code
+parameter</h3>
+<p>The :status_code implicit parameter enables a resource handler to
+indicate the HTTP status code value to include in a response. The value
+must be one of the numeric values defined in the HTTP Specification
+document.</p>
+<h3 id="about-the-forward_location-parameter">3.1.6 About the
+:forward_location parameter</h3>
+<p>The :forward_location implicit parameter provides a mechanism for
+PL/SQL based resource handlers to produce a response for a request.</p>
+<p>Consider a POST request that results in the creation of a new
+resource. Typically, the response of a POST request for REST APIs
+contains the location of the newly created resource (in the Location
+response header) along with the representation of the new resource. The
+presence of the Location header in the response indicates that there
+must be a GET resource handler that can produce a response for the
+specified location.</p>
+<p>Instead of applying logic to the POST resource handler to render the
+representation of the new resource in the response, the resource handler
+can delegate that task to the existing GET Resource Handler.</p>
+<p>The following resource handler defines a POST handler that delegates
+the generation of the response to a GET resource handler:</p>
+<p>ords.define_handler( p_module_name =&gt; ‘tickets.collection’,
+p_pattern =&gt; ‘.’,<br />
+p_method =&gt; ‘POST’, p_mimes_allowed =&gt; ‘application/json’,
+p_source_type =&gt; ords.source_type_plsql, p_source =&gt; ’ declare
+l_owner varchar2(255); l_payload clob; l_id number; begin l_payload :=
+:body_text; l_owner := :current_user; l_id := ticket_api.create_ticket(
+p_json_entity =&gt; l_payload, p_author =&gt; l_owner );
+:forward_location := ’‘./’’ || l_id; :status_code := 201; end; ’ );</p>
+<p>Where:</p>
+<pre><code>The ords.define_handler API is used to add a POST handler to an existing resource module named tickets.collection.
+
+The p_pattern with value &#39;.&#39; indicates that the POST handler should be bound to the root resource of the resource module. If the base path of the tickets.collection&#39; is /tickets/, then the POST handler is bound to the /tickets/ URL path.
+
+The p_mimes_allowed value indicates that the POST request must have a Content-Type header value of application/json&#39;.
+
+The p_source_type value indicates that the source of the POST handler is a PL/SQL block.
+
+The p_source value contains the source of the PL/SQL block:
+
+Where:
+
+Note:The :body_text implicit parameter is assigned to a local variable, so that it can be dereferenced more than once.
+
+    The identity of the user, making the POST request, is determined from the :current_user implicit parameter.
+
+    The PL/SQL block, delegates the task of storing the request payload to a PL/SQL package level function. The PL/SQL block should only contain logic to bridge from the HTTP request to the PL/SQL package invocation.
+
+    Note:When all the data modification operations are wrapped in a PL/SQL API, the PL/SQL block can be independently unit tested. Long and complicated PL/SQL blocks are an anti-pattern indicative of code that is difficult to test and maintain.
+
+    The PL/SQL package level function returns the ID of the newly created resource.
+
+    The :forward_location implicit parameter is assigned the value of &#39;./&#39; || l_id. For example, if the value of l_id is 4256, then the value of :forward_location is /tickets/4256 .
+
+    When ORDS evaluates the preceding PL/SQL block and checks the value assigned to the :forward_location implicit parameter, it initiates a GET request against the specified location (for example, /tickets/4256) and return the response generated by the GET request as the response of the POST request. In addition, ORDS includes a location response header with the fully resolved URL of the :forward_location value.
+
+    The :status_code implicit parameter is assigned the HTTP response status code value. The 201 (Created) status code indicates that a new resource is created. This value will override the status code generated by the GET request.</code></pre>
+<h3 id="about-the-pagination-implicit-parameters">3.1.7 About the
+pagination implicit parameters</h3>
+<p>The following table lists the pagination implicit parameters:</p>
+<p>Note:Oracle REST Data Services reserves the use of the query
+parameters, page, offset, and limit. It is not permitted to define REST
+services that use named bind parameters with any of the preceding query
+parameter names. Alternatively, REST services must use the appropriate
+pagination implicit parameters defined in the following table:</p>
+<p>Table 3-2 Pagination Implicit Parameters Name Description Status</p>
+<p>:page_offset</p>
+<p>Specifies the zero based page offset in a pagination request.</p>
+<p>Deprecated</p>
+<p>:page_size</p>
+<p>Specifies the maximum number of rows to be retrieved on a page.</p>
+<p>Deprecated</p>
+<p>:row_offset</p>
+<p>Specifies the index of the first row to be displayed in a pagination
+request.</p>
+<p>Not Recommended</p>
+<p>:row_count</p>
+<p>Specifies the index of the last row to displayed in a pagination
+request.</p>
+<p>Not Recommended</p>
+<p>:fetch_offset</p>
+<p>Specifies the zero based index of the first row to be displayed on a
+page.</p>
+<p>Recommended</p>
+<p>:fetch_size</p>
+<p>Specifies the maximum number of rows to be retrieved on a page.</p>
+<p>Recommended</p>
+<h4 id="about-the-page_offset-parameter">3.1.7.1 About the :page_offset
+parameter</h4>
+<p>The :page_offset implicit parameter is provided for backward
+compatibility, so it is used only with source_type_query source type
+resource handlers.</p>
+<p>Note:</p>
+<pre><code>The source_type_query source type is deprecated, instead use the source_type_collection feed parameter.
+
+The :page_offset implicit parameter is deprecated, instead use the :row_offset implicit parameter.</code></pre>
+<h4 id="about-the-page_size-parameter">3.1.7.2 About the :page_size
+parameter</h4>
+<p>The :page_size implicit parameter is used to indicate the maximum
+number of rows to be retrieved on a page. :page_size parameter is
+provided for backward compatibility. This parameter is deprecated,
+instead use :fetch_size implicit parameter.</p>
+<h4 id="about-the-row_offset-parameter">3.1.7.3 About the :row_offset
+parameter</h4>
+<p>The :row_offset implicit parameter indicates the number of the first
+row to be displayed on a page. The :row_offset implicit parameter is
+used when you are using both a wrapper pagination query and row_number()
+(used in Oracle 11g and earlier releases). Starting Oracle 12c or later
+releases, Oracle recommends using the :fetch_offset implicit parameter
+and a row limiting clause instead of the :row_offset parameter.</p>
+<h4 id="about-the-row_count-parameter">3.1.7.4 About the :row_count
+parameter</h4>
+<p>The :row_count implicit parameter is used to indicate the number of
+rows to be displayed on a page. The :row_count value is the value of the
+sum of :row_offset and the pagination size. The :row_count implicit
+parameter is useful when implementing pagination using a wrapper
+pagination query and row_number()method that was used in Oracle database
+11g and earlier releases. Starting Oracle Database release 12c or later,
+Oracle recommends that you use :fetch_size parameter and a row limiting
+clause instead.</p>
+<h4 id="about-the-fetch_offset-parameter">3.1.7.5 About the
+:fetch_offset parameter</h4>
+<p>The :fetch_offset implicit parameter is used to indicate the zero
+based offset of the first row to display in a given page. The
+:fetch_offset implicit parameter is used when you implement pagination
+using a row limiting clause, which is recommended for use with Oracle
+12c and later releases.</p>
+<h4 id="about-the-fetch_size-parameter">3.1.7.6 About the :fetch_size
+parameter</h4>
+<p>The :fetch_size implicit parameter is used to indicate the maximum
+number of rows to retrieve on a page. ORDS always sets the value of
+:fetch_size to the pagination size plus one. The presence or absence of
+the extra row helps ORDS in determining if there is a subsequent page in
+the results or not.</p>
+<p>Note:The extra row that is queried is never displayed on the
+page.</p>
+<h4 id="about-automatic-pagination">3.1.7.7 About Automatic
+pagination</h4>
+<p>This section describes the automatic pagination process. If a GET
+resource handler source type, source_type_collection_feed or
+source_type_query has a non zero pagination size (p_items_per_page) and
+the source of the GET resource handler does not dereference any of the
+implicit pagination parameters discussed in the preceding sections, then
+ORDS automatically wraps the query in a pagination clause to constrain
+the query results to include only the values from the requested page.
+With automatic pagination, the resource handler author needs to specify
+only the pagination size, and ORDS automatically handles the remaining
+effort in paginating the resource.</p>
+<p>Note:All resource modules have a default pagination size
+(p_items_per_page) of 25. So, by default automatic pagination is
+enabled.</p>
+<h4 id="about-manual-pagination">3.1.7.8 About Manual pagination</h4>
+<p>This section describes the manual pagination process. In some
+scenarios, a GET resource handler needs to perform pagination on its own
+rather than delegating the pagination process to ORDS. In such cases,
+the source of the GET resource handler will dereference one or more
+implicit pagination parameters discussed in the preceding sections.</p>
+<p>Note:The GET resource handler must specify the desired pagination
+size so that ORDS can correctly calculate the required values for the
+implicit pagination parameters.</p>
+<p>Examples</p>
+<p>Manual pagination example using row limiting clause</p>
+<p>The following example defines a REST service that uses a row limiting
+clause to paginate the query result set. This is the recommended way to
+implement manual pagination:</p>
+<p>begin ords.define_service( p_module_name =&gt; ‘example.paging’,
+p_base_path =&gt; ‘/example/’, p_pattern =&gt; ‘/paged’,
+p_items_per_page =&gt; 7, p_source =&gt; ‘select * from emp e order by
+empno desc offset :fetch_offset rows fetch next :fetch_size rows only’
+); commit; end;</p>
+<p>Manual pagination example using row_number() method</p>
+<p>The following example defines a REST service that uses a wrapper
+query and row_number() method. This approach is not recommended.</p>
+<p>begin ords.define_service( p_module_name =&gt; ‘example.paging’,
+p_base_path =&gt; ‘/example/’, p_pattern =&gt; ‘/paged’,
+p_items_per_page =&gt; 7, p_source =&gt; ‘select * from (select q_.* ,
+row_number() over (order by 1) rn__ from (select * from emp e order by
+empno desc) q_ )where rn__ between :row_offset and :row_count’ );
+commit; end;</p>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Although you can store JSON in the Oracle database as
+<code>JSON</code>, <code>VARCHAR2</code>, <code>CLOB</code>, and
+<code>BLOB</code>, ORDS uses the <code>CLOB</code> data type, to ensure
+backward compatibility with earlier releases of the Oracle database.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
