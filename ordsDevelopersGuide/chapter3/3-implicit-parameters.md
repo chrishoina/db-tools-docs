@@ -170,6 +170,26 @@ curl --location 'https://localhost:8080/ords/ordsdemo/demo_api/demo' \
 --form 'file_visibility="public"'
 ```
 
+Accordingly, a client may respond with the following:
+
+```html
+<p>Submitted By: chris
+<br />
+<p>File visibility status: public
+<br />
+<p>Inserted File: demo-3.sql
+<p>Inserted File: demo-2.sql
+```
+
+Along with an update to target `DEMO_TABLE`:
+
+| ID FILE_NAME| FILE_BODY | CONTENT_TYPE | FILE_VISIBILITY | SUBMITTED_BY | SUBMITTED_ON |
+| :------------: | :---------: | :------------: | :---------------: | :------------: | :------------: |
+| 144          | demo-3.sql | REVDTEFS... | application/x-sql | public | chris |
+| 145          | demo-2.sql | Q1JFQVRF... | application/x-sql | public | chris |
+
+<br></br>
+
 > [^1]: Although you can store JSON in the Oracle database as `JSON`, `VARCHAR2`, `CLOB`, and `BLOB`, ORDS uses the `CLOB` data type, to ensure backward compatibility with earlier releases of the Oracle database. 
 
 ### 3.1.3 About the :content_type Parameter
