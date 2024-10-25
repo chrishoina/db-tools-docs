@@ -77,6 +77,8 @@ It is recommended to use :body_text ( a character representation ) rather than :
 
 The `:body_json` implicit parameter can be used in Resource Handlers to receive `multipart/form-data` `POST` requests where multiple files are expected to be processed *and* form data should be formatted as a JSON string (*as a CLOB data type*)[^1].
 
+> [^1]: Although you can store JSON in the Oracle database as `JSON`, `VARCHAR2`, `CLOB`, and `BLOB`, ORDS uses the `CLOB` data type, to ensure backward compatibility with earlier releases of the Oracle database. 
+
 When the`:body_json` implicit parameter is included for Resource Handlers that process multiple files, the `:body_json` implicit parameter must be invoked.
 The `:body_json` parameter can be invoked in various ways, such as:
 
@@ -187,10 +189,6 @@ Along with an update to target `DEMO_TABLE`:
 | :------------: | :---------: | :------------: | :---------------: | :------------: | :------------: |
 | 144          | demo-3.sql | REVDTEFS... | application/x-sql | public | chris |
 | 145          | demo-2.sql | Q1JFQVRF... | application/x-sql | public | chris |
-
-<br></br>
-
-> [^1]: Although you can store JSON in the Oracle database as `JSON`, `VARCHAR2`, `CLOB`, and `BLOB`, ORDS uses the `CLOB` data type, to ensure backward compatibility with earlier releases of the Oracle database. 
 
 ### 3.1.3 About the :content_type Parameter
 
