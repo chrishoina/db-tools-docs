@@ -170,7 +170,7 @@ curl --location 'https://localhost:8080/ords/ordsdemo/demo_api/demo' \
 --form 'file_visibility="public"'
 ```
 
-> [^1]: Although you can store JSON in the Oracle database as `JSON`, `VARCHAR2`, `CLOB`, and `BLOB`, ORDS uses the `CLOB` data type, to ensure backwards compatibility with earlier releases of the Oracle database. 
+> [^1]: Although you can store JSON in the Oracle database as `JSON`, `VARCHAR2`, `CLOB`, and `BLOB`, ORDS uses the `CLOB` data type, to ensure backward compatibility with earlier releases of the Oracle database. 
 
 ### 3.1.3 About the :content_type Parameter
 
