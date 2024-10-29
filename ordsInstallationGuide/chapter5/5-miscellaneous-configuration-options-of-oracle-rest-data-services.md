@@ -13,20 +13,30 @@ This section describes how to configure Jetty server for additional functionalit
 
 [^1]: [About Jetty Custom Request Log format codes and syntax](https://javadoc.io/doc/org.eclipse.jetty/jetty-server/10.0.24/org.eclipse.jetty.server/org/eclipse/jetty/server/CustomRequestLog.html)
 
-In most cases, the ORDS-provided Access Log data may be sufficient. However, should you choose to create your own custom Access Log, you may do so with Jetty XML files. [^2]
+In most cases, the ORDS-provided Access Log data should be sufficient. However, should you choose to create your own custom Access Log, you may do so with Jetty XML files. [^2]
 
-[^2]: Jetty XML files can be a simpler way for you to add additional configuration settings to your Jetty server without having to create a custom Jetty Module. For a deeper dive on Jetty modules and customization, [see here](https://jetty.org/docs/jetty/12/operations-guide/modules/index.html).
- 
+[^2]: Jetty XML files can be a simpler way for you to add additional configuration settings to your Jetty server without having to create a custom Jetty Module. For a deeper dive on Jetty modules and customizations, [see here](https://jetty.org/docs/jetty/12/operations-guide/modules/index.html).
 
-When ORDS is running in a standalone mode, the Eclipse Jetty Home is $ {configuration.directory}/global/standalone/. The Jetty XML syntax can be used to configure the Jetty Server for additional functionality by placing configuration XML files in the Jetty Home etc directory. The capability to do this is provided through the Eclipse Jetty server product.
+When ORDS is running in Standalone mode (i.e., relying on the embedded Jetty server as its web server), ORDS can detect and "pick-up" user-provided configuration settings found in the `[ORDS configuration directory]/global/standalone/etc` directory.
+
+> **NOTE:** You must create the `[ORDS configuration directory]/global/standalone/etc` directory. The `/etc` directory is not part of the standard ORDS configuration.
+
+If you are familiar with Jetty, then just know that ORDS `/etc` directory is analagous to the `JETTY_BASE` directory, present in a standard Jetty deployment.[^3]
+
+[^3]: Its not crucial for you to understand how Jetty works under the covers. At a very, very high-level: there will always be a `JETTY_BASE` as well as a `JETTY_HOME` directory. In a standard Jetty installation, JETTY_BASE are where your modules, and an customization lives. While, `JETTY_HOME` are where the Jetty binaries live. For the purposes of ORDS the `[ORDS configuration directory]/global/standalone/etc` can be looked at as your `JETTY_BASE`. That is where all you'll place `JETTY.XML` files, like the ones you see in this section's examples.
 
 ### Examples
 
-This section provides examples of augmenting Eclipse Jetty Server behaviour for additional functionalily. The following examples show how you can change Eclipse Jetty Server behaviour and not the ORDS behaviour. The location for Jetty XML files to be used by ORDS at the startup in standalone mode is: 
+The following section provides two examples for augmenting the standard Eclipse Jetty Server for additional functionalily.
+
+>**NOTE:** The following XML files will change the Eclipse Jetty Server behaviour and not the ORDS behaviour. 
+
+Prior to saving the below files, create an `/etc` folder located at:
 
 ```sh
-${configuration.directory}/global/standalone/etc/\
+[ORDS configuration directory]/global/standalone/etc\
 ```
+![image](./images/Screenshot%202024-10-29%20at%2012.31.17 PM.png " ")
 
 #### Example 5-2 Using a specific access log format
 
