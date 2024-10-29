@@ -52,4 +52,4 @@ JWT access tokens which can be validated using this profile, authorize the JWT s
 
 ## Update
 
-## Verify 
+## Verify
