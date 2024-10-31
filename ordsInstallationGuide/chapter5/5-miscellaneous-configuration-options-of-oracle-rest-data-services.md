@@ -49,7 +49,7 @@ The access log behavior will differ depending on your configuration settings. Be
 
 >**NOTE:** The inclusion of these `XML` files at runtime changes Jetty server behavior and not ORDS behavior.
 
-**Jetty access log XML file IS included and `standalone.access.log location` IS NOT set**
+##### Scenario 1: a `jetty-access-log.xml` file IS included and `standalone.access.log location` IS NOT set
 
 In this first scenario, you do not need to "set" the `standalone.access.log` location. As can be seen in the below image:
 
@@ -71,7 +71,7 @@ Place the following `jetty-access-log.xml`[^4] file into that `/etc` folder.
 
 ![The etc folder with the jetty access log folder.](./images/etc-folder-with-jetty-access-log-file.png " ")
 
-The `jetty-access-log.xml` is comprised of the following:
+This `jetty-access-log.xml` file is comprised of the following properties:
 
 [^4]: This file can be named `[anything].xml`. The format, contents, and arguments therein are what are important.
 
@@ -105,14 +105,14 @@ Pay special attention to the `<Arg></Arg>` tags. The first *`<Arg>`ument* inform
 Once you have saved this file, you may then start ORDS normally (i.e., with the `ords serve` command). ORDS will then save and append Jetty (Standalone) access log information to the `access.log` file. You can later view the results and formatting of this log at the location you specified:
 
 ![The new access log in the access log folder.](./images/new-access-log-in-file-location.png " ")
-*An example access log file.*
+<sup>*An example access log file.*</sup>
 
 ![The format of the access log.](./images/reviewing-the-content-of-the-access-log-scenario-one.png " ")
 *Reviewing the contents of the access log file.*
 
 > **NOTE:** You can remove this file from your ORDS configuration prior to the next time ORDS is started, and it will have no impact on your service.
 
-**Jetty access log XML file IS included and `standalone.access.log location` IS set**
+**A `jetty-access-log.xml` file IS included and `standalone.access.log location` IS set**
 
 In this scenario you will have already completed the following two steps:
 
