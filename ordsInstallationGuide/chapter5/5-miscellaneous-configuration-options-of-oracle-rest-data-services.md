@@ -183,13 +183,13 @@ This seems to be the most logical and convenient method for saving Standalone ac
 
 <!-- #### Example 5-2 Using a specific access log format
 
-When the ORDS `standalone.access.log` configuration setting has been set, ORDS access logs will be saved to the named location. For instance, the following example sets an access log location at `/user/ords_access_log/access.log`.
+When the ORDS `standalone.access.log` configuration setting is set, ORDS access logs are saved to the named location. For instance, the following example sets an access log location at `/user/ords_access_log/access.log`.
 
 *An example access log location setting.*
 
 You can always check ORDS settings by issuing the `ords config list --include-defaults` command.
 
-In this example, you can see that access logs will be saved in the `/ords_access_logs folder`. Setting the access log location will automatically enables access logging.
+In this example, you can see that access logs will be saved in the `/ords_access_logs folder`. Setting the access log location will automatically enable access logging.
 
 /global/standalone/etc/jetty-access-log.xml
 
@@ -212,7 +212,7 @@ class="org.eclipse.jetty.server.handler.RequestLogHandler"> <Set name="requestLo
 
 <!-- #### Example 5-3 Always returning a certain header in the response
 
-Although this can also be achieved through a Load Balancer or Reverse Proxy in front of ORDS. If you want a specific header to be returned in every response from the ORDS server. Then use the following sample code snippet:
+This can also be achieved through a Load Balancer or Reverse Proxy in front of ORDS. If you want a specific header to be returned in every response from the ORDS server. Then use the following sample code snippet:
 /global/standalone/etc/jetty-response.xml
 
 ```xml
