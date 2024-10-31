@@ -45,7 +45,7 @@ In most cases, the ORDS-provided Access Log data should be sufficient. However, 
 
 #### 5.2.3.1.1 Jetty examples
 
-The access log behavior will differ depending on your configuration settings. Below are three possible scenarios for access logs.
+The behavior of the access log will differ depending on your configuration settings. Three possible scenarios for access logs are included.
 
 >**NOTE:** The inclusion of these `XML` files at runtime changes Jetty server behavior and not ORDS behavior.
 
@@ -114,7 +114,7 @@ Once you have saved this file, you may then start ORDS normally (i.e., with the 
 
 ##### Scenario 2: A `jetty-access-log.xml` file IS included and `standalone.access.log` location IS set
 
-In this scenario you will have already completed the following two steps:
+In this scenario, you will have already completed the following two steps:
 
 1. Configured the `standalone.access.log` setting using the ORDS CLI, *and*
 
