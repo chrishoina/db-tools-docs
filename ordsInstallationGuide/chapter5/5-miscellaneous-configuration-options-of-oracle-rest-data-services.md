@@ -10,7 +10,7 @@ When ORDS is in Standalone mode (i.e., relying on the embedded Jetty server as i
 
 If you are familiar with Jetty, then just know that the ORDS `/etc. ` directory is analogous to the `JETTY_BASE` directory, found in a standard Jetty deployment.[^1]
 
-[^1]: It's not crucial for you to have a deep understanding of how Jetty works. At a basic level, just know that there will always be a `JETTY_BASE` as well as a `JETTY_HOME` directory. And, in a standard Jetty installation, `JETTY_BASE` is where your modules and any customization live. While `JETTY_HOME` is where the Jetty binaries live. For the purposes of ORDS, the `[ORDS configuration directory]/global/standalone/etc` directory can be looked at as your `JETTY_BASE`. That is where you'll place `JETTY.XML` files; similar to the ones you'll see in this section's examples. Again, none of this is important for you to know unless, of course, you'd like to learn more about Jetty. 
+[^1]: It's not crucial for you to have a deep understanding of how Jetty works. At a basic level, just know that there will always be a `JETTY_BASE` as well as a `JETTY_HOME` directory. And, in a standard Jetty installation, `JETTY_BASE` is where your modules and any customization live. While `JETTY_HOME` is where the Jetty binaries live. For the purposes of ORDS, the `[ORDS configuration directory]/global/standalone/etc` directory can be looked at as your `JETTY_BASE`. That is where you'll place `JETTY.XML` files; similar to the ones you'll see in this section's examples. Again, none of this is important for you to know unless, of course, you'd like to learn more about Jetty.
 
 ### 5.2.3.1 Jetty Access Logs
 
@@ -35,9 +35,9 @@ After issuing this configuration command, the ORDS CLI will echo back the locati
 
 ![Displaying the access log location using the ords cli.](./images/ords-config-list-showing-access-log-location.png " ")
 
-You will also see a new <property><entry></entry></property> has been saved to your `/global/standalone/settings.xml` file.
+You will also see a new `<entry></entry>` has been saved to your `/global/standalone/settings.xml` file in your ORDS configuration folder.
 
-![]()
+![New entry in the ORDS settings.xml file.](./images/ords-configuration-settings-xml.png " ")
 
 In most cases, the ORDS-provided Access Log data should be sufficient. However, should you choose to create *your own*  custom access log, you may do so with Jetty `XML` files. [^3]
 
@@ -114,7 +114,7 @@ Once you have saved this file, you may then start ORDS normally (i.e., with the 
 
 **Jetty access log XML file IS included and `standalone.access.log location` IS set**
 
-In this scenario you have completed the following:
+In this scenario you will have already completed the following two steps:
 
 1. Configured the `standalone.access.log` setting using the ORDS CLI, *and*
 
@@ -122,20 +122,19 @@ In this scenario you have completed the following:
    *Configuring the `standalone.access.log` location.*  
 
    ![Displaying the access log location using the ords cli.](./images/ords-config-list-showing-access-log-location.png " ")  
-  *Verifying the configuration setting with the ords `config list --include-defaults` command.*
+   *Verifying the configuration setting with the ords `config list --include-defaults` command.*
 
-   
-You will also see a new <property><entry></entry></property> has been saved to your `/global/standalone/settings.xml` file.
+   > **NOTE:** You will also see a new `<entry></entry>` has been saved to your `/global/standalone/settings.xml` file in your ORDS configuration folder.
 
-![]()
+   ![New entry in the ORDS settings.xml file.](./images/ords-configuration-settings-xml.png " ")
 
-3. You have included a `jetty-access-log.xml` file (or whatever file name of your choosing) in the `/etc` folder.  
+2. You have included a `jetty-access-log.xml` file (or whatever file name of your choosing) in the `/etc` folder.  
 
    ![The etc folder with the jetty access log folder.](./images/etc-folder-with-jetty-access-log-file.png " ")
 
-When you execute the `ords serve` command, you'll now see the `standalone.access.log` configuration setting included in the ORDS initialization.
+After executing the `ords serve` command, you'll also see the `standalone.access.log` configuration setting included as ORDS initializes.
 
-![Observing the access log location in the ORDS initialization](./images/standalone-access-setting-in-ords-configuration.png " ") 
+![Observing the access log location in the ORDS initialization](./images/standalone-access-setting-in-ords-configuration.png " ")
 
 You'll also notice *two* versions of the access log files in the `/[access log]` folder location.
 
@@ -145,7 +144,7 @@ One file for the `access.log`, which was created from the `jetty-access-log.xml`
 
 ![An example access log provided by an xml file.](./images/example-jetty-xml-access-log.png " ")
 
-The other will be a log file with the format of: `ords_[log file date].log`.
+The other will be a log file with the format of: `ords_[log file date].log`.  
 
 ![An example access log provided by ords, the standard method.](./images/example-ords-provided-standard-access-log.png " ")
 
@@ -161,9 +160,13 @@ Set the `standalone.access.log` configuration setting with the following command
 
 ```sh
 ords config set standalone.access.log [/Path to the access log location of your choosing]
-```
+```  
 
 ![Setting the access log location using the ords cli.](./images/setting-the-ords-access-log-location.png " ")
+
+  > **NOTE:** You will also see a new `<entry></entry>` has been saved to your `/global/standalone/settings.xml` file in your ORDS configuration folder.
+  >
+  > ![New entry in the ORDS settings.xml file.](./images/ords-configuration-settings-xml.png " ")
 
 Remove and `jetty-access-log.xml` files from your `/etc` folder.
 
@@ -173,7 +176,7 @@ Once you start ords (i.e., `ords serve`) you'll find access logs in your `access
 
 ![Example of a single access log, with date included](./images/single-access-log-file-saved-from-standalone-settings.png)
 
-These and subsequent logs will be saved in the `ords_[log file date].log` format. 
+These and subsequent logs will be saved in the `ords_[log file date].log` format.
 
 This seems to be the most logical and convenient method for saving Standalone access logs, for a few reasons:
 
