@@ -80,7 +80,7 @@ In that folder you will place a `jetty-access-log.xml`[^4] file. Which is compri
 </Configure>
 ```
 
-Pay special attention to the `<Arg></Arg>` tags. The first *`<Arg>`ument* informs Jetty where and how to save the access log file (i.e., save as `access.log` at the location indicated). The second argument specifies the format strings to include in the log file. For a detailed explantion of these format strings, see the [Access](#5.2.3.1-jetty-access-logs) section of this document.
+Pay special attention to the `<Arg></Arg>` tags. The first *`<Arg>`ument* informs Jetty where and how to save the access log file (i.e., save as `access.log` at the location indicated). The second argument specifies the format strings to include in the log file. For a detailed explantion of these format strings, see the [Jetty Access Logs](#5231-jetty-access-logs) section of this document.
 
 [^4]: This file can be named [anything].xml. The format, contents, and arguments therein are what are important.
 
