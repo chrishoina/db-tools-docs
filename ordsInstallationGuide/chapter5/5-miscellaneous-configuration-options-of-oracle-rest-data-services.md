@@ -122,7 +122,7 @@ In this scenario you will have already completed the following two steps:
    <sup>*Configuring the `standalone.access.log` location.*</sup>
 
    ![Displaying the access log location using the ords cli.](./images/ords-config-list-showing-access-log-location.png " ")  
-  <sup>*Verifying the configuration setting with the ords `config list --include-defaults` command.* </sup>
+  <sup>*Verifying the configuration setting with the `ords config list --include-defaults` command.* </sup>
 
 2. You have included a `jetty-access-log.xml` file (or whatever file name of your choosing) in the `/etc` folder.  
 
