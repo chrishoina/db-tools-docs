@@ -29,7 +29,7 @@ ORDS Standalone Access logs will automatically be enabled once an access log loc
 
 After issuing this configuration command, the ORDS CLI will echo back the location. You can also review your configuration settings by executing the `ords config list --include-defaults` command.
 
-![Displaying the access log location using the ords cli.](./images/ords-config-list-command-to-view-access-log-location.png " ")
+![Displaying the access log location using the ords cli.](./images/ords-config-list-showing-access-log-location.png " ")
 
 In most cases, the ORDS-provided Access Log data should be sufficient. However, should you choose to create your own custom Access Log, you may do so with Jetty `XML` files. [^3]
 
@@ -45,21 +45,21 @@ In this first scenario, you do not need to set the `standalone.access.log` locat
 
 ![Standalone access log location not set.](./images/standalone-access-log-location-not-set.png)
 
-*You will* need to create an `/etc` directory in your ORDS configuration folder:
+*You will* need to create an `/etc` directory in your ORDS configuration folder, similar to how you see below:
 
 ```sh
 [ORDS configuration directory]/global/standalone/etc
 ```
 
-An example can be seen below:
+An example:
 
 ![An example etc folder location.](./images/etc-folder-location.png)
 
-Here the `/etc` folder will be nested under the `/standalone` folder. The `/standalone` folder will be nested under `/global`. And `/global` will be nested under your ORDS configuration folder (*your name and absolute folder path will differ*).
+In the above image the `/etc` folder is nested under the `/standalone` folder, the `/standalone` folder is nested under the `/global` folder, and the `/global` folder is nested under the ORDS configuration folder (*your unique configuration folder name and absolute folder paths will differ*).
 
-In that folder you will place a `jetty-access-log.xml`[^4] file. Which is comprised of the following:
+Place the following `jetty-access-log.xml`[^4] file into that `/etc` folder. The `jetty-access-log.xml` is comprised of the following:
 
-```xml
+```xml<copy>
 <?xml version="1.0"?>
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
 <Configure id="Server" class="org.eclipse.jetty.server.Server">
@@ -77,7 +77,7 @@ In that folder you will place a `jetty-access-log.xml`[^4] file. Which is compri
         </Arg>
       </Call>
     </Ref>
-</Configure>
+</Configure></copy>
 ```
 
 Pay special attention to the `<Arg></Arg>` tags. The first *`<Arg>`ument* informs Jetty where and how to save the access log file (i.e., save as `access.log` at the location indicated). The second argument specifies the format strings to include in the log file. For a detailed explantion of these format strings, see the [Jetty Access Logs](#5231-jetty-access-logs) section of this document.
