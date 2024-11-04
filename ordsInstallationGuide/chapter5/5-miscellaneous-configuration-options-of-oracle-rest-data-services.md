@@ -189,10 +189,10 @@ This seems to be the most logical and convenient method for saving Standalone ac
 ### 5.2.3.2 Specifying a header to be returned in every response
 
 > **NOTE:** A Load Balancer or Reverse Proxy can achieve this same result. If your current ORDS deployment consists of either, you may prefer to add header "rules" there instead.
-> 
-> Should you choose to operate ORDS in Standalone mode, you can rely on the Jetty server to provide this header rule. See the [5.2.3.1.1 Jetty examples](#52311-jetty-examples) section of this guide for configuring the `/etc` folder.
 >
-> ![An example etc folder location.](./images/the-etc-folder-location-no-files.png " ")
+>> Should you choose to operate ORDS in Standalone mode, you can rely on the Jetty server to provide this header rule. See the [5.2.3.1.1 Jetty examples](#52311-jetty-examples) section of this guide for configuring the `/etc` folder.
+>>
+>> ![An example etc folder location.](./images/the-etc-folder-location-no-files.png " ")
 
 Once you have created the `/etc` folder, save the following code block as an `XML` file using an easily recognizable file name.  
 
