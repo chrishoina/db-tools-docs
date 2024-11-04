@@ -188,15 +188,13 @@ This seems to be the most logical and convenient method for saving Standalone ac
 
 ### 5.2.3.2 Specifying a header to be returned in every response
 
-> **NOTE:** A Load Balancer or Reverse Proxy can achieve this same result. If your current deployment consists of either, it may be preferred to add header "rules" to either the Load Balancer or Reverse Proxy instead.
+> **NOTE:** A Load Balancer or Reverse Proxy can achieve this same result. If your current ORDS deployment consists of either, you may prefer to add header "rules" there instead.
 
-Should you choose to operate ORDS in Standalone mode, and rely on the Jetty server for this header rule, you may include the following file in your `/etc` folder. 
-
-See the [5.2.3.1.1 Jetty examples](#52311-jetty-examples) section of this guide for configuring the `etc` folder.
+Should you choose to operate ORDS in Standalone mode, you can rely on the Jetty server to provide this header rule. See the [5.2.3.1.1 Jetty examples](#52311-jetty-examples) section of this guide for configuring the `/etc` folder.
 
 > ![An example etc folder location.](./images/the-etc-folder-location-no-files.png " ")
 
-Once you have created the `etc` folder, save the following XML using an easily recognizable file name.  
+Once you have created the `/etc` folder, save the following code block as an `XML` file using an easily recognizable file name.  
 
 ![The Jetty response xml file in the etc folder.](./images/jetty-response-file-in-etc.png " ")
 
@@ -223,75 +221,27 @@ Once you have created the `etc` folder, save the following XML using an easily r
 </Configure>
 ```
 
-In this example, we use `jetty-response.xml` as the file name. With this file included in the `/etc` directory, ORDS will "pick-up" this configuration setting during runtime.[^6]
+In this example, we use `jetty-response.xml` as the file name. With this file included in the `/etc` directory, ORDS will "pick up" this configuration setting during runtime.[^6]
 
-This `jetty-response.xml` file will enable ORDS Standalone to include the `Strict-Transport-Security` header name and its value `max-age=3153600;includeSubDomains` in each request.[^7] In lay terms this XML file establishes a new Jetty response header, named `Strict-Transport-Security`, it applies to all incoming requests (denoted by the `*`), and this header's value is dual:
+This `jetty-response.xml` file will enable ORDS Standalone to include the `Strict-Transport-Security` header name and its values `max-age=3153600;includeSubDomains` in each request.[^7] In lay terms this XML file establishes a new Jetty response header, named `Strict-Transport-Security`, it applies to all incoming requests (denoted by the `*`), and this header's value is comprised of the following:
 
 - `max-age=31536000;`
 - `includeSubDomains`
 
-To illustrate this behavior, consider the following curl command and subsequent response:
+To illustrate this behavior, consider the following curl command and subsequent response. A request is sent to a resource and the ORDS response includes the `JSON` payload, typical/standard headers, and those indicated in the `jetty-response.xml` file.
 
 ![An example curl command with server response](./images/curl-command-and-jetty-response.png)
 
-Similarly to the Jetty Access Log example, these XML files can be a quick and easy way for you to introduce additional functionality into your ORDS Standalone deployment. 
+Similarly to the Jetty Access Log example, these XML files can be a quick and easy way to introduce additional functionality into your ORDS Stand-Alone deployment. 
 
-[^6]: What the hell is runtime? Having no formal education in software engineering, my understanding is that runtime has to do with the execution of a program. Runtime relates to initial and continued execution of the program. And in the case of these XML files, the instructions therein are not formally part of the Jetty server, but are included in the instructions when you issue the `ords serve` command. Doing so effectilly starts up the Jetty web server. Jetty then recognizes there are files in the `/etc` folder and includes them when it enters into "runtime" or the "runtime environment." This [Wikipedia post](https://en.wikipedia.org/wiki/Runtime_system) is a great place to start. But I certainly wouldn't use that as the "official" definition. [This thread](https://stackoverflow.com/questions/3900549/what-is-runtime) on stackoverflow is extremenly helpful as well.
+[^6]: What the hell is runtime? Having no formal education in software engineering, my understanding is that runtime has to do with the execution of a program. Runtime relates to the initial and continued execution of the program. And in the case of these XML files, the instructions therein are not formally part of the Jetty server, but are included in the instructions when you issue the `ords serve` command. Doing so effectively starts up the Jetty web server. Jetty then recognizes there are files in the `/etc` folder and includes them when it enters into "runtime" or the "runtime environment." This [Wikipedia post](https://en.wikipedia.org/wiki/Runtime_system) is a great place to start. But I certainly wouldn't use that as the "official" definition. [This stackoverflow thread](https://stackoverflow.com/questions/3900549/what-is-runtime) is extremely helpful as well.
 
 [^7]: `Strict-Transport-Security` ([about this header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security)) is a [*response* header](https://developer.mozilla.org/en-US/docs/Glossary/Response_header). This header is used to inform the browser that HTTPS should only be used to access ORDS resource/s. You've probably seen `*` used in the ORDS documentation. In this case the `<Set name="pattern">*</Set>` in the XML file is using `*` as a wildcard (i.e. I interpret this as "apply this rule to everything and anything."). The `<Set name="value">max-age=31536000;includeSubDomains</Set>` line includes the "directives": `max-age=3153600;` and `includeSubDomains`.  
 
 Examples of subdomains would be something like `en.wikipedia.org` where `en` (English language) is a subdomain of `wikipedia.org`; more details [here](https://en.wikipedia.org/wiki/Subdomain).
-<!-- #### Example 5-2 Using a specific access log format
 
-When the ORDS `standalone.access.log` configuration setting is set, ORDS access logs are saved to the named location. For instance, the following example sets an access log location at `/user/ords_access_log/access.log`.
 
-*An example access log location setting.*
 
-You can always check ORDS settings by issuing the `ords config list --include-defaults` command.
 
-In this example, you can see that access logs will be saved in the `/ords_access_logs folder`. Setting the access log location will automatically enable access logging.
+`
 
-/global/standalone/etc/jetty-access-log.xml
-
-```xml
-<?xml version="1.0"?>
-<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/ jetty/configure.dtd">
-<Configure id="Server" class="org.eclipse.jetty.server.Server">
-<Ref id="Handlers">
-<Call name="addHandler">
-<Arg>
-<New id="RequestLog"
-class="org.eclipse.jetty.server.handler.RequestLogHandler"> <Set name="requestLog">
-<New id="RequestLogImpl" class="org.eclipse.jetty.server.CustomRequestLog">
-<Arg>/ords/ords-access.log</Arg>
-<Arg>%{remote}a - %u %t "%r" %s %O "%{Referer}i" "%{User-Agent}i"</Arg> </New>
-</Set> </New>
-</Arg> </Call>
-</Ref> </Configure>
-``` -->
-
-<!-- #### Example 5-3 Always returning a certain header in the response
-
-This can also be achieved through a Load Balancer or Reverse Proxy in front of ORDS. If you want a specific header to be returned in every response from the ORDS server. Then use the following sample code snippet:
-/global/standalone/etc/jetty-response.xml
-
-```xml
-<?xml version="1.0"?>
-<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/ jetty/configure.dtd">
-<Configure id="Server" class="org.eclipse.jetty.server.Server">
-<Call name="insertHandler"> <Arg>
-<New class="org.eclipse.jetty.rewrite.handler.RewriteHandler"> <Get id="Rewrite" name="ruleContainer" />
-<Call name="addRule">
-<Arg>
-<New id="header"
-class="org.eclipse.jetty.rewrite.handler.HeaderPatternRule"> <Set name="pattern">*</Set>
-<Set name="name">Strict-Transport-Security</Set>
-<Set name="value">max-age=31536000;includeSubDomains</Set> </New>
-</Arg> </Call>
-</New> </Arg>
-Chapter 5
-Configuring Jetty in ORDS Standalone Mode
- Example 5-2 Using a specific access log format
-  5-8
-</Call> </Configure>
-``` -->
