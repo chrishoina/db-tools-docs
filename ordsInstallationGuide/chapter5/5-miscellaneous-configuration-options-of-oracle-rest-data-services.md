@@ -191,7 +191,7 @@ This seems to be the most logical and convenient method for saving Standalone ac
 - Log files are conveniently saved with an intuitive naming convention
 - Log files are saved in a recognized format; making it easier for third-party logging analytics tools to ingest the data
 
-
+### 5.2.3.2 Specifying a header to be returned in every response
 
 > **NOTE:** A Load Balancer or Reverse Proxy can achieve this same result. If your current ORDS deployment consists of either, you may prefer to add header "rules" there instead.
 >
