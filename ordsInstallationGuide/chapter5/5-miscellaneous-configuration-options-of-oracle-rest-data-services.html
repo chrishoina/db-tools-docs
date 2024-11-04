@@ -1,0 +1,371 @@
+<h1
+id="miscellaneous-configuration-options-of-oracle-rest-data-services">Miscellaneous
+Configuration Options of Oracle REST Data Services</h1>
+<h2 id="using-jetty-xml-configuration-files">5.2.3 Using Jetty XML
+Configuration Files</h2>
+<p>This section describes how to configure the ORDS Jetty server (i.e.,
+Standalone mode) for additional functionality using Jetty XML
+configuration files.</p>
+<p>When ORDS is in Standalone mode (i.e., relying on the embedded Jetty
+server as its web server), ORDS can detect and “pick up” user-provided
+configuration settings found in the
+<code>[ORDS configuration directory]/global/standalone/etc</code>
+directory.</p>
+<blockquote>
+<p><strong>NOTE:</strong> You must create the
+<code>[ORDS configuration directory]/global/standalone/etc</code>
+directory. The <code>/etc</code> directory is not part of the standard
+ORDS configuration.</p>
+</blockquote>
+<p>If you are familiar with Jetty, then just know that the ORDS
+<code>/etc.</code> directory is analogous to the <code>JETTY_BASE</code>
+directory, found in a standard Jetty deployment.<a href="#fn1"
+class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<h3 id="jetty-access-logs">5.2.3.1 Jetty Access Logs</h3>
+<blockquote>
+<p><strong>NOTE:</strong> Beginning with ORDS version 24.1, the
+standalone ORDS Access Log format was updated to include additional
+format codes<a href="#fn2" class="footnote-ref" id="fnref2"
+role="doc-noteref"><sup>2</sup></a>.</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 36%" />
+<col style="width: 34%" />
+</colgroup>
+<thead>
+<tr>
+<th>ORDS versions</th>
+<th>Jetty Format codes used</th>
+<th>Access Log example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>23.4 and earlier</td>
+<td>“%h %l %u %t”%r” %s %b”</td>
+<td>127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] “GET /ords HTTP/1.1”
+302</td>
+</tr>
+<tr>
+<td>24.1 and later</td>
+<td>“%{client}a %u %t”%r” %s %{CLF}O “%{Referrer}i” “%{User-Agent}i”
+%{ms}T %{Host}i”</td>
+<td>192.168.122.1 - [27/Mar/2023:23:00:07 +0000] “GET /ords/ HTTP/1.1”
+302 - “-” “Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101
+Firefox/111.0” 132 192.168.122.149:8080</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>ORDS Standalone access logs will automatically be enabled once an
+access log location has been configured. You may enable Standalone
+logging by executing the following command:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ords</span> config set standalone.access.log [/Path to the access log location of your choosing]</span></code></pre></div>
+<p>![Setting the access log location using the ords
+cli.](./images/setting-the-ords-access-log-location.png ” “)</p>
+<p>After issuing this configuration command, the ORDS CLI will echo back
+the location. You can review your configuration settings by executing
+the <code>ords config list --include-defaults</code> command.</p>
+<p>![Displaying the access log location using the ords
+cli.](./images/ords-config-list-showing-access-log-location.png ” “)</p>
+<p>You will also see a new <code>&lt;entry&gt;&lt;/entry&gt;</code> has
+been saved to your <code>/global/standalone/settings.xml</code> file in
+your ORDS configuration folder.</p>
+<p>![New entry in the ORDS settings.xml
+file.](./images/ords-configuration-settings-xml.png ” “)</p>
+<p>In most cases, the ORDS-provided Access Log data should be
+sufficient. However, should you choose to create <em>your own</em>
+custom access log, you may do so with Jetty <code>XML</code> files. <a
+href="#fn3" class="footnote-ref" id="fnref3"
+role="doc-noteref"><sup>3</sup></a></p>
+<h4 id="jetty-examples">5.2.3.1.1 Jetty examples</h4>
+<p>The access log behavior will differ depending on your configuration
+settings. Below are three possible scenarios for access logs.</p>
+<blockquote>
+<p><strong>NOTE:</strong> The inclusion of these <code>XML</code> files
+at runtime changes Jetty server behavior and not ORDS behavior.</p>
+</blockquote>
+<h5
+id="scenario-1-a-jetty-access-log.xml-file-is-included-and-standalone.access.log-location-is-not-set">Scenario
+1: a <code>jetty-access-log.xml</code> file IS included and
+<code>standalone.access.log location</code> IS NOT set</h5>
+<p>In this first scenario, you do not need to “set” the
+<code>standalone.access.log</code> location. As can be seen in the below
+image:</p>
+<p>![Standalone access log location not
+set.](./images/standalone-access-log-location-not-set.png ” “)</p>
+<p><em>You will</em>, however, need to create an <code>/etc</code>
+directory in your ORDS configuration folder, similar to how you see
+below:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[ORDS</span> configuration directory]/global/standalone/etc</span></code></pre></div>
+<p>An example:</p>
+<p>![An example etc folder
+location.](./images/the-etc-folder-location-no-files.png ” “)</p>
+<p>In the above image the <code>/etc</code> folder is nested under the
+<code>/standalone</code> folder, the <code>/standalone</code> folder is
+nested under the <code>/global</code> folder, and the
+<code>/global</code> folder is nested under the ORDS configuration
+folder (<em>your unique configuration folder name and absolute folder
+paths will differ</em>).</p>
+<p>Place the following <code>jetty-access-log.xml</code><a href="#fn4"
+class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>
+file into that <code>/etc</code> folder.</p>
+<p>![The etc folder with the jetty access log
+folder.](./images/etc-folder-with-jetty-access-log-file.png ” “)</p>
+<p>This <code>jetty-access-log.xml</code> file is comprised of the
+following properties:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode xml"><code class="sourceCode xml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">&lt;?xml</span><span class="ot"> version=</span><span class="st">&quot;1.0&quot;</span><span class="fu">?&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;!DOCTYPE</span> <span class="dt">Configure</span> PUBLIC &quot;-//Jetty//Configure//EN&quot; &quot;http://www.eclipse.org/jetty/configure.dtd&quot;<span class="dt">&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">Configure</span><span class="ot"> id=</span><span class="st">&quot;Server&quot;</span><span class="ot"> class=</span><span class="st">&quot;org.eclipse.jetty.server.Server&quot;</span>&gt;</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">Ref</span><span class="ot"> id=</span><span class="st">&quot;Handlers&quot;</span>&gt;</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">Call</span><span class="ot"> name=</span><span class="st">&quot;addHandler&quot;</span>&gt;</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        &lt;<span class="kw">Arg</span>&gt;</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>          &lt;<span class="kw">New</span><span class="ot"> id=</span><span class="st">&quot;RequestLog&quot;</span><span class="ot"> class=</span><span class="st">&quot;org.eclipse.jetty.server.handler.RequestLogHandler&quot;</span>&gt;</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>            &lt;<span class="kw">Set</span><span class="ot"> name=</span><span class="st">&quot;requestLog&quot;</span>&gt;</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>              &lt;<span class="kw">New</span><span class="ot"> id=</span><span class="st">&quot;RequestLogImpl&quot;</span><span class="ot"> class=</span><span class="st">&quot;org.eclipse.jetty.server.CustomRequestLog&quot;</span>&gt;</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                &lt;<span class="kw">Arg</span>&gt;/Users/choina/ords_access_logs/access.log&lt;/<span class="kw">Arg</span>&gt;</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                &lt;<span class="kw">Arg</span>&gt;%{remote}a - %u %t &quot;%r&quot; %s %O &quot;%{Referer}i&quot; &quot;%{User-Agent}i&quot;&lt;/<span class="kw">Arg</span>&gt;</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>              &lt;/<span class="kw">New</span>&gt;</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            &lt;/<span class="kw">Set</span>&gt;</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>          &lt;/<span class="kw">New</span>&gt;</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        &lt;/<span class="kw">Arg</span>&gt;</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>      &lt;/<span class="kw">Call</span>&gt;</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    &lt;/<span class="kw">Ref</span>&gt;</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">Configure</span>&gt;</span></code></pre></div>
+<p>![Reviewing the jetty.xml
+file.](./images/viewing-the-jetty-xml-file-arguments.png ” “)
+<sup><em>Notice the <code>&lt;Arg&gt;</code> tags.</em></sup></p>
+<p>Pay special attention to the <code>&lt;Arg&gt;&lt;/Arg&gt;</code>
+tags. The first <em><code>&lt;Arg&gt;</code>ument</em> informs Jetty
+where and how to save the access log file (i.e., save as
+<code>access.log</code> at the location indicated). The second argument
+specifies the format strings to include in the log file. For a detailed
+explanation of these format strings, see the <a
+href="#5231-jetty-access-logs">Jetty Access Logs</a> section of this
+document.</p>
+<blockquote>
+<p><strong>NOTE:</strong> The format strings used in this sample
+<code>XML</code> file were chosen arbitrarily. You can include whatever
+relevant information, assuming it is available. <a
+href="https://javadoc.jetty.org/jetty-10/org/eclipse/jetty/server/CustomRequestLog.html">See
+here</a> for details.</p>
+</blockquote>
+<p>Once you have saved this file, you may then start ORDS normally
+(i.e., with the <code>ords serve</code> command). ORDS will then save
+and append Jetty (Standalone) access log information to the
+<code>access.log</code> file. You can later view the results and
+formatting of this log at the location you specified:</p>
+<p>![The new access log in the access log
+folder.](./images/new-access-log-in-file-location.png ” “) <sup><em>An
+example access log file.</em></sup></p>
+<p>![The format of the access
+log.](./images/reviewing-the-content-of-the-access-log-scenario-one.png
+” “) <sup><em>Reviewing the contents of the access log
+file.</em></sup></p>
+<blockquote>
+<p><strong>NOTE:</strong> You can remove this file from your ORDS
+configuration prior to the next time ORDS is started, and it will have
+no impact on your service.</p>
+</blockquote>
+<h5
+id="scenario-2-a-jetty-access-log.xml-file-is-included-and-standalone.access.log-location-is-set">Scenario
+2: A <code>jetty-access-log.xml</code> file IS included and
+<code>standalone.access.log</code> location IS set</h5>
+<p>In this scenario you will have already completed the following two
+steps:</p>
+<ol type="1">
+<li><p>Configured the <code>standalone.access.log</code> setting using
+the ORDS CLI, <em>and</em></p>
+<p>![Setting the access log location using the ords
+cli.](./images/setting-the-ords-access-log-location.png ” “)<br />
+<sup><em>Configuring the <code>standalone.access.log</code>
+location.</em></sup></p>
+<p>![Displaying the access log location using the ords
+cli.](./images/ords-config-list-showing-access-log-location.png ”
+“)<br />
+<sup><em>Verifying the configuration setting with the
+<code>ords config list --include-defaults</code> command.</em>
+</sup></p></li>
+<li><p>You have included a <code>jetty-access-log.xml</code> file (or
+whatever file name of your choosing) in the <code>/etc</code>
+folder.</p>
+<p>![The etc folder with the jetty access log
+folder.](./images/etc-folder-with-jetty-access-log-file.png ” “)</p>
+<blockquote>
+<p><strong>NOTE:</strong> You will also see a new
+<code>&lt;entry&gt;&lt;/entry&gt;</code> has been saved to your
+<code>/global/standalone/settings.xml</code> file in your ORDS
+configuration folder.</p>
+<p>![New entry in the ORDS settings.xml
+file.](./images/ords-configuration-settings-xml.png ” “)</p>
+</blockquote></li>
+</ol>
+<p>After executing the <code>ords serve</code> command, you’ll also see
+the <code>standalone.access.log</code> configuration setting included as
+ORDS initializes.</p>
+<p>![Observing the access log location in the ORDS
+initialization](./images/standalone-access-setting-in-ords-configuration.png
+” “)</p>
+<p>You’ll also notice <em>two</em> versions of the access log files in
+the <code>/[access log]</code> folder location.</p>
+<p>![Two versions of the access
+logs](./images/ords-access-log-files-two-types.png ” “)</p>
+<p>One file for the <code>access.log</code>, which was created from the
+<code>jetty-access-log.xml</code> file you included.</p>
+<p>![An example access log provided by an xml
+file.](./images/example-jetty-xml-access-log.png ” “)</p>
+<p>The other will be a log file with the format of:
+<code>ords_[log file date].log</code>.</p>
+<p>![An example access log provided by ords, the standard
+method.](./images/example-ords-provided-standard-access-log.png ” “)</p>
+<p>This second file (and subsequent log files saved <em>by date</em>),
+is the one that is automatically created for you as a result of setting
+the <code>standalone.access.log</code> property in your ORDS
+configuration.<a href="#fn5" class="footnote-ref" id="fnref5"
+role="doc-noteref"><sup>5</sup></a></p>
+<h5
+id="scenario-3-a-jetty-access-log.xml-file-is-not-included-and-standalone.access.log-location-is-set">Scenario
+3: A <code>jetty-access-log.xml</code> file IS NOT included and
+<code>standalone.access.log</code> location IS set</h5>
+<p>This is <em>effectively</em> the standard, typical way you would
+configure ORDS for Standalone access logging.</p>
+<p>Set the <code>standalone.access.log</code> configuration setting with
+the following command:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ords</span> config set standalone.access.log [/Path to the access log location of your choosing]</span></code></pre></div>
+<p>![Setting the access log location using the ords
+cli.](./images/setting-the-ords-access-log-location.png ” “)</p>
+<blockquote>
+<p><strong>NOTE:</strong> You will also see a new
+<code>&lt;entry&gt;&lt;/entry&gt;</code> has been saved to your
+<code>/global/standalone/settings.xml</code> file in your ORDS
+configuration folder.</p>
+<p>![New entry in the ORDS settings.xml
+file.](./images/ords-configuration-settings-xml.png ” “)</p>
+</blockquote>
+<p>Remove any <code>[jetty].xml</code> files from your <code>/etc</code>
+folder.</p>
+<figure>
+<img src="./images/no-jetty-access-log-in-etc-folder.png"
+alt="The jetty-access-log.xml file has been removed." />
+<figcaption aria-hidden="true">The jetty-access-log.xml file has been
+removed.</figcaption>
+</figure>
+<p>Once you start ORDS (i.e., <code>ords serve</code>) you’ll find
+access logs in your <code>access log</code> folder.</p>
+<figure>
+<img
+src="./images/single-access-log-file-saved-from-standalone-settings.png"
+alt="Example of a single access log, with date included" />
+<figcaption aria-hidden="true">Example of a single access log, with date
+included</figcaption>
+</figure>
+<p>These and subsequent logs will be saved in the
+<code>ords_[log file date].log</code> format.</p>
+<h5 id="considerations">Considerations</h5>
+<p>This seems to be the most logical and convenient method for saving
+Standalone access logs, for a few reasons:</p>
+<ul>
+<li>No need to rely on <code>XML</code> files</li>
+<li>Log files are conveniently saved with an intuitive naming
+convention</li>
+<li>Log files are saved in a recognized format; making it easier for
+third-party logging analytics tools to ingest the data</li>
+</ul>
+<!-- #### Example 5-2 Using a specific access log format
+
+When the ORDS `standalone.access.log` configuration setting is set, ORDS access logs are saved to the named location. For instance, the following example sets an access log location at `/user/ords_access_log/access.log`.
+
+*An example access log location setting.*
+
+You can always check ORDS settings by issuing the `ords config list --include-defaults` command.
+
+In this example, you can see that access logs will be saved in the `/ords_access_logs folder`. Setting the access log location will automatically enable access logging.
+
+/global/standalone/etc/jetty-access-log.xml
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/ jetty/configure.dtd">
+<Configure id="Server" class="org.eclipse.jetty.server.Server">
+<Ref id="Handlers">
+<Call name="addHandler">
+<Arg>
+<New id="RequestLog"
+class="org.eclipse.jetty.server.handler.RequestLogHandler"> <Set name="requestLog">
+<New id="RequestLogImpl" class="org.eclipse.jetty.server.CustomRequestLog">
+<Arg>/ords/ords-access.log</Arg>
+<Arg>%{remote}a - %u %t "%r" %s %O "%{Referer}i" "%{User-Agent}i"</Arg> </New>
+</Set> </New>
+</Arg> </Call>
+</Ref> </Configure>
+``` -->
+<!-- #### Example 5-3 Always returning a certain header in the response
+
+This can also be achieved through a Load Balancer or Reverse Proxy in front of ORDS. If you want a specific header to be returned in every response from the ORDS server. Then use the following sample code snippet:
+/global/standalone/etc/jetty-response.xml
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/ jetty/configure.dtd">
+<Configure id="Server" class="org.eclipse.jetty.server.Server">
+<Call name="insertHandler"> <Arg>
+<New class="org.eclipse.jetty.rewrite.handler.RewriteHandler"> <Get id="Rewrite" name="ruleContainer" />
+<Call name="addRule">
+<Arg>
+<New id="header"
+class="org.eclipse.jetty.rewrite.handler.HeaderPatternRule"> <Set name="pattern">*</Set>
+<Set name="name">Strict-Transport-Security</Set>
+<Set name="value">max-age=31536000;includeSubDomains</Set> </New>
+</Arg> </Call>
+</New> </Arg>
+Chapter 5
+Configuring Jetty in ORDS Standalone Mode
+ Example 5-2 Using a specific access log format
+  5-8
+</Call> </Configure>
+``` -->
+<section id="footnotes" class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>It’s not crucial for you to have a deep understanding of
+how Jetty works. At a basic level, just know that there will always be a
+<code>JETTY_BASE</code> as well as a <code>JETTY_HOME</code> directory.
+And, in a standard Jetty installation, <code>JETTY_BASE</code> is where
+your modules and any customization live. While <code>JETTY_HOME</code>
+is where the Jetty binaries live. For the purposes of ORDS, the
+<code>[ORDS configuration directory]/global/standalone/etc</code>
+directory can be looked at as your <code>JETTY_BASE</code>. That is
+where you’ll place <code>JETTY.XML</code> files; similar to the ones
+you’ll see in this section’s examples. Again, none of this is important
+for you to know unless, of course, you’d like to learn more about
+Jetty.<a href="#fnref1" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p><a
+href="https://javadoc.io/doc/org.eclipse.jetty/jetty-server/10.0.24/org.eclipse.jetty.server/org/eclipse/jetty/server/CustomRequestLog.html">About
+Jetty Custom Request Log format codes and syntax</a><a href="#fnref2"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Jetty <code>XML</code> files can be viewed as a simpler
+way to add additional configuration settings to your Jetty server
+without having to create a custom Jetty Module. For a deeper dive into
+Jetty modules, how to configure them, and customizations <a
+href="https://jetty.org/docs/jetty/12/operations-guide/modules/index.html">see
+here</a>.<a href="#fnref3" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>This file can be named <code>[anything].xml</code>. The
+format, contents, and arguments therein are what are important.<a
+href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>The ORDS-provided access logs, automatically save in the
+NCSA Common log format. Since other logging applications and tools may
+<em>expect</em> to ingest logs in this format, it might be worth
+considering whether or not you actually want to customize your own Jetty
+access logs. You can find details on the NCSA Common log format <a
+href="https://en.wikipedia.org/wiki/Common_Log_Format">here</a> or visit
+the <em>now-archived</em> <a
+href="https://web.archive.org/web/20081218093425/http://hoohoo.ncsa.uiuc.edu/docs/setup/httpd/Overview.html">HTTPd
+page</a> for more information on the creation of this format.<a
+href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
