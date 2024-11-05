@@ -75,9 +75,9 @@ It is recommended to use :body_text ( a character representation ) rather than :
 
 ### 3.1.2 About the :body_json parameter
 
-The `:body_json` implicit parameter can be used in Resource Handlers to receive `multipart/form-data` `POST` requests where multiple files are expected to be processed *and* form data should be formatted as a JSON string (*as a CLOB data type*)[^1].
+The `:body_json` implicit parameter can be used in `POST` Resource Handlers to receive `multipart/form-data` requests where multiple files *and* form data, formatted as a JSON string (*as a CLOB data type*) is expected.[^1]
 
-> [^1]: Although you can store JSON in the Oracle database as `JSON`, `VARCHAR2`, `CLOB`, and `BLOB`, ORDS uses the `CLOB` data type, to ensure backward compatibility with earlier releases of the Oracle database. 
+> [^1]: Although you can store JSON in the Oracle database as `JSON`, `VARCHAR2`, `CLOB`, and `BLOB`, ORDS uses the `CLOB` data type, to ensure backward compatibility with earlier releases of the Oracle database.
 
 When the`:body_json` implicit parameter is included for Resource Handlers that process multiple files, the `:body_json` implicit parameter must be invoked.
 The `:body_json` parameter can be invoked in various ways, such as:
@@ -111,11 +111,11 @@ CREATE TABLE ORDSDEMO.DEMO_TABLE
 
 > **NOTE:** Columns such as `FILE_VISIBILITY`, `SUBMITTED_BY`, and `SUBMITTED_ON` are for *demonstration purposes only*. They are not required.
 
-An ORDS Endpoint has been created (with the below Resource Handler code).
+An ORDS Endpoint has been created (with the below Resource Handler code). The following conditions exist:
 
 - The endpoint expects multiple files and form data *in a `JSON` format* (i.e., the use of the `:body_json` implicit parameter).
-- The `ORDS.BODY_FILE_COUNT` function will be used to count the total files in the `POST` request.
-- The `ORDS.GET_BODY_FILE` procedure will be used to store, in session, the files.
+- The `ORDS.BODY_FILE_COUNT` function will be used to count the total files of the `POST` request.
+- The `ORDS.GET_BODY_FILE` procedure will be used to store, in session, these files.
 
 The following code example then performs an `INSERT` on the `DEMO_TABLE` and relies upon various HTP procedures to "print" the results to a user, client, or application.
 
@@ -183,7 +183,7 @@ Accordingly, a client may respond with the following:
 <p>Inserted File: demo-2.sql
 ```
 
-Along with an update to target `DEMO_TABLE`:
+Along with an update to target the `DEMO_TABLE`:
 
 | ID FILE_NAME| FILE_BODY | CONTENT_TYPE | FILE_VISIBILITY | SUBMITTED_BY | SUBMITTED_ON |
 | :------------: | :---------: | :------------: | :---------------: | :------------: | :------------: |
