@@ -216,7 +216,7 @@ The following resource handler defines a POST handler that delegates the generat
 
 ords.define_handler(
   p_module_name => 'tickets.collection',
-  p_pattern => '.',                     
+  p_pattern => '.',
   p_method  => 'POST',
   p_mimes_allowed => 'application/json',
   p_source_type => ords.source_type_plsql,
