@@ -1,3 +1,5 @@
+<!-- pandoc 3-implicit-parameters.md -f markdown -t docx -o 3-implicit-parameters.md.docx -->
+
 # 3 Implicit Parameters
 
 This chapter describes the implicit parameters used in REST service handlers that are not explicitly declared. Oracle REST Data Services (ORDS) adds these parameters automatically to the resource handlers.
