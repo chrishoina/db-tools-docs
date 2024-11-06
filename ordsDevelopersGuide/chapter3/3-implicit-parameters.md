@@ -2,6 +2,23 @@
 
 This chapter describes the implicit parameters used in REST service handlers that are not explicitly declared. Oracle REST Data Services (ORDS) adds these parameters automatically to the resource handlers.
 
+ORDS also supports, under certain conditions, automatic binding of the following:
+
+- Query parameters
+- Form data
+- JSON objects
+
+When query parameters are provided, they are always automatically bound by Resource Handlers. Whereas automatic binding behavior of form data and `JSON` objects are dependent on the following two factors:
+
+1. Where and how the `:body`, `:body_text`, and `:body_json` implicit parameters are used, *and*
+2. The media- or MIME type used:
+   - `application/x-www-form-urlencoded`
+   - `application/json`
+   - `multipart/form-data` *with a single file*
+   - `multipart/form-data` *with multiple files*
+
+> **NOTE:** Sections **3.1.1 About the :body parameter**, **3.1.2 About the :body_text parameter**, and **3.1.3 About the :body_json parameter** will cover in detail automatic binding behavior under various conditons.
+
 ## 3.1 List of Implicit Parameters
 
 The following table lists the implicit parameters:
@@ -26,74 +43,73 @@ Table 3-1 List of Implicit Parameters
 | :row_count | NUMBER | IN | N/A | Specifies the one-based index of the last row to be displayed in a paginated request. | 3.0 |
 | :status_code | NUMBER | OUT | X-ORDS-STATUS-CODE | Specifies the HTTP status code for the request. | 18.3 |
 
-### 3.1.1 About the :body parameter
+### 3.1.3 About the :body_json parameter
 
-The :body implicit parameter is used in the resource handlers to receive the contents of the request body as a temporary BLOB.
+The `:body_json` implicit parameter can be used with `POST` Resource Handlers to receive the contents of the request body as JSON object. This allows Resource Handlers to directly reference JSON properties (i.e., `{"key": "value"}` pairs).[^1]
 
-Note:Only POST or PUT requests can have a request body. The HTTP specification does not permit request bodies on GET or DELETE requests.
+Additionally, the `:body_json` implicit parameter can be used when form data and one or more files are included in `multipart/form-data` `POST` requests. Form data, bound to the `:body_json` implicit parameter, continues to be received as a `JSON` object while [one or more] files can be processed with the `ORDS.BODY_FILE_COUNT LOOP` function and the `ORDS.GET_BODY_FILE` procedure.
 
-Example 3-1 Example
-The following example illustrates a PL/SQL block that stores the request body in a database table:
+> [^1]: In a scenario such as this, the form data in the `POST` body is formatted as a `JSON` object,  and treated as a CLOB data type in the Oracle database. While *you can* store `JSON` in the Oracle database as `JSON`, `VARCHAR2`, `CLOB`, and `BLOB`, ORDS uses the `CLOB` data type, to ensure backward compatibility with earlier releases of the Oracle database.
 
-begin
- insert into tab (content) values (:body);
-end;
-
-Note:
-
-The :body implicit parameter must be dereferenced exactly once in a PL/SQL block. If it is dereferenced more than once, then the second and subsequent dereferences will appear to be empty. This is because the client sends the request body only once. If you need this value more than once, then assign it to a local variable, and dereference the local variable instead.
-
-You can use either one of the implicit parameters :body or :body_text. Otherwise, the PL/SQL block displays an error message "Duplicate steam parameter''.
-
-If you use either :body or :body_text, then you cannot use :bind notation to read attributes of the JSON payload of the request.
-
-The following example will not work as intended because it dereferences the :body parameter twice:
-
-begin
- insert into tab1(content) values (:body); -- request body will be inserted
- insert into tab2(content) values (:body); -- an empty blob will be inserted
-end;
-
-To avoid this limitation, the :body parameter value must be assigned to a local PL/SQL variable before it is used. This enables the local variable to be dereferenced more than once:
-
-declare
- l_content blob := :body;
-begin
- insert into tabl(content) values(l_content);
- insert into tab2(content) values(l_content);
-end;
-
-### 3.1.2 About the :body_text parameter
-
-The :body_text implicit parameter is used in the resource handlers to receive the contents of the request body as a temporary CLOB. Typically, the content of the request body is textual (for example JSON or HTML content) and so, receiving the request body as a CLOB saves the resource handler author from the effort of converting the :body BLOB parameter to a CLOB instance.
-
-Note::body_text implicit parameter must only be dereferenced once inside the entire PL/SQL block. If you need this value more than once, assign it to a local variable, and dereference the local variable instead.
-
-You can use either one of the implicit parameters :body or :body_text. Otherwise, the PL/SQL block displays an error message "Duplicate steam parameter''.
-
-It is recommended to use :body_text ( a character representation ) rather than :body ( a binary representation ) particularly where the PL/SQL block uses JSON functions to process the request body efficiently.
-
-### 3.1.2 About the :body_json parameter
-
-The `:body_json` implicit parameter can be used in `POST` Resource Handlers to receive `multipart/form-data` requests where multiple files *and* form data, formatted as a JSON string (*as a CLOB data type*) is expected.[^1]
-
-> [^1]: Although you can store JSON in the Oracle database as `JSON`, `VARCHAR2`, `CLOB`, and `BLOB`, ORDS uses the `CLOB` data type, to ensure backward compatibility with earlier releases of the Oracle database.
-
-When the`:body_json` implicit parameter is included for Resource Handlers that process multiple files, the `:body_json` implicit parameter must be invoked.
-The `:body_json` parameter can be invoked in various ways, such as:
+Similar to the `:body` and `:body_text` implicit parameters, when the`:body_json` implicit parameter is included in a Resource Handler, *it must be invoked* in order to be used. The `:body_json` parameter can be invoked in various ways, such as:
 
 - The `DBMS_OUTPUT` package such as `dbms_output.put_line(:body_json);`
 - The hypertext procedures (htp) and functions (htf) packages, such as in `htp.print(:body_json);`
 - Assigning the `:body_json` implicit parameter as variable, e.g. l_body_json `:= :body_json;`
 
-> **NOTE:** There is no specific requirement to assign `:body_json` to a local variable. Similarly, there is no requirement to re-use the local variable, should you choose to assign one.
+#### Scenarios for using :body_json
+
+The below table summarizes the possible scenarios where the `:body_json` implicit parameter can be used. When form data in the `POST` body request is to be received as a `JSON` object, the `:body_json` implicit parameter should be used for the MIME types seen below. Pay special attention to the `multipart/form-data` request in cases where you intend to send 1 or more files in a request.
+
+<!-- |`POST` body contents || Form data (when in `x-www-form-urlencoded` format) | Form data (as `JSON` object) | ≥ 1 file/s |
+| :--:| :--: | :--------: | :---: | :---: |
+||`application/x-www-form-urlencoded`| - | `:body_json` | - |
+| MIME Types |`application/json` | - |`:body_json`| - |
+||`multipart/form-data` | - | `:body_json` | `ORDS.BODY_FILE_COUNT LOOP` & `ORDS.GET_BODY_FILE`| -->
+
+<table style="text-align:center">
+  <thead>
+    <tr style="border-top:none">
+      <th scope="col" style="border-style: hidden;"></th>
+      <th scope="col" style="border-top: hidden;"></th>
+      <th colspan="3" scope="col" style="text-align:center">MIME type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <th scope="col" style="border-left-style: hidden;"></th>
+      <th scope="row" style="border-left-style:hidden;border-top:hidden;"></th>
+      <td><code>application/x-www-form-urlencoded</code></td>
+      <td><code>application/json</code></td>
+      <td><code>multipart/form-data</code></td>
+    </tr>
+    <tr>
+    <th scope="col" rowspan="3" style="text-align:center"><code>POST</code> body contents</th>
+      <td>Form data (when in <code>x-www-form-urlencoded</code> format)</td>
+      <td style="text-align:center">-</td>
+      <td style="text-align:center">-</td>
+      <td style="text-align:center">-</td>
+    </tr>
+    <tr>
+      <td>Form data (as <code>JSON</code> object)</td>
+      <td><code>:body_json</code></td>
+      <td><code>:body_json</code></td>
+      <td><code>:body_json</code></td>
+    </tr>
+    <tr>
+      <td> ≥ 1 file/s included</td>
+      <td style="text-align:center">-</td>
+      <td style="text-align:center">-</td>
+      <td><code>ORDS.BODY_FILE_COUNT LOOP</code>& <code>ORDS.GET_BODY_FILE</code></td>
+    </tr>
+  </tbody>
+</table>
 
 #### Example
 
 A table (`DEMO_TABLE`) has been created with the following attributes:
 
 ```sql
-CREATE TABLE ORDSDEMO.DEMO_TABLE 
+CREATE TABLE DEMO_TABLE 
     ( 
      ID              NUMBER (*,0) GENERATED BY DEFAULT AS IDENTITY 
         ( START WITH 1 CACHE 20 )  NOT NULL , 
@@ -102,7 +118,8 @@ CREATE TABLE ORDSDEMO.DEMO_TABLE
      CONTENT_TYPE    VARCHAR2 (200) , 
      FILE_VISIBILITY VARCHAR2 (10) , 
      SUBMITTED_BY    VARCHAR2 (200) , 
-     SUBMITTED_ON    TIMESTAMP DEFAULT systimestamp 
+     SUBMITTED_ON    TIMESTAMP DEFAULT systimestamp.
+     SHAPE           VARCHAR2 (20)
     ) 
     TABLESPACE DATA 
     LOGGING 
@@ -121,21 +138,21 @@ The following code example then performs an `INSERT` on the `DEMO_TABLE` and rel
 
 ```sql
 DECLARE
-    L_PARAMETER_NAME  VARCHAR2(4000);
-    L_FILE_NAME       VARCHAR2(4000);
-    L_CONTENT_TYPE    VARCHAR2(200);
-    L_FILE_BODY       BLOB;
-    L_FILE_VISIBILITY CLOB;
-    L_SUBMITTED_BY    CLOB;
+    L_PARAMETER_NAME VARCHAR2(4000);
+    L_FILE_NAME      VARCHAR2(4000);
+    L_CONTENT_TYPE   VARCHAR2(200);
+    L_FILE_BODY      BLOB;
+    L_BODY_JSON      CLOB;
 BEGIN
-    L_SUBMITTED_BY := JSON_VALUE(:BODY_JSON, '$.submitted_by');
-    L_FILE_VISIBILITY := JSON_VALUE(:BODY_JSON, '$.file_visibility');
+    L_BODY_JSON := :BODY_JSON;
     HTP.PARAGRAPH;
-    HTP.PRINT('Submitted By: ' || L_SUBMITTED_BY);
+    HTP.PRINT('Submitted By: ' || JSON_VALUE(L_BODY_JSON, '$.submitted_by'));
     HTP.BR;
     HTP.PARAGRAPH;
-    HTP.PRINT('File visibility status: ' || L_FILE_VISIBILITY);
+    HTP.PRINT('File visibility status: ' || JSON_VALUE(L_BODY_JSON, '$.file_visibility'));
     HTP.BR;
+    HTP.PARAGRAPH;
+    HTP.PRINT('Shape: ' || :SHAPE);
     FOR I IN 1..ORDS.BODY_FILE_COUNT LOOP
         ORDS.GET_BODY_FILE(
             P_FILE_INDEX     => I,
@@ -149,25 +166,29 @@ BEGIN
             FILE_BODY,
             CONTENT_TYPE,
             FILE_VISIBILITY,
-            SUBMITTED_BY
+            SUBMITTED_BY,
+            SHAPE
         ) VALUES ( L_FILE_NAME,
                    L_FILE_BODY,
                    L_CONTENT_TYPE,
-                   L_FILE_VISIBILITY,
-                   L_SUBMITTED_BY );
-
+                   JSON_VALUE(L_BODY_JSON, '$.submitted_by'),
+                   JSON_VALUE(L_BODY_JSON, '$.file_visibility'),
+                   :shape );
         HTP.PARAGRAPH;
         HTP.PRINT('Inserted File: ' || L_FILE_NAME);
+        HTP.BR;
     END LOOP;
 END;
 ```
 
 To test this `:body_json` implicit parameter a curl command such as the one below may be used:
 
+> **NOTE:** You may have observed the included query parameter in the above `POST` request. In this example, we illustrate how automatic binding of query parameters (e.g., `shape=triangle` can be used in ORDS `POST` Resource Handlers).
+
 ```shell
-curl --location 'https://localhost:8080/ords/ordsdemo/demo_api/demo' \
---form 'file_one=@"/Users/file_one.txt"' \
---form 'file_two=@"/Users/ile_two.txt"' \
+curl --location 'https://gf641ea24ecc468-ordsdemo.adb.us-ashburn-1.oraclecloudapps.com/ords/ordsdemo/demo_api/demo?shape=triangle' \
+--form 'files=@"demo-3.sql"' \
+--form 'files=@"demo-2.sql"' \
 --form 'submitted_by="chris"' \
 --form 'file_visibility="public"'
 ```
@@ -175,230 +196,25 @@ curl --location 'https://localhost:8080/ords/ordsdemo/demo_api/demo' \
 Accordingly, a client may respond with the following:
 
 ```html
-<p>Submitted By: chris
+<p>
+Submitted By: chris
 <br />
-<p>File visibility status: public
+<p>
+File visibility status: public
 <br />
-<p>Inserted File: demo-3.sql
-<p>Inserted File: demo-2.sql
+<p>
+Shape: triangle
+<p>
+Inserted File: demo-3.sql
+<br />
+<p>
+Inserted File: demo-2.sql
+<br />
 ```
 
 Along with an update to target the `DEMO_TABLE`:
 
-| ID FILE_NAME| FILE_BODY | CONTENT_TYPE | FILE_VISIBILITY | SUBMITTED_BY | SUBMITTED_ON |
-| :------------: | :---------: | :------------: | :---------------: | :------------: | :------------: |
-| 144          | demo-3.sql | REVDTEFS... | application/x-sql | public | chris |
-| 145          | demo-2.sql | Q1JFQVRF... | application/x-sql | public | chris |
-
-### 3.1.3 About the :content_type Parameter
-
-The :content_type implicit parameter provides the value of the Content-Type request header supplied with the request. If no Content-Type header is present in the request, then a null value is returned.
-
-### 3.1.4 About the :current_user parameter
-
-The :current_user implicit parameter provides the identity of the user authenticated for the request.
-
-Note:In a scenario, where the user is not authenticated, the value is set to null. For example, if the request is for a public resource, then the value will be set to null.
-
-### 3.1.5 About the :status_code parameter
-
-The :status_code implicit parameter enables a resource handler to indicate the HTTP status code value to include in a response. The value must be one of the numeric values defined in the HTTP Specification document.
-
-### 3.1.6 About the :forward_location parameter
-
-The :forward_location implicit parameter provides a mechanism for PL/SQL based resource handlers to produce a response for a request.
-
-Consider a POST request that results in the creation of a new resource. Typically, the response of a POST request for REST APIs contains the location of the newly created resource (in the Location response header) along with the representation of the new resource. The presence of the Location header in the response indicates that there must be a GET resource handler that can produce a response for the specified location.
-
-Instead of applying logic to the POST resource handler to render the representation of the new resource in the response, the resource handler can delegate that task to the existing GET Resource Handler.
-
-The following resource handler defines a POST handler that delegates the generation of the response to a GET resource handler:
-
-ords.define_handler(
-  p_module_name => 'tickets.collection',
-  p_pattern => '.',
-  p_method  => 'POST',
-  p_mimes_allowed => 'application/json',
-  p_source_type => ords.source_type_plsql,
-  p_source => '
-   declare
-    l_owner varchar2(255);
-    l_payload clob;
-    l_id number;
-   begin
-    l_payload := :body_text;
-    l_owner := :current_user;
-    l_id := ticket_api.create_ticket(
-      p_json_entity => l_payload,
-      p_author => l_owner
-    );
-    :forward_location := ''./'' || l_id;
-    :status_code := 201;
-   end;
-  '
-);
-
-Where:
-
-    The ords.define_handler API is used to add a POST handler to an existing resource module named tickets.collection.
-
-    The p_pattern with value '.' indicates that the POST handler should be bound to the root resource of the resource module. If the base path of the tickets.collection' is /tickets/, then the POST handler is bound to the /tickets/ URL path.
-
-    The p_mimes_allowed value indicates that the POST request must have a Content-Type header value of application/json'.
-
-    The p_source_type value indicates that the source of the POST handler is a PL/SQL block.
-
-    The p_source value contains the source of the PL/SQL block:
-
-    Where:
-
-    Note:The :body_text implicit parameter is assigned to a local variable, so that it can be dereferenced more than once.
-
-        The identity of the user, making the POST request, is determined from the :current_user implicit parameter.
-
-        The PL/SQL block, delegates the task of storing the request payload to a PL/SQL package level function. The PL/SQL block should only contain logic to bridge from the HTTP request to the PL/SQL package invocation.
-
-        Note:When all the data modification operations are wrapped in a PL/SQL API, the PL/SQL block can be independently unit tested. Long and complicated PL/SQL blocks are an anti-pattern indicative of code that is difficult to test and maintain.
-
-        The PL/SQL package level function returns the ID of the newly created resource.
-
-        The :forward_location implicit parameter is assigned the value of './' || l_id. For example, if the value of l_id is 4256, then the value of :forward_location is /tickets/4256 .
-
-        When ORDS evaluates the preceding PL/SQL block and checks the value assigned to the :forward_location implicit parameter, it initiates a GET request against the specified location (for example, /tickets/4256) and return the response generated by the GET request as the response of the POST request. In addition, ORDS includes a location response header with the fully resolved URL of the :forward_location value.
-
-        The :status_code implicit parameter is assigned the HTTP response status code value. The 201 (Created) status code indicates that a new resource is created. This value will override the status code generated by the GET request.
-
-### 3.1.7 About the pagination implicit parameters
-
-The following table lists the pagination implicit parameters:
-
-Note:Oracle REST Data Services reserves the use of the query parameters, page, offset, and limit. It is not permitted to define REST services that use named bind parameters with any of the preceding query parameter names. Alternatively, REST services must use the appropriate pagination implicit parameters defined in the following table:
-
-Table 3-2 Pagination Implicit Parameters
-Name 	Description 	Status
-
-:page_offset
-	
-
-Specifies the zero based page offset in a pagination request.
-	
-
-Deprecated
-
-:page_size
-	
-
-Specifies the maximum number of rows to be retrieved on a page.
-	
-
-Deprecated
-
-:row_offset
-	
-
-Specifies the index of the first row to be displayed in a pagination request.
-	
-
-Not Recommended
-
-:row_count
-	
-
-Specifies the index of the last row to displayed in a pagination request.
-	
-
-Not Recommended
-
-:fetch_offset
-	
-
-Specifies the zero based index of the first row to be displayed on a page.
-	
-
-Recommended
-
-:fetch_size
-	
-
-Specifies the maximum number of rows to be retrieved on a page.
-	
-
-Recommended
-
-#### 3.1.7.1 About the :page_offset parameter
-
-The :page_offset implicit parameter is provided for backward compatibility, so it is used only with source_type_query source type resource handlers.
-
-Note:
-
-    The source_type_query source type is deprecated, instead use the source_type_collection feed parameter.
-
-    The :page_offset implicit parameter is deprecated, instead use the :row_offset implicit parameter.
-
-#### 3.1.7.2 About the :page_size parameter
-
-The :page_size implicit parameter is used to indicate the maximum number of rows to be retrieved on a page. :page_size parameter is provided for backward compatibility. This parameter is deprecated, instead use :fetch_size implicit parameter.
-
-#### 3.1.7.3 About the :row_offset parameter
-
-The :row_offset implicit parameter indicates the number of the first row to be displayed on a page. The :row_offset implicit parameter is used when you are using both a wrapper pagination query and row_number() (used in Oracle 11g and earlier releases). Starting Oracle 12c or later releases, Oracle recommends using the :fetch_offset implicit parameter and a row limiting clause instead of the :row_offset parameter.
-
-#### 3.1.7.4 About the :row_count parameter
-
-The :row_count implicit parameter is used to indicate the number of rows to be displayed on a page. The :row_count value is the value of the sum of :row_offset and the pagination size. The :row_count implicit parameter is useful when implementing pagination using a wrapper pagination query and row_number()method that was used in Oracle database 11g and earlier releases. Starting Oracle Database release 12c or later, Oracle recommends that you use :fetch_size parameter and a row limiting clause instead.
-
-#### 3.1.7.5 About the :fetch_offset parameter
-
-The :fetch_offset implicit parameter is used to indicate the zero based offset of the first row to display in a given page. The :fetch_offset implicit parameter is used when you implement pagination using a row limiting clause, which is recommended for use with Oracle 12c and later releases.
-
-#### 3.1.7.6 About the :fetch_size parameter
-
-The :fetch_size implicit parameter is used to indicate the maximum number of rows to retrieve on a page. ORDS always sets the value of :fetch_size to the pagination size plus one. The presence or absence of the extra row helps ORDS in determining if there is a subsequent page in the results or not.
-
-Note:The extra row that is queried is never displayed on the page.
-
-#### 3.1.7.7 About Automatic pagination
-
-This section describes the automatic pagination process.
-If a GET resource handler source type, source_type_collection_feed or source_type_query has a non zero pagination size (p_items_per_page) and the source of the GET resource handler does not dereference any of the implicit pagination parameters discussed in the preceding sections, then ORDS automatically wraps the query in a pagination clause to constrain the query results to include only the values from the requested page. With automatic pagination, the resource handler author needs to specify only the pagination size, and ORDS automatically handles the remaining effort in paginating the resource.
-
-Note:All resource modules have a default pagination size (p_items_per_page) of 25. So, by default automatic pagination is enabled.
-
-#### 3.1.7.8 About Manual pagination
-
-This section describes the manual pagination process.
-In some scenarios, a GET resource handler needs to perform pagination on its own rather than delegating the pagination process to ORDS. In such cases, the source of the GET resource handler will dereference one or more implicit pagination parameters discussed in the preceding sections.
-
-Note:The GET resource handler must specify the desired pagination size so that ORDS can correctly calculate the required values for the implicit pagination parameters.
-
-Examples
-
-Manual pagination example using row limiting clause
-
-The following example defines a REST service that uses a row limiting clause to paginate the query result set. This is the recommended way to implement manual pagination:
-
-begin
- ords.define_service(
-   p_module_name => 'example.paging',
-   p_base_path => '/example/',
-   p_pattern => '/paged',
-   p_items_per_page => 7,
-   p_source => 'select * from emp e order by empno desc offset :fetch_offset rows fetch next :fetch_size rows only'
- );
- commit;
-end;
-
-Manual pagination example using row_number() method
-
-The following example defines a REST service that uses a wrapper query and row_number() method. This approach is not recommended.
-
-begin
-ords.define_service(
-   p_module_name => 'example.paging',
-   p_base_path => '/example/',
-   p_pattern => '/paged',
-   p_items_per_page => 7,
-   p_source => 'select * from (select q_.* , row_number() over (order by 1) rn__ from (select * from emp e order by empno desc) q_ )where rn__ between :row_offset and :row_count'
- );
- commit;
-end;
+| ID   | FILE_NAME  | FILE_BODY | CONTENT_TYPE     | FILE_VISIBILITY | SUBMITTED_BY | SUBMITTED_ON                 | SHAPE     |
+| :--: | :--------: | :-------: | :--------------: | :------------:  | :----------: | :--------------------------: | :--------:|
+| 144  | demo-2.sql | (BLOB)    | application/x-sql | public         | chris        | 2024-11-06T15:00:46.494488Z  | triangle  |
+| 145  | demo-3.sql | (BLOB)    | application/x-sql | public         | chris        | 2024-11-06T15:00:46.49574Z   | triangle  |
