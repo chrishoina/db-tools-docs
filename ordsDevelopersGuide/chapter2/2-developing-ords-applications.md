@@ -2,13 +2,13 @@
 
 ## 2.16 Overview of Pre-hook Functions
 
-This section explains how to use PL/SQL based pre-hook functions that are invoked prior to an Oracle REST Data Services (ORDS) based REST call.
-A pre-hook function is typically used to implement application logic that needs to be applied across all REST endpoints of an application. For example a pre-hook enables the following functionality:
-• Configure application specific database session state: Configure the session to support a VPD policy.
+This section explains how to use PL/SQL based pre-hook functions with ORDS. An ORDS pre-hook function is a Boolean function that returns a `TRUE` or `FALSE`. Once an ORDS pre-hook function has been defined and configured, this pre-hook function is invoked prior to an ORDS `REST` request. The examples contained in this section illustrate several scenarios of how an ORDS pre-hook function can be used.
 
-Custom authentication and authorization: As the pre-hook is invoked prior to dispatching the REST service, it is used to inspect the request headers and determine the user who is making the request, and also find if that user is authorized to make the request.
-• Auditing or metrics gathering: To track information regarding the REST APIs invoked.
+An ORDS pre-hook function is typically used to implement application logic that needs to be applied across all REST endpoints of an application. For example a pre-hook enables you to:
 
+- Configure application specific database session state: Configure the session to support a VPD policy.
+- Customize authentication and authorization: As the pre-hook is invoked prior to dispatching the REST service, it is used to inspect the request headers and determine the user who is making the request, and also find if that user is authorized to make the request.
+- Enable auditing or metrics gathering: To track information regarding the REST APIs invoked.
 
 ### 2.16.1 Configuring the Pre-hook Function
 
@@ -16,6 +16,7 @@ This section describes how to configure a pre-hook function.
 The pre-hook function is configured using procedure.rest.preHook setting. The value of this setting must be the name of a stored PL/SQL function.
 
 ### 2.16.2 Using a Pre-hook Function
+
 This section explains how the pre-hook function is used.
 A pre-hook must be a PL/SQL function with no arguments and must return a BOOLEAN value. The function must be executable by the database user to whom the request is mapped. For example, if the request is mapped to an ORDS enabled schema, then that schema must be granted the execute privilege on the pre-hook function (or to PUBLIC).
 
@@ -25,9 +26,12 @@ If Oracle APEX 24.1 or higher is used, then the APEX functional user, APEX_PUBLI
 If the function returns true, then it indicates that the normal processing of the request must continue. If the function returns false, then it indicates that further processing of the request must be aborted.
 ORDS invokes a pre-hook function in an OWA (Oracle Web Agent) that is a PL/SQL Gateway Toolkit environment. This means that the function can introspect the request headers and the OWA CGI environment variables, and use that information to drive its logic. The function can also use the OWA PL/SQL APIs to generate a response for the request (for example, in a case where the pre-hook function needs to abort further processing of the request, and provide its own response).
 
-2.16.3 Processing of a Request
+### 2.16.3 Processing of a Request
+
 The pre-hook function must return true if it determines that the processing of a request must continue. In such cases, any OWA response produced by the pre-hook function is ignored (except for cases as detailed in the section Identity Assertion of a User), and the REST service is invoked as usual.
-2.16.4 Identity Assertion of a User
+
+### 2.16.4 Identity Assertion of a User
+
 This section describes how pre-hook function can make assertions about the identity of the user.
 When continuing processing, a pre-hook can make assertions about the identity and the roles assigned to the user who is making the request. This information is used in the processing of the REST service. A pre-hook function can determine this by setting one or both of the following OWA response headers.
 • X-ORDS-HOOK-USER: Identifies the user making the request, the value is bound to
@@ -38,21 +42,26 @@ Note:
 X-ORDS-HOOK-USER and X-ORDS-HOOK-ROLES headers are not included in the response of the REST service. These headers are only used internally by ORDS to propagate the user identity and roles.
 Using these response headers, a pre-hook can integrate with the role based access control model of ORDS. This enables the application developer to build rich integrations with third party authentication and access control systems.
 
-2.16.5 Aborting Processing of a Request
+### 2.16.5 Aborting Processing of a Request
+
 This section explains how the pre-hook function aborts the processing of a request.
 If a pre-hook determines that the processing of the REST service should not continue, then the function must return false value. This value indicates to ORDS that further processing of the request must not be attempted.
 If the pre-hook does not produce any OWA output, then ORDS generates a 403 Forbidden error response page. If the pre-hook produces any OWA response, then ORDS returns the OWA output as the response. This enables the pre-hook function to customize the response that client receives when processing of the REST service is aborted.
 
-2.16.6 Ensuring Pre-hook is Executable
+### 2.16.6 Ensuring Pre-hook is Executable
+
 If a schema cannot invoke a pre-hook function, then ORDS generates a 503 Service Unavailable response for any request against that schema. Since a pre-hook has been configured, it would not be safe for ORDS to continue processing the request without invoking the pre-hook function. It is very important that the pre-hook function is executable by all ORDS enabled schemas. If the pre-hook function is not executable, then the REST services defined in those schemas will not be available.
 
-2.16.7 Exceptions Handling by Pre-hook Function
+### 2.16.7 Exceptions Handling by Pre-hook Function
+
 When a pre-hook raises an error condition, for example, when a run-time error occurs, a NO DATA FOUND exception is raised. In such cases, ORDS cannot proceed with processing of the REST service as it would not be secure. ORDS inteprets any exception raised by the pre-hook function as a signal that the request is forbidden and generates a 403 Forbidden response, and does not proceed with invoking the REST service. Therefore, if the pre-hook raises an unexpected exception, it forbids access to that REST service. It is highly recommended that all pre-hook functions must have a robust exception handling block so that any unexpected error conditions are handled appropriately and do not make REST Services unavailable.
 
-2.16.8 Pre-hook Function Efficiency
+### 2.16.8 Pre-hook Function Efficiency
+
 A pre-hook function is invoked for every REST service call. Therefore, the pre-hook function must be designed to be efficient. If a pre-hook function is inefficient, then it has a negative effect on the performance of the REST service call. Invoking the pre-hook involves at least one additional database round trip. It is critical that the ORDS instance and the database are located close together so that the round-trip latency overhead is minimized.
 
-2.16.9 Using Pre-hook Function with Protected Resources
+### 2.16.9 Using Pre-hook Function with Protected Resources
+
 ORDS enables the protection of resources with roles and privileges. In cases where:
 • A privilege protects a particular resource
 • A pre-hook function already exists
@@ -61,11 +70,13 @@ ORDS invokes pre-hook functions once the initial request to the target resource 
 See Also:
 Configuring Secure Access to RESTful Services
 
-2.16.10 Pre-Hook Examples
+### 2.16.10 Pre-Hook Examples
+
 This section provides some sample PL/SQL functions that demonstrate different ways in which the pre-hook functionality can be leveraged.
 Source code for the examples provided in the following sections is included in the unzipped Oracle REST Data Services distribution archive examples/pre_hook/sql sub-folder.
 
-2.16.10.1 Installing the Examples
+#### 2.16.10.1 Installing the Examples
+
 This section describes how to install the pre-hook examples.
 
 To install the pre-hook examples, execute examples/pre_hook/sql/install.sql script. The following code snippet shows how to install the examples using Oracle SQLcl command line interface:
@@ -81,14 +92,19 @@ SQL> @install <chosen-password>
 – The PRE_HOOK_DEFNS schema where the pre-hook function is defined along with a database table named custom_auth_users, where user identities are stored. This table is populated with a single user joe.bloggs@example.com, whose password is the value assigned for <chosen-password>.
 – The PRE_HOOK_TESTS schema where ORDS based REST services that are used to demonstrate the pre-hooks are defined.
 
-2.16.10.1.1 Example: Denying all Access
+##### 2.16.10.1.1 Example: Denying all Access
+
 The simplest pre-hook is one that unilaterally denies access to any REST Service.
 To deny access to any REST service, the function must always return false as shown in the following code snippet:
+
+```sql
 create or replace function deny_all_hook return boolean as begin
 return false;
 end;
 /
 grant execute on deny_all_hook to public;
+```
+
 Where:
 
 • The deny_all_hook pre-hook function always returns false value.
@@ -109,7 +125,8 @@ Access the URL in a browser. You should get a response similar to the following:
 This demonstrates that the deny_all_hook pre-hook function was invoked and it prevented the
 access to the REST service by returning a false value.
 
-2.16.10.1.2 Example: Allowing All Access
+##### 2.16.10.1.2 Example: Allowing All Access
+
 Modify the source code of the deny_all_hook pre-hook function to allow access to all REST service requests as shown in the following code snippet:
 create or replace function deny_all_hook return boolean as begin
 return true; end;
@@ -130,7 +147,8 @@ Related Topics
 • Identity Assertion of a User
 This section describes how pre-hook function can make assertions about the identity of the user.
 
-2.16.10.1.3 Example: Asserting User Identity
+##### 2.16.10.1.3 Example: Asserting User Identity
+
 The following code snippet demonstrates how the pre-hook function makes assertions about the user identity and the roles they possess:
 create or replace function identity_hook return boolean as begin
 if custom_auth_api.authenticate_owa then custom_auth_api.assert_identity; return true;
@@ -157,7 +175,8 @@ The first time you access the URL, the browser will prompt you to enter your cre
 In response a JSON document is displayed with the JSON object in it.
 {"authenticated_user":"joe.bloggs@example.com"}
 
-2.16.10.2 Uninstalling the Examples
+#### 2.16.10.2 Uninstalling the Examples
+
 This section explains how to uninstall the examples.
 The following code snippet shows how to uninstall the examples:
 pre_hook $ cd sql/
@@ -167,8 +186,6 @@ Password? (**********?) ******
 Connected to:
 Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
 SQL> @uninstall
-
-
 
 ## 2.18 About HTTP Error Responses
 
