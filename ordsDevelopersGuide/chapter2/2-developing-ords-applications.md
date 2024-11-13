@@ -2,18 +2,67 @@
 
 ## 2.16 Overview of Pre-hook Functions
 
-This section explains how to use PL/SQL based pre-hook functions with ORDS. An ORDS pre-hook function is a Boolean function that returns a `TRUE` or `FALSE`. Once an ORDS pre-hook function has been defined and configured, this pre-hook function is invoked prior to an ORDS `REST` request. The examples contained in this section illustrate several scenarios of how an ORDS pre-hook function can be used.
+This section explains how to use PL/SQL based pre-hook functions with ORDS. An ORDS pre-hook function is a Boolean function that returns a `TRUE` or `FALSE`. Once an ORDS pre-hook function has been defined and configured, the pre-hook function is invoked prior to satisfying an ORDS `REST` request. The examples contained in this section illustrate several scenarios of how an ORDS pre-hook function can be used.
 
-An ORDS pre-hook function is typically used to implement application logic that needs to be applied across all REST endpoints of an application. For example a pre-hook enables you to:
+An ORDS pre-hook function is typically used to implement application logic that needs to be applied across all REST endpoints of an application. Pre-hook functions can be used for, but not limited to, scenarios such as:
 
-- Configure application specific database session state: Configure the session to support a VPD policy.
-- Customize authentication and authorization: As the pre-hook is invoked prior to dispatching the REST service, it is used to inspect the request headers and determine the user who is making the request, and also find if that user is authorized to make the request.
-- Enable auditing or metrics gathering: To track information regarding the REST APIs invoked.
+- Configure database session-based application context to support a Virtual Private Database (VPD) policy.[^1]
+- Customize authentication and authorization.[^2]
+- Enable auditing or metrics gathering[^3]
+
+[^1]: I'd consider this an extremely advanced use case. With this use case you would create a PL/SQL package to set an application context (along with a trigger), followed by a function that would permit users to view certain resources (APIs). There is a "simple" tutorial, [here](https://docs.oracle.com/en/database/oracle/oracle-database/19/dbseg/using-oracle-vpd-to-control-data-access.html#GUID-2113CF3C-D950-40B3-A121-A44284EF104D) that details the steps for creating a Virtual Private Database (VPD) policy. However, you do not need to complete the tutorial to understand how something like this would work in practice. If you compare the steps in that tutorial to what is included in the `custom_auth_api.plb` and `custom_auth_api.pls` package body and spec of this ORDS tutorial, you'll notice some parallels. Essentially, you *can* create some rather novel functions, procedures, and triggers; ones that will be invoked via that ORDS pre-hook `BOOLEAN` (i.e.,  `TRUE / FALSE` ) function. But in the end, *everything* boils down to a `TRUE` or `FALSE`. Learn more about "contexts" by reviewing the `SYS_CONTEXT`function in the [SQL Language Reference guide](https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/SYS_CONTEXT.html).
+
+[^2]: In this example, a pre-hook function can be invoked prior to satisfying an ORDS request. Such a pre-hook could (1)inspect the request headers (much like you'll see in this section's `.plb` and `.pls` file contents) (2) determine the user who is making the request, and  (3) determine if that user is authorized to make the request. In fact, you have a lot of options for which environment variables you might want to choose upon.
+
+Here is a quick way for you to learn some more about ORDS Resource Modules *and* about **C**ommon **G**ateway **I**nterface (CGI) Environment variables as they relate to the Oracle database. We'll rely upon the `OWA_UTIL` PL/SQL package, specifically the [`PRINT_CGI_ENV` procedure](https://docs.oracle.com/en/database/oracle/oracle-database/19/arpls/OWA_UTIL.html#GUID-F9AA35ED-76A8-428B-A7A6-3AEE698B8CE7) (an `HTML utility`; one of three [utility subprograms](https://docs.oracle.com/en/database/oracle/oracle-database/19/arpls/OWA_UTIL.html#GUID-7915F61E-1E50-4507-87FC-7E0ECAE3D41D) in the `OWA_UTIL` package). First, create a Resource Module and Template. Then when creating a Handler, choose `plsql/block` as the `Source Type`, and use the `PRINT_CGI_ENV` procedure in the Handler code. Like this:
+
+```sql
+Begin 
+  OWA_UTIL.PRINT_CGI_ENV;
+End;
+```
+
+![Handler code with PRINT_CGI_ENV procedure.](./images/handler-code-print-cgi-variables.png " ")
+
+Save your code and Handler. From here, either copy and paste this Handler's URI into a new terminal session (if using a tool like curl), Postman (or similar testing tool), or simply navigate a new browser tab/window to the URI. What you'll see are all the CGI environment variables that are sent back (in an *unauthenticated* server response) to you, a client, or application.
+
+Here is an example of the response from an Autonomous Database - Always Free tenancy:
+
+![Reviewing CGI variables in an ADB Always Free tenancy.](./images/displaying-cgi-environment-variables-in-adb-no-query-string.png " ")
+
+And here is a response from a development configuration (i.e., A locally-installed ORDS instance running in Standalone mode, and a 23ai database in a Podman container.):
+
+![Reviewing CGI variables with ORDS standalone, on localhost.](./images/curl-command-in-podman%20container-cgi-variables.png " ")
+
+As you can see, there is a ton of data to work with; something to keep in mind if you want to use CGI variables with your ORDS pre-hook. For instance, you can even implement a security policy with something as simple as the `QUERY_STRING` variable.
+
+Look what happens when I append `?chris` to the end of this URI:
+
+[](./images/adding-query-parameter-to-cgi-endpoint.png " ")
+
+[](./images/displaying-print-out-adb-with-query-string.png " ")
+
+
+Hopefully you at least get a small idea of what is possible with ORDS pre-hook functions when used with something like CGI Environment variables. We've only begun to scratch the surface.
+
+[^3]: While ORDS *now* ships with the `ords-metrics` utility (which can be found in your `ords product folder/examples/ords-metrics` directory and in the docs here) you can of course track loads of data (as we saw in just a simple CGI Environment variable use case) information regarding the REST APIs invoked.
 
 ### 2.16.1 Configuring the Pre-hook Function
 
-This section describes how to configure a pre-hook function.
-The pre-hook function is configured using procedure.rest.preHook setting. The value of this setting must be the name of a stored PL/SQL function.
+~~This section describes how to configure a pre-hook function.~~  
+Once you have performed the required steps in the database, you'll configure ORDS so that it is "aware" and expecting this *stored* pre-hook function. You can configure the pre-hook function in ORDS with the ORDS CLI command:
+
+```sql
+ords config set procedure.rest.preHook [schema where pre-hook function is defined.pre-hook function name]
+```
+
+![Using the ORDS CLI to set the prehook configuration setting.](./images/error-response-confirmation-auto.png " ")
+
+You'll receive confirmation of the new setting in your terminal, but you can also review the settings using the `ords config list --include-defaults` command, as well as reviewing the pool.xml configuration file for the related database pool. 
+
+![ORDS configuration settings, reviewing the procedure.rest.preHook setting.](./images/reviewing-ords-config-settings-in-terminal.png " ")
+
+![ORDS configuration, reviewing the pool xml file.](./images/reviewing-ords-configuration-in-settings-xml.png " ")
 
 ### 2.16.2 Using a Pre-hook Function
 
