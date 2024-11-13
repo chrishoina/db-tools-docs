@@ -30,7 +30,7 @@ Here is an example of the response from an Autonomous Database - Always Free ten
 
 ![Reviewing CGI variables in an ADB Always Free tenancy.](./images/displaying-cgi-environment-variables-in-adb-no-query-string.png " ")
 
-And here is a curl command response from a development configuration (i.e., A locally installed ORDS instance running in Standalone mode and a 23ai database in a Podman container). [Learn more about ORDS and Podman](https://followthecoffee.com/category/podman/):
+Here is a curl command response from a development configuration (i.e., A locally installed ORDS instance running in Standalone mode and a 23ai database in a Podman container). [Learn more about ORDS and Podman](https://followthecoffee.com/category/podman/):
 
 ![Reviewing CGI variables with ORDS standalone, on localhost.](./images/curl-command-in-podman%20container-cgi-variables.png " ")
 
@@ -40,11 +40,11 @@ You might want to start small by implementing a security policy using something 
 
 Look what happens when I append `?chris` to the end of this URI:
 
-[](./images/adding-query-parameter-to-cgi-endpoint.png " ")
+![](./images/adding-query-parameter-to-cgi-endpoint.png " ")
 
 If you take a close look, you can see how simple and automatic this is. Something to think about. Even if you don't care about CGI Environment variables *today*, I guarantee this will come in handy in the future.
 
-[](./images/displaying-print-out-adb-with-query-string.png " ")
+![](./images/displaying-print-out-adb-with-query-string.png " ")
 
 [^3]: While ORDS *now* ships with the `ords-metrics` utility (which can be found in your `ords product folder/examples/ords-metrics` directory and in the docs [here](https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/24.3/ordig/oracle-rest-data-services-installation-and-configuration-guide.pdf) you can, of course, track loads of data (as we saw in just a simple CGI Environment variable use case) information regarding the REST APIs invoked.
 
