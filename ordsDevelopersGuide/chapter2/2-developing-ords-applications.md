@@ -46,7 +46,7 @@ If you take a close look, you can see how simple and automatic this is. Somethin
 
 ![](./images/displaying-print-out-adb-with-query-string.png " ")
 
-[^3]: While ORDS *now* ships with the `ords-metrics` utility (which can be found in your `ords product folder/examples/ords-metrics` directory and in the docs [here](https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/24.3/ordig/oracle-rest-data-services-installation-and-configuration-guide.pdf) you can, of course, track loads of data (as we saw in just a simple CGI Environment variable use case) information regarding the REST APIs invoked.
+[^3]: While ORDS *now* ships with the `ords-metrics` utility (which can be found in your `ords product folder/examples/ords-metrics` directory and in the docs [here](https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/24.3/ordig/oracle-rest-data-services-installation-and-configuration-guide.pdf), you can, of course, track loads of information (as we saw in just a simple CGI Environment variable use case) regarding the REST APIs invoked.
 
 ### 2.16.1 Configuring the Pre-hook Function
 
@@ -59,7 +59,7 @@ ords config set procedure.rest.preHook [schema where pre-hook function is define
 
 ![Using the ORDS CLI to set the prehook configuration setting.](./images/error-response-confirmation-auto.png " ")
 
-You'll receive confirmation of the new setting in your terminal, but you can also review the settings using the `ords config list --include-defaults` command, as well as reviewing the pool.xml configuration file for the related database pool. 
+You'll receive confirmation of the new setting in your terminal, but you can also review the settings using the `ords config list --include-defaults` command, as well as reviewing the pool.xml configuration file for the related database pool.
 
 ![ORDS configuration settings, reviewing the procedure.rest.preHook setting.](./images/reviewing-ords-config-settings-in-terminal.png " ")
 
@@ -67,8 +67,15 @@ You'll receive confirmation of the new setting in your terminal, but you can als
 
 ### 2.16.2 Using a Pre-hook Function
 
-This section explains how the pre-hook function is used.
-A pre-hook must be a PL/SQL function with no arguments and must return a BOOLEAN value. The function must be executable by the database user to whom the request is mapped. For example, if the request is mapped to an ORDS enabled schema, then that schema must be granted the execute privilege on the pre-hook function (or to PUBLIC).
+~~This section explains how the pre-hook function is used.~~
+The pre-hook PL/SQL function must:
+
+1. have zero arguments
+2. return a BOOLEAN value
+3. be executable by the database user (the user who is issuing the initial HTTP request) or executable by `PUBLIC`[^4]
+
+[^4]: The original documentation read as follows:
+> *"A pre-hook must be a PL/SQL function with no arguments and must return a BOOLEAN value. The function must be executable by the database user to whom the request is mapped. For example, if the request is mapped to an ORDS enabled schema, then that schema must be granted the execute privilege on the pre-hook function (or to PUBLIC)."*
 
 Note:
 If Oracle APEX 24.1 or higher is used, then the APEX functional user, APEX_PUBLIC_ROUTER, must be granted execute privilege for its friendly URLs (/r) to be accessible.
