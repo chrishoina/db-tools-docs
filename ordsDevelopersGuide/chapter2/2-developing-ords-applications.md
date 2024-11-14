@@ -51,7 +51,7 @@ If you take a close look, you can see how simple and automatic this is. Somethin
 
 ![New GCI environment variables with query string.](./images/displaying-print-out-adb-with-query-string.png " ")
 
-[Return to top](#prehook-overview)
+[Return to top](./2-developing-ords-applications.md#prehook-overview)
 </p>
 </details>
 
