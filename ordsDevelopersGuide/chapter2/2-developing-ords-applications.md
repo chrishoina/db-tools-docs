@@ -1,6 +1,6 @@
 # 2 Developing Oracle REST Data Services Applications
 
-## <a id="2.16-overview"></a>2.16 Overview of Pre-hook Functions
+## 2.16 Overview of Pre-hook Functions
 
 This section explains how to use PL/SQL-based pre-hook functions with ORDS. An ORDS pre-hook function is a `BOOLEAN` function that returns a `TRUE` or `FALSE`. Once an ORDS pre-hook function has been defined and configured, the pre-hook function will be invoked prior to satisfying an ORDS `REST` request. The examples contained in this section illustrate several scenarios of how and when an ORDS pre-hook function can be used.
 
@@ -51,7 +51,7 @@ If you take a close look, you can see how simple and automatic this is. Somethin
 
 ![New GCI environment variables with query string.](./images/displaying-print-out-adb-with-query-string.png " ")
 
-[Top](#2.16-overview)
+[Top](#216-overview-of-pre-hook-functions)
 </p>
 </details>
 
