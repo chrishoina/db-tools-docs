@@ -26,13 +26,14 @@ Begin
 End;
 ```  
 
-![Handler code with PRINT_CGI_ENV procedure.](./images/handler-code-print-cgi-variables.png " ")  
-![Exporting PL/SQL definitions.](./images/export-print-cgi-plsql-module.png)
-![A review of the Resource Module used in this example.](./images/plsql-slider-displaying-plsql-module.png)
+![Handler code with PRINT_CGI_ENV procedure.](./images/handler-code-print-cgi-variables.png " ")*Sample Handler code*
+![Exporting PL/SQL definitions.](./images/export-print-cgi-plsql-module.png " ")*Rmember you can export your Modules in PL/SQL.*
+![A review of the Resource Module used in this example.](./images/plsql-slider-displaying-plsql-module.png " ")*Export Module SQL slider.*
 
 Save your code and Handler.
 
-Sample code 
+**Sample code**
+
 ```sql
   BEGIN
   ORDS.ENABLE_SCHEMA(
