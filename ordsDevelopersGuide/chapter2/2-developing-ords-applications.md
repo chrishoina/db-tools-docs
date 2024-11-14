@@ -14,12 +14,11 @@ ORDS pre-hook functions are typically used to implement application logic that n
 
 [^2]: In this example, a pre-hook function can be invoked prior to satisfying an ORDS request. Such a pre-hook could (1) inspect the request headers (much like you'll see in this section's `.plb` and `.pls` file contents) (2) identify the user who is making the request, and  (3) determine if that user is authorized to make the request. In fact, you have a lot of options for which environment variables you might want to choose from.  
 
-<details> 
+[^3]: <details> 
   <summary><b>Example:</b> Creating an ORDS <code>GET</code> request to retrieve CGI Environment variables from the <code>PRINT_CGI_ENV</code> PL/SQL utility.</summary>
   <p>
   
-  For instance, here is a quick way for you to learn some more about ORDS Resource Modules *and* about **C**ommon **G**ateway **I**nterface (CGI) Environment variables as they relate to the Oracle database. We'll rely upon the `OWA_UTIL` PL/SQL package, specifically the [`PRINT_CGI_ENV` procedure](https://docs.oracle.com/en/database/oracle/oracle-database/19/arpls/OWA_UTIL.html#GUID-F9AA35ED-76A8-428B-A7A6-3AEE698B8CE7) (an `HTML utility`; one of three [utility subprograms](https://docs.oracle.com/en/database/oracle/oracle-database/19/arpls/OWA_UTIL.html#GUID-7915F61E-1E50-4507-87FC-7E0ECAE3D41D) in the `OWA_UTIL` package). First, create a Resource Module and Template. Then, when creating a Handler, choose `plsql/block` as the `Source Type` and use the `PRINT_CGI_ENV` 
-procedure in the Handler code. Like this:  
+  For instance, here is a quick way for you to learn some more about ORDS Resource Modules *and* about **C**ommon **G**ateway **I**nterface (CGI) Environment variables as they relate to the Oracle database. We'll rely upon the `OWA_UTIL` PL/SQL package, specifically the [`PRINT_CGI_ENV` procedure](https://docs.oracle.com/en/database/oracle/oracle-database/19/arpls/OWA_UTIL.html#GUID-F9AA35ED-76A8-428B-A7A6-3AEE698B8CE7) (an `HTML utility`; one of three [utility subprograms](https://docs.oracle.com/en/database/oracle/oracle-database/19/arpls/OWA_UTIL.html#GUID-7915F61E-1E50-4507-87FC-7E0ECAE3D41D) in the `OWA_UTIL` package). First, create a Resource Module and Template. Then, when creating a Handler, choose `plsql/block` as the `Source Type` and use the `PRINT_CGI_ENV` procedure in the Handler code. Like this:  
 
 ```sql
 Begin 
@@ -60,11 +59,11 @@ If you take a close look, you can see how simple and automatic this is. Somethin
 ~~This section describes how to configure a pre-hook function.~~  
 Once you have performed the required steps in the database, you'll configure ORDS so that it is "aware" and expecting this *stored* pre-hook function. You can configure the pre-hook function in ORDS with the ORDS CLI command:
 
-```sh
+```shell
 ords config set procedure.rest.preHook [schema where pre-hook function is defined.pre-hook function name]
 ```
 
-![Using the ORDS CLI to set the prehook configuration setting.](./images/error-response-confirmation-auto.png " ")
+![Using the ORDS CLI to set the pre-hook configuration setting.](./images/error-response-confirmation-auto.png " ")
 
 You'll receive confirmation of the new setting in your terminal, but you can also review the settings using the `ords config list --include-defaults` command, as well as reviewing the pool.xml configuration file for the related database pool.
 
@@ -75,13 +74,13 @@ You'll receive confirmation of the new setting in your terminal, but you can als
 ### 2.16.2 Using a Pre-hook Function
 
 ~~This section explains how the pre-hook function is used.~~
-The pre-hook PL/SQL function must:
+An ORDS pre-hook PL/SQL function must:
 
 1. have zero arguments
 2. return a BOOLEAN value
 3. be executable by the database user (the user who is issuing the initial HTTP request) or executable by `PUBLIC`[^7]
 
-[^4]: The original documentation read as follows:
+[^7]: The original documentation read as follows:
 > *"A pre-hook must be a PL/SQL function with no arguments and must return a BOOLEAN value. The function must be executable by the database user to whom the request is mapped. For example, if the request is mapped to an ORDS enabled schema, then that schema must be granted the execute privilege on the pre-hook function (or to PUBLIC)."*
 
 Note:
