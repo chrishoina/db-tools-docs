@@ -17,7 +17,7 @@ ORDS pre-hook functions are typically used to implement application logic that n
 <details>
   <summary><b>Example:</b> Creating an ORDS <code>GET</code> request to retrieve CGI Environment variables from the <code>PRINT_CGI_ENV</code> PL/SQL utility.</summary>
   <p>
-    
+
 For instance, here is a quick way for you to learn some more about ORDS Resource Modules *and* about **C**ommon **G**ateway **I**nterface (CGI) Environment variables as they relate to the Oracle database. We'll rely upon the `OWA_UTIL` PL/SQL package, specifically the [`PRINT_CGI_ENV` procedure](https://docs.oracle.com/en/database/oracle/oracle-database/19/arpls/OWA_UTIL.html#GUID-F9AA35ED-76A8-428B-A7A6-3AEE698B8CE7) (an `HTML utility`; one of three [utility subprograms](https://docs.oracle.com/en/database/oracle/oracle-database/19/arpls/OWA_UTIL.html#GUID-7915F61E-1E50-4507-87FC-7E0ECAE3D41D) in the `OWA_UTIL` package). First, create a Resource Module and Template. Then, when creating a Handler, choose `plsql/block` as the `Source Type` and use the `PRINT_CGI_ENV` procedure in the Handler code. Like this:  
 
 ```sql
@@ -27,8 +27,56 @@ End;
 ```  
 
 ![Handler code with PRINT_CGI_ENV procedure.](./images/handler-code-print-cgi-variables.png " ")  
+![Exporting PL/SQL definitions.](./images/export-print-cgi-plsql-module.png)
+![A review of the Resource Module used in this example.](./images/plsql-slider-displaying-plsql-module.png)
 
-Save your code and Handler. From there, either copy and paste this Handler's URI into a new terminal session (if using a tool like a curl), Postman (or a similar testing tool), or simply navigate to the URI in a new browser tab or window. What you'll see are all the CGI Environment variables that are sent back (in an *unauthenticated* server response) to you, a client, or an application. Pretty neat trick, eh?  
+Save your code and Handler.
+
+  <details>
+    <summary>
+      <code>
+  BEGIN
+  ORDS.ENABLE_SCHEMA(
+      p_enabled             => TRUE,
+      p_schema              => 'ORDSDEMO',
+      p_url_mapping_type    => 'BASE_PATH',
+      p_url_mapping_pattern => 'ordsdemo',
+      p_auto_rest_auth      => FALSE);
+
+  ORDS.DEFINE_MODULE(
+      p_module_name    => 'scratch.pad',
+      p_base_path      => '/v1/',
+      p_items_per_page => 25,
+      p_status         => 'PUBLISHED',
+      p_comments       => NULL);
+
+  ORDS.DEFINE_TEMPLATE(
+      p_module_name    => 'scratch.pad',
+      p_pattern        => 'oga-cgi-example',
+      p_priority       => 0,
+      p_etag_type      => 'HASH',
+      p_etag_query     => NULL,
+      p_comments       => NULL);
+
+  ORDS.DEFINE_HANDLER(
+      p_module_name    => 'scratch.pad',
+      p_pattern        => 'oga-cgi-example',
+      p_method         => 'GET',
+      p_source_type    => 'plsql/block',
+      p_mimes_allowed  => NULL,
+      p_comments       => NULL,
+      p_source         => 
+'begin
+    OWA_UTIL.PRINT_CGI_ENV;
+end;');
+
+COMMIT;
+
+END;</code>
+    </summary>
+  </details>
+
+From there, either copy and paste this Handler's URI into a new terminal session (if using a tool like a curl), Postman (or a similar testing tool), or simply navigate to the URI in a new browser tab or window. What you'll see are all the CGI Environment variables that are sent back (in an *unauthenticated* server response) to you, a client, or an application. Pretty neat trick, eh?  
 
 Here is an example of the response from an Autonomous Database - Always Free tenancy:  
 
