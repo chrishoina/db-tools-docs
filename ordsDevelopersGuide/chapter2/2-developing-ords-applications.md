@@ -32,9 +32,7 @@ End;
 
 Save your code and Handler.
 
-  <details>
-    <summary>
-      <code>
+Sample code 
   BEGIN
   ORDS.ENABLE_SCHEMA(
       p_enabled             => TRUE,
