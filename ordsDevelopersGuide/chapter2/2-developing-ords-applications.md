@@ -12,8 +12,10 @@ ORDS pre-hook functions are typically used to implement application logic that n
 
 [^1]: I'd consider this a rather advanced use case. In this scenario, you would create a PL/SQL package to set an application context (along with a trigger), followed by a function that would permit users to view certain resources (APIs). There is a "simple" tutorial, [here](https://docs.oracle.com/en/database/oracle/oracle-database/19/dbseg/using-oracle-vpd-to-control-data-access.html#GUID-2113CF3C-D950-40B3-A121-A44284EF104D) that details the steps for creating a Virtual Private Database (VPD) policy. However, you do not need to complete the tutorial to understand how something like this would work in practice. If you compare the steps in that tutorial to what is included in the `custom_auth_api.plb` and `custom_auth_api.pls` package body and spec of this ORDS tutorial, you'll notice some parallels. Essentially, you can create some rather novel functions, procedures, and triggers; ones that will be invoked via that ORDS pre-hook `BOOLEAN` (i.e.,  `TRUE / FALSE` ) function. But in the end, *everything* boils down to whether the pre-hook function (and any underlying subprograms) returns either a `TRUE` or `FALSE`. Learn more about "contexts" by reviewing the `SYS_CONTEXT`function in the [SQL Language Reference guide](https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/SYS_CONTEXT.html).
 
-[^2]: In this example, a pre-hook function can be invoked prior to satisfying an ORDS request. Such a pre-hook could (1)inspect the request headers (much like you'll see in this section's `.plb` and `.pls` file contents) (2) identify the user who is making the request, and  (3) determine if that user is authorized to make the request. In fact, you have a lot of options for which environment variables you might want to choose from.  
+[^2]: In this example, a pre-hook function can be invoked prior to satisfying an ORDS request. Such a pre-hook could (1) inspect the request headers (much like you'll see in this section's `.plb` and `.pls` file contents) (2) identify the user who is making the request, and  (3) determine if that user is authorized to make the request. In fact, you have a lot of options for which environment variables you might want to choose from.  
 
+<summary>An example: Creating an ORDS <code>GET</code> request to retrieve CGI Environment variables from the <code>PRINT_CGI_ENV</code> PL/SQL utility.
+  <details>
 For instance, here is a quick way for you to learn some more about ORDS Resource Modules *and* about **C**ommon **G**ateway **I**nterface (CGI) Environment variables as they relate to the Oracle database. We'll rely upon the `OWA_UTIL` PL/SQL package, specifically the [`PRINT_CGI_ENV` procedure](https://docs.oracle.com/en/database/oracle/oracle-database/19/arpls/OWA_UTIL.html#GUID-F9AA35ED-76A8-428B-A7A6-3AEE698B8CE7) (an `HTML utility`; one of three [utility subprograms](https://docs.oracle.com/en/database/oracle/oracle-database/19/arpls/OWA_UTIL.html#GUID-7915F61E-1E50-4507-87FC-7E0ECAE3D41D) in the `OWA_UTIL` package). First, create a Resource Module and Template. Then, when creating a Handler, choose `plsql/block` as the `Source Type` and use the `PRINT_CGI_ENV` 
 procedure in the Handler code. Like this:  
 
@@ -37,7 +39,7 @@ Here is a curl command response from a development configuration (i.e., A locall
 
 As you can see, there is a ton of data to work with. This is something to keep in mind if you want to use CGI Environment variables with your ORDS pre-hook (YOU DO NOT HAVE TO, this is just an example!).  
 
-You might want to start small by implementing a security policy using something as simple as the `QUERY_STRING` variable (e.g., your ORDS prehook calls upon an underlying function or procedure that uses a Query string as a parameter.)  
+You might want to start small by implementing a security policy using something as simple as the `QUERY_STRING` variable (e.g., your ORDS pre-hook calls upon an underlying function or procedure that uses a Query string as a parameter.)  
 
 Look what happens when I append `?chris` to the end of this URI:  
 
@@ -46,6 +48,8 @@ Look what happens when I append `?chris` to the end of this URI:
 If you take a close look, you can see how simple and automatic this is. Something to think about. Even if you don't care about CGI Environment variables *today*, I guarantee this will come in handy in the future.  
 
 ![New GCI environment variables with query string.](./images/displaying-print-out-adb-with-query-string.png " ")
+  </details>
+</summary>
 
 ### 2.16.1 Configuring the Pre-hook Function
 
