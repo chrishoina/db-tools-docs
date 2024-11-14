@@ -33,6 +33,7 @@ End;
 Save your code and Handler.
 
 Sample code 
+```sql
   BEGIN
   ORDS.ENABLE_SCHEMA(
       p_enabled             => TRUE,
@@ -70,9 +71,8 @@ end;');
 
 COMMIT;
 
-END;</code>
-    </summary>
-  </details>
+END;
+```
 
 From there, either copy and paste this Handler's URI into a new terminal session (if using a tool like a curl), Postman (or a similar testing tool), or simply navigate to the URI in a new browser tab or window. What you'll see are all the CGI Environment variables that are sent back (in an *unauthenticated* server response) to you, a client, or an application. Pretty neat trick, eh?  
 
