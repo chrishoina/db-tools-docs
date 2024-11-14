@@ -1,6 +1,6 @@
 # 2 Developing Oracle REST Data Services Applications
 
-## 2.16 Overview of Pre-hook Functions
+## 2.16 Overview of Pre-hook Functions {#prehook-overview}
 
 This section explains how to use PL/SQL-based pre-hook functions with ORDS. An ORDS pre-hook function is a `BOOLEAN` function that returns a `TRUE` or `FALSE`. Once an ORDS pre-hook function has been defined and configured, the pre-hook function will be invoked prior to satisfying an ORDS `REST` request. The examples contained in this section illustrate several scenarios of how and when an ORDS pre-hook function can be used.
 
@@ -8,7 +8,7 @@ ORDS pre-hook functions are typically used to implement application logic that n
 
 - Configuring database session-based application context to support a Virtual Private Database (VPD) policy.[^1]
 - Customizing authentication and authorization.[^2]
-- Enabling auditing or metrics gathering.[^3]{#details}
+- Enabling auditing or metrics gathering.[^3]
 
 [^1]: I'd consider this a rather advanced use case. In this scenario, you would create a PL/SQL package to set an application context (along with a trigger), followed by a function that would permit users to view certain resources (APIs). There is a "simple" tutorial, [here](https://docs.oracle.com/en/database/oracle/oracle-database/19/dbseg/using-oracle-vpd-to-control-data-access.html#GUID-2113CF3C-D950-40B3-A121-A44284EF104D) that details the steps for creating a Virtual Private Database (VPD) policy. However, you do not need to complete the tutorial to understand how something like this would work in practice. If you compare the steps in that tutorial to what is included in the `custom_auth_api.plb` and `custom_auth_api.pls` package body and spec of this ORDS tutorial, you'll notice some parallels. Essentially, you can create some rather novel functions, procedures, and triggers; ones that will be invoked via that ORDS pre-hook `BOOLEAN` (i.e.,  `TRUE / FALSE` ) function. But in the end, *everything* boils down to whether the pre-hook function (and any underlying subprograms) returns either a `TRUE` or `FALSE`. Learn more about "contexts" by reviewing the `SYS_CONTEXT`function in the [SQL Language Reference guide](https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/SYS_CONTEXT.html).
 
@@ -50,6 +50,8 @@ Look what happens when I append `?chris` to the end of this URI:
 If you take a close look, you can see how simple and automatic this is. Something to think about. Even if you don't care about CGI Environment variables *today*, I guarantee this will come in handy in the future.  
 
 ![New GCI environment variables with query string.](./images/displaying-print-out-adb-with-query-string.png " ")
+
+[Return to top](#prehook-overview)
 </p>
 </details>
 
