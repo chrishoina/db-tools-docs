@@ -60,7 +60,7 @@ If you take a close look, you can see how simple and automatic this is. Somethin
 ~~This section describes how to configure a pre-hook function.~~  
 Once you have performed the required steps in the database, you'll configure ORDS so that it is "aware" and expecting this *stored* pre-hook function. You can configure the pre-hook function in ORDS with the ORDS CLI command:
 
-```sql
+```sh
 ords config set procedure.rest.preHook [schema where pre-hook function is defined.pre-hook function name]
 ```
 
