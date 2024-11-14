@@ -8,13 +8,13 @@ ORDS pre-hook functions are typically used to implement application logic that n
 
 - Configuring database session-based application context to support a Virtual Private Database (VPD) policy.[^1]
 - Customizing authentication and authorization.[^2]
-- Enabling auditing or metrics gathering.[^3]
+- Enabling auditing or metrics gathering.[^3]{#details}
 
 [^1]: I'd consider this a rather advanced use case. In this scenario, you would create a PL/SQL package to set an application context (along with a trigger), followed by a function that would permit users to view certain resources (APIs). There is a "simple" tutorial, [here](https://docs.oracle.com/en/database/oracle/oracle-database/19/dbseg/using-oracle-vpd-to-control-data-access.html#GUID-2113CF3C-D950-40B3-A121-A44284EF104D) that details the steps for creating a Virtual Private Database (VPD) policy. However, you do not need to complete the tutorial to understand how something like this would work in practice. If you compare the steps in that tutorial to what is included in the `custom_auth_api.plb` and `custom_auth_api.pls` package body and spec of this ORDS tutorial, you'll notice some parallels. Essentially, you can create some rather novel functions, procedures, and triggers; ones that will be invoked via that ORDS pre-hook `BOOLEAN` (i.e.,  `TRUE / FALSE` ) function. But in the end, *everything* boils down to whether the pre-hook function (and any underlying subprograms) returns either a `TRUE` or `FALSE`. Learn more about "contexts" by reviewing the `SYS_CONTEXT`function in the [SQL Language Reference guide](https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/SYS_CONTEXT.html).
 
 [^2]: In this example, a pre-hook function can be invoked prior to satisfying an ORDS request. Such a pre-hook could (1) inspect the request headers (much like you'll see in this section's `.plb` and `.pls` file contents) (2) identify the user who is making the request, and  (3) determine if that user is authorized to make the request. In fact, you have a lot of options for which environment variables you might want to choose from.  
 
-<details> {#details}
+<details> 
   <summary><b>Example:</b> Creating an ORDS <code>GET</code> request to retrieve CGI Environment variables from the <code>PRINT_CGI_ENV</code> PL/SQL utility.</summary>
   <p>
   
