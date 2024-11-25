@@ -216,8 +216,7 @@ BEGIN
 END;
 ```
 
-<details>
-  <summary>Click to reveal the complete Resource Module.</summary>
+<details><summary>Click to reveal the complete Resource Module.</summary>
 <code>
 BEGIN
   ORDS.DEFINE_MODULE(
