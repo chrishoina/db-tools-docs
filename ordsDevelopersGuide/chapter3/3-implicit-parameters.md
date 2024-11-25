@@ -218,79 +218,76 @@ END;
 
 <details><summary>Click to reveal the complete Resource Module.</summary>
 <pre><code>
-
 BEGIN
-
   ORDS.DEFINE_MODULE(
-      p_module_name    => 'bind.parameter.examples',
-      p_base_path      => '/binds/',
-      p_items_per_page => 25,
-      p_status         => 'PUBLISHED',
-      p_comments       => NULL);
+    p_module_name    => 'bind.parameter.examples',
+    p_base_path      => '/binds/',
+    p_items_per_page => 25,
+    p_status         => 'PUBLISHED',
+    p_comments       => NULL);
 
-  ORDS.DEFINE_TEMPLATE(
+    ORDS.DEFINE_TEMPLATE(
       p_module_name    => 'bind.parameter.examples',
       p_pattern        => 'body_json_demo',
       p_priority       => 0,
       p_etag_type      => 'HASH',
       p_etag_query     => NULL,
       p_comments       => NULL);
-
-  ORDS.DEFINE_HANDLER(
+      
+    ORDS.DEFINE_HANDLER(
       p_module_name    => 'bind.parameter.examples',
       p_pattern        => 'body_json_demo',
       p_method         => 'POST',
       p_source_type    => 'plsql/block',
       p_mimes_allowed  => NULL,
       p_comments       => NULL,
-      p_source         =>
-'DECLARE
-    L_PARAMETER_NAME VARCHAR2(4000);
-    L_FILE_NAME      VARCHAR2(4000);
-    L_CONTENT_TYPE   VARCHAR2(200);
-    L_FILE_BODY      BLOB;
-    L_BODY_JSON      CLOB;
-BEGIN
-    L_BODY_JSON := :BODY_JSON;
-    HTP.PARAGRAPH;
-    HTP.PRINT(''Submitted by: '' || JSON_VALUE(L_BODY_JSON, ''$.submitted_by''));
-    HTP.BR;
-    HTP.PARAGRAPH;
-    HTP.PRINT(''File visibility status: '' || JSON_VALUE(L_BODY_JSON, ''$.file_visibility''));
-    HTP.BR;
-    HTP.PARAGRAPH;
-    HTP.PRINT(''Shape selected: '' || :shape);
-    FOR i IN 1..ORDS.BODY_FILE_COUNT LOOP
-        ORDS.GET_BODY_FILE(
-            P_FILE_INDEX     => i,
-            P_PARAMETER_NAME => L_PARAMETER_NAME,
-            P_FILE_NAME      => L_FILE_NAME,
-            P_CONTENT_TYPE   => L_CONTENT_TYPE,
-            P_FILE_BLOB      => L_FILE_BODY
-        );
-        HTP.PARAGRAPH;
-        HTP.PRINT(''Inserted file #'' || i || '': '' || L_FILE_NAME);
-        HTP.BR;
-        INSERT INTO BODY_JSON_DEMO_TABLE (
-            FILE_NAME,
-            FILE_BODY' || ',
-            CONTENT_TYPE,
-            FILE_VISIBILITY,
-            SUBMITTED_BY,
-            SHAPE
-        ) VALUES ( L_FILE_NAME,
-                   L_FILE_BODY,
-                   L_CONTENT_TYPE,
-                   JSON_VALUE(L_BODY_JSON, ''$.submitted_by''),
-                   JSON_VALUE(L_BODY_JSON, ''$.file_visibility''),
-                   :shape );
-    END LOOP;
-END;');
+      p_source         => 'DECLARE
+                              L_PARAMETER_NAME VARCHAR2(4000);
+                              L_FILE_NAME      VARCHAR2(4000);
+                              L_CONTENT_TYPE   VARCHAR2(200);
+                              L_FILE_BODY      BLOB;
+                              L_BODY_JSON      CLOB;
+                          BEGIN
+                              L_BODY_JSON := :BODY_JSON;
+                              HTP.PARAGRAPH;
+                              HTP.PRINT(''Submitted by: '' || JSON_VALUE(L_BODY_JSON, ''$.submitted_by''));
+                              HTP.BR;
+                              HTP.PARAGRAPH;
+                              HTP.PRINT(''File visibility status: '' || JSON_VALUE(L_BODY_JSON, ''$.file_visibility''));
+                              HTP.BR;
+                              HTP.PARAGRAPH;
+                              HTP.PRINT(''Shape selected: '' || :shape);
+                              FOR i IN 1..ORDS.BODY_FILE_COUNT LOOP
+                                  ORDS.GET_BODY_FILE(
+                                      P_FILE_INDEX     => i,
+                                      P_PARAMETER_NAME => L_PARAMETER_NAME,
+                                      P_FILE_NAME      => L_FILE_NAME,
+                                      P_CONTENT_TYPE   => L_CONTENT_TYPE,
+                                      P_FILE_BLOB      => L_FILE_BODY
+                                  );
+                                  HTP.PARAGRAPH;
+                                  HTP.PRINT(''Inserted file #'' || i || '': '' || L_FILE_NAME);
+                                  HTP.BR;
+                                  INSERT INTO BODY_JSON_DEMO_TABLE (
+                                      FILE_NAME,
+                                      FILE_BODY' || ',
+                                      CONTENT_TYPE,
+                                      FILE_VISIBILITY,
+                                      SUBMITTED_BY,
+                                      SHAPE
+                                  ) VALUES ( L_FILE_NAME,
+                                            L_FILE_BODY,
+                                            L_CONTENT_TYPE,
+                                            JSON_VALUE(L_BODY_JSON, ''$.submitted_by''),
+                                            JSON_VALUE(L_BODY_JSON, ''$.file_visibility''),
+                                            :shape );
+                              END LOOP;
+                          END;');
 
 COMMIT;
 
 END;
-</code></pre>
+<code></pre>
 </details>
 
 To test this `:body_json` implicit parameter a curl command such as the one below may be used:
