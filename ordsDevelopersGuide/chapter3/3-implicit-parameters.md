@@ -140,7 +140,7 @@ Similar to the `:body` and `:body_text` implicit parameters, when the`:body_json
 
 #### Example
 
-A table (`DEMO_TABLE`) has been created with the following attributes:
+A table (`BODY_JSON_DEMO_TABLE`) has been created with the following attributes:
 
 ![BODY_JSON_DEMO_TABLE columns image.](./images/3.1-demo-table-in-sql-worksheet-image-1.png " ")
 
@@ -165,7 +165,7 @@ An ORDS endpoint has been created (with the below Resource Handler code) with th
 
 - The endpoint expects multiple files and form data *in a `JSON` format* (i.e., the use of the `:body_json` implicit parameter).
 - The `ORDS.BODY_FILE_COUNT` function will be used to count the total files of the `POST` request.
-- The `ORDS.GET_BODY_FILE` procedure will be used to store, in session, these files.
+- The `ORDS.GET_BODY_FILE` procedure will be used to temporarily store (in the current database session's memory) file names, details, and contents. Which allows the ORDS Resource Handler to "handle" multiple files in a single `POST` request.
 
 ![The body-json PLSQL Handler code.](./images/3.1-body-json-demo-plsql-handler-image-2.png " ")
 
