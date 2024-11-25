@@ -217,8 +217,7 @@ END;
 ```
 
 <details><summary>Click to reveal the complete Resource Module.</summary>
-<code>
-BEGIN
+<code>BEGIN
   ORDS.DEFINE_MODULE(
       p_module_name    => 'bind.parameter.examples',
       p_base_path      => '/binds/',
@@ -287,8 +286,7 @@ END;');
 
 COMMIT;
 
-END;
-</code>
+END;</code>
 </details>
 
 To test this `:body_json` implicit parameter a curl command such as the one below may be used:
