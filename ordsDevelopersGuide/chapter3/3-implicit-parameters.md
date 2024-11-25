@@ -217,7 +217,8 @@ END;
 ```
 
 <details><summary>Click to reveal the complete Resource Module.</summary>
-<code>BEGIN
+<pre><code>
+BEGIN
   ORDS.DEFINE_MODULE(
       p_module_name    => 'bind.parameter.examples',
       p_base_path      => '/binds/',
@@ -240,13 +241,15 @@ END;
       p_source_type    => 'plsql/block',
       p_mimes_allowed  => NULL,
       p_comments       => NULL,
-      p_source         => 
-'DECLARE 
+      p_source         =>  
+
+'DECLARE
     L_PARAMETER_NAME VARCHAR2(4000);
     L_FILE_NAME      VARCHAR2(4000);
     L_CONTENT_TYPE   VARCHAR2(200);
     L_FILE_BODY      BLOB;
-    L_BODY_JSON      CLOB;
+    L_BODY_JSON      CLOB;  
+
 BEGIN
     L_BODY_JSON := :BODY_JSON;
     HTP.PARAGRAPH;
@@ -281,12 +284,14 @@ BEGIN
                    JSON_VALUE(L_BODY_JSON, ''$.submitted_by''),
                    JSON_VALUE(L_BODY_JSON, ''$.file_visibility''),
                    :shape );
-    END LOOP;
-END;');
+    END LOOP;  
 
-COMMIT;
-
-END;</code>
+END;');  
+  
+COMMIT;  
+  
+END;
+</code></pre>
 </details>
 
 To test this `:body_json` implicit parameter a curl command such as the one below may be used:
