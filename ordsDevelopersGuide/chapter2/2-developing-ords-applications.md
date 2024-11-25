@@ -1,3 +1,7 @@
+<!-- https://oracle-my.sharepoint.com/personal/tulika_das_oracle_com/_layouts/15/onedrive.aspx?csf=1&web=1&e=7EGLVb&CID=a41001e8%2D3a7e%2D403f%2D9234%2D713d44bb73d6&id=%2Fpersonal%2Ftulika%5Fdas%5Foracle%5Fcom%2FDocuments%2FTD%20Projects%2FORDS%20Doc%20Revamp%202023&FolderCTID=0x0120004335BE87777DC644A1BD73BDB63CA75D&view=0
+
+Example pandoc 3-implicit-parameters.md -f markdown -t docx -o 3-implicit-parameters.md.docx -->
+
 # 2 Developing Oracle REST Data Services Applications
 
 ## 2.16 Overview of Pre-hook Functions
@@ -120,6 +124,9 @@ You'll receive confirmation of the new setting in your terminal, but you can als
 
 ![ORDS configuration, reviewing the pool xml file.](./images/reviewing-ords-configuration-in-settings-xml.png " ")
 
+<!-- Need to include: 
+Note about fully-qualified name: BEST PRACTICE https://oracle-one.slack.com/archives/C6V4QHPQA/p1730135103935539?thread_ts=1729799529.640709&cid=C6V4QHPQA -->
+
 ### 2.16.2 Using a Pre-hook Function
 
 ~~This section explains how the pre-hook function is used.~~
@@ -129,14 +136,19 @@ An ORDS pre-hook PL/SQL function must:
 2. return a BOOLEAN value
 3. be executable by the database user (the user who is issuing the initial HTTP request) or executable by `PUBLIC`[^7]
 
-[^7]: The original documentation read as follows:
-> *"A pre-hook must be a PL/SQL function with no arguments and must return a BOOLEAN value. The function must be executable by the database user to whom the request is mapped. For example, if the request is mapped to an ORDS enabled schema, then that schema must be granted the execute privilege on the pre-hook function (or to PUBLIC)."*
+[^7]: The original documentation reads as follows: *"A pre-hook must be a PL/SQL function with no arguments and must return a `BOOLEAN` value. <mark>The function must be executable by the database user to whom the request is mapped.</mark> For example, if the request is mapped to an ORDS enabled schema, then that schema must be granted the execute privilege on the pre-hook function (or to PUBLIC)."* The highlighted text might be confusing for some. All this means is that if say, `ORDS_TEST` user issues a `GET` request to `localhost:8080/ords/api` and *there is* an ORDS pre-hook function configured, the `ORDS_TEST` user needs to be able to `EXECUTE` that ORDS pre-hook function. Later in the docs you will explore the examples. and contained in those examples you will notice that the ORDS pre-hook functions have been `GRANT`ed `EXECUTE TO PUBLIC`; meaning *all users* can execute the ORDS pre-hook. [About the `GRANT` statement](https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/GRANT.html).
 
-Note:
-If Oracle APEX 24.1 or higher is used, then the APEX functional user, APEX_PUBLIC_ROUTER, must be granted execute privilege for its friendly URLs (/r) to be accessible.
+> **NOTE:** If using Oracle APEX 24.1 or higher, the `APEX_PUBLIC_ROUTER` user must be granted the `EXECUTE` privilege to ensure friendly URLs (i.e., `/r`) remain accessible. About [APEX Friendly URLs](https://docs.oracle.com/en/database/oracle/apex/24.1/htmdb/understanding-friendly-url-syntax.html#GUID-716B85EC-2D9B-49F7-BABE-2C4CA347F198).
 
-If the function returns true, then it indicates that the normal processing of the request must continue. If the function returns false, then it indicates that further processing of the request must be aborted.
+#### ORDS Pre-hook function returns `TRUE`
+
+When the ORDS pre-hook function returns `TRUE`, then normal processing will continue (e.g., an initial HTTP request will proceed).
+
 ORDS invokes a pre-hook function in an OWA (Oracle Web Agent) that is a PL/SQL Gateway Toolkit environment. This means that the function can introspect the request headers and the OWA CGI environment variables, and use that information to drive its logic. The function can also use the OWA PL/SQL APIs to generate a response for the request (for example, in a case where the pre-hook function needs to abort further processing of the request, and provide its own response).
+
+#### ORDS Pre-hook function returns `FALSE`
+
+true, then it indicates that the normal processing of the request must continue. If the function returns false, then it indicates that further processing of the request must be aborted.
 
 ### 2.16.3 Processing of a Request
 

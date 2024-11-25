@@ -1,25 +1,10 @@
-<!-- pandoc 3-implicit-parameters.md -f markdown -t docx -o 3-implicit-parameters.md.docx -->
+<!-- Example pandoc 3-implicit-parameters.md -f markdown -t docx -o 3-implicit-parameters.md.docx -->
+
+<!-- https://oracle-my.sharepoint.com/personal/tulika_das_oracle_com/_layouts/15/onedrive.aspx?csf=1&web=1&e=7EGLVb&CID=a41001e8%2D3a7e%2D403f%2D9234%2D713d44bb73d6&id=%2Fpersonal%2Ftulika%5Fdas%5Foracle%5Fcom%2FDocuments%2FTD%20Projects%2FORDS%20Doc%20Revamp%202023&FolderCTID=0x0120004335BE87777DC644A1BD73BDB63CA75D&view=0 -->
 
 # 3 Implicit Parameters
 
-This chapter describes the implicit parameters used in REST service handlers that are not explicitly declared. Oracle REST Data Services (ORDS) adds these parameters automatically to the resource handlers.
-
-ORDS also supports, under certain conditions, automatic binding of the following:
-
-- Query parameters
-- Form data
-- JSON objects
-
-When query parameters are provided, they are always automatically bound by Resource Handlers. Whereas automatic binding behavior of form data and `JSON` objects are dependent on the following two factors:
-
-1. Where and how the `:body`, `:body_text`, and `:body_json` implicit parameters are used, *and*
-2. The media- or MIME type used:
-   - `application/x-www-form-urlencoded`
-   - `application/json`
-   - `multipart/form-data` *with a single file*
-   - `multipart/form-data` *with multiple files*
-
-> **NOTE:** Sections **3.1.1 About the :body parameter**, **3.1.2 About the :body_text parameter**, and **3.1.3 About the :body_json parameter** will cover in detail automatic binding behavior under various conditons.
+This chapter describes the implicit parameters used in REST service handlers that are not explicitly declared. Oracle REST Data Services (ORDS) adds these parameters automatically to Resource Handlers.
 
 ## 3.1 List of Implicit Parameters
 
@@ -45,22 +30,117 @@ Table 3-1 List of Implicit Parameters
 | :row_count | NUMBER | IN | N/A | Specifies the one-based index of the last row to be displayed in a paginated request. | 3.0 |
 | :status_code | NUMBER | OUT | X-ORDS-STATUS-CODE | Specifies the HTTP status code for the request. | 18.3 |
 
+> **NOTE:** the `:body`, `:body_text`, and `:body_json` parameters are not designed to be used in the *same* Resource Handler. Review the following sections and decide which of these three bind parameters best fits your use case.
+
+### 3.1.1 Automatic binding
+
+ORDS also supports, under various conditions, automatic binding of the following:
+
+- Query parameters (*all conditions*)
+- Form data
+- JSON objects
+
+#### Examples
+
+When query parameters are provided, they are always automatically bound by Resource Handlers. Whereas automatic binding behavior of form data and `JSON` objects are dependent on the following two factors:
+
+1. Where and how the `:body`, `:body_text`, and `:body_json` implicit parameters are used, *and*
+2. The media- or MIME type used:
+   - `application/x-www-form-urlencoded`
+   - `application/json`
+   - `multipart/form-data`
+     - *with a single file*
+     - *with multiple files*
+
+> **NOTE:** Sections **3.1.1 About the :body parameter**, **3.1.2 About the :body_text parameter**, and **3.1.3 About the :body_json parameter** will cover in detail automatic binding behavior under various conditions.
+
+##### Query Parameters
+
+ORDS supports automatic binding of query parameters for POST requests with all Content-types (i.e., `application/x-www-form-urlencoded,` `application/json,` `multipart/form-data` - *with a single file,* `multipart/form-data` - *with multiple files*).
+
+An HTTP request is issued:
+
+`https://localhost:8443/ords/my_schema/demo/etc?shape=triangle`
+
+The value, `triangle`, would be accessible in an ORDS handler with the automatic bind `:shape`. As can be seen in the example PL/SQL Handler code:
+
+```sql
+Begin
+  HTP.p('RESULT: ' || :shape);
+End;
+
+RESULT: triangle
+```
+
+##### Form Data
+
+ORDS supports automatic binding of `POST` request body form data, under various conditions. Refer to the`:body`, `:body_text`, and `:body_json` sections of this document for detailed guidance. For illustrative purposes, the following example assumes a `POST` request is being issued to an ORDS Resource Handler with *none* of the previously mentioned "`:body_`" implicit parameters.
+
+An HTTP request is issued (in the form of a curl command):
+
+```sh
+curl 'https://localhost:8443/ords/my_schema/demo/etc'
+  --header 'Content-Type: application/x-www-form-urlencoded'
+  --data-url-encode 'last_name=Ever'
+  --data-url-encode 'first_name=Greatest'
+```
+
+The values for `last_name` and `first_name` would be accessible in an ORDS handler with the automatic binds `:last_name` and `:first_name`. As can be seen in the example PL/SQL Handler code:
+
+```sql
+Begin
+  HTP.p('Hello: ' || :first_name || :last_name);
+End;
+
+Hello: Greatest Ever
+```
+
+> **NOTE:** Refer to the`:body`, `:body_text`, and `:body_json` sections of this document for detailed guidance on when automatic binding of form data can be utilized.
+
+##### JSON items
+
+ORDS supports automatic binding of a JSON object in `POST` requests when the following conditions have been met:
+
+1. The `Content-Type` is of `application/json`, *and*
+2. None of the following implicit bind parameters are used in the Resource Handler: `:body`, `:body_text`, `:body_json`.
+
+An HTTP request is issued (in the form of a curl command):
+
+```sh
+curl 'https://localhost:8443/ords/my_schema/demo/etc'
+  --header 'Content-Type: application/json'
+  --data '{username: "clark", "password: "superman1234"}'
+```
+
+The values for `username` and `password` would be accessible in this ORDS handler with the automatic binds `:username` and `:password`. As can be seen in the example PL/SQL Handler code:
+
+```sql
+Begin
+  HTP.p('Hello: ' || :username);
+  Htp.p('Your password: ' || :password);
+End;
+
+Hello: clark
+Your password: superman1234
+```
+
 ### 3.1.3 About the :body_json parameter
 
-The `:body_json` implicit parameter can be used with `POST` Resource Handlers to receive the contents of the request body as JSON object. This allows Resource Handlers to directly reference JSON properties (i.e., `{"key": "value"}` pairs).[^1]
+The `:body_json` implicit parameter can be used with `POST` Resource Handlers to receive the contents of a request body as a `JSON` object for `application/x-www-form-urlencoded`, `application/json`, and `multipart/form-data` Content types. This allows Resource Handlers to directly reference JSON properties (i.e., `{"key": "value"}` pairs).[^3.1]
 
-Additionally, the `:body_json` implicit parameter can be used when form data and one or more files are included in `multipart/form-data` `POST` requests. Form data, bound to the `:body_json` implicit parameter, continues to be received as a `JSON` object while [one or more] files can be processed with the `ORDS.BODY_FILE_COUNT LOOP` function and the `ORDS.GET_BODY_FILE` procedure.
+Additionally, the `:body_json` implicit parameter can be used in `multipart/form-data` `POST` requests that *may* include one or more files as well as an accompanying `JSON` object (e.g., as is the case with HTML form data). Form data, bound to the `:body_json` implicit parameter, continues to be received as a `JSON` object while files can be processed with the `ORDS.BODY_FILE_COUNT LOOP` function and the `ORDS.GET_BODY_FILE` procedure.
 
-> [^1]: In a scenario such as this, the form data in the `POST` body is formatted as a `JSON` object,  and treated as a CLOB data type in the Oracle database. While *you can* store `JSON` in the Oracle database as `JSON`, `VARCHAR2`, `CLOB`, and `BLOB`, ORDS uses the `CLOB` data type, to ensure backward compatibility with earlier releases of the Oracle database.
+> [^3.1]: In a scenario such as this, the form data in the `POST` body is sent as a `JSON` object, and then handled as a `CLOB` data type in the Oracle database. While *you can* store `JSON` in the Oracle database as `JSON`, `VARCHAR2`, `CLOB`, and `BLOB`, ORDS uses the `CLOB` data type to ensure backward compatibility with earlier releases of the Oracle database.
 
-Similar to the `:body` and `:body_text` implicit parameters, when the`:body_json` implicit parameter is included in a Resource Handler, *it must be invoked* in order to be used. The `:body_json` parameter can be invoked in various ways, such as:
+Similar to the `:body` and `:body_text` implicit parameters, when the`:body_json` implicit parameter is included in a Resource Handler, **it must be invoked and dereferenced**, in order to be used. The `:body_json` parameter can be invoked in various ways. Some examples:
 
 - The `DBMS_OUTPUT` package such as `dbms_output.put_line(:body_json);`
 - The hypertext procedures (htp) and functions (htf) packages, such as in `htp.print(:body_json);`
-- Assigning the `:body_json` implicit parameter as variable, e.g. l_body_json `:= :body_json;`
+- Assigning the `:body_json` implicit parameter as variable, e.g.`l_body_json := :body_json;`
 
 #### Scenarios for using :body_json
 
+It is recommended 
 The below table summarizes the possible scenarios where the `:body_json` implicit parameter can be used. When form data in the `POST` body request is to be received as a `JSON` object, the `:body_json` implicit parameter should be used for the MIME types seen below. Pay special attention to the `multipart/form-data` request in cases where you intend to send 1 or more files in a request.
 
 <!-- |`POST` body contents || Form data (when in `x-www-form-urlencoded` format) | Form data (as `JSON` object) | ≥ 1 file/s |
@@ -111,21 +191,18 @@ The below table summarizes the possible scenarios where the `:body_json` implici
 A table (`DEMO_TABLE`) has been created with the following attributes:
 
 ```sql
-CREATE TABLE DEMO_TABLE 
-    ( 
-     ID              NUMBER (*,0) GENERATED BY DEFAULT AS IDENTITY 
-        ( START WITH 1 CACHE 20 )  NOT NULL , 
-     FILE_NAME       VARCHAR2 (200) , 
-     FILE_BODY       BLOB , 
-     CONTENT_TYPE    VARCHAR2 (200) , 
-     FILE_VISIBILITY VARCHAR2 (10) , 
-     SUBMITTED_BY    VARCHAR2 (200) , 
-     SUBMITTED_ON    TIMESTAMP DEFAULT systimestamp.
-     SHAPE           VARCHAR2 (20)
-    ) 
-    TABLESPACE DATA 
-    LOGGING 
-;
+CREATE TABLE DEMO_TABLE (
+    ID              NUMBER(*, 0)
+        GENERATED BY DEFAULT AS IDENTITY ( START WITH 1 CACHE 20 )
+    NOT NULL,
+    FILE_NAME       VARCHAR2(200),
+    FILE_BODY       BLOB,
+    CONTENT_TYPE    VARCHAR2(200),
+    FILE_VISIBILITY VARCHAR2(10),
+    SUBMITTED_BY    VARCHAR2(200),
+    SUBMITTED_ON    TIMESTAMP DEFAULT SYSTIMESTAMP,
+    SHAPE           VARCHAR2(20)
+);
 ```
 
 > **NOTE:** Columns such as `FILE_VISIBILITY`, `SUBMITTED_BY`, and `SUBMITTED_ON` are for *demonstration purposes only*. They are not required.
@@ -139,7 +216,7 @@ An ORDS Endpoint has been created (with the below Resource Handler code). The fo
 The following code example then performs an `INSERT` on the `DEMO_TABLE` and relies upon various HTP procedures to "print" the results to a user, client, or application.
 
 ```sql
-DECLARE
+DECLARE 
     L_PARAMETER_NAME VARCHAR2(4000);
     L_FILE_NAME      VARCHAR2(4000);
     L_CONTENT_TYPE   VARCHAR2(200);
@@ -148,22 +225,25 @@ DECLARE
 BEGIN
     L_BODY_JSON := :BODY_JSON;
     HTP.PARAGRAPH;
-    HTP.PRINT('Submitted By: ' || JSON_VALUE(L_BODY_JSON, '$.submitted_by'));
+    HTP.PRINT('Submitted by: ' || JSON_VALUE(L_BODY_JSON, '$.submitted_by'));
     HTP.BR;
     HTP.PARAGRAPH;
     HTP.PRINT('File visibility status: ' || JSON_VALUE(L_BODY_JSON, '$.file_visibility'));
     HTP.BR;
     HTP.PARAGRAPH;
-    HTP.PRINT('Shape: ' || :SHAPE);
-    FOR I IN 1..ORDS.BODY_FILE_COUNT LOOP
+    HTP.PRINT('Shape selected: ' || :shape);
+    FOR i IN 1..ORDS.BODY_FILE_COUNT LOOP
         ORDS.GET_BODY_FILE(
-            P_FILE_INDEX     => I,
+            P_FILE_INDEX     => i,
             P_PARAMETER_NAME => L_PARAMETER_NAME,
             P_FILE_NAME      => L_FILE_NAME,
             P_CONTENT_TYPE   => L_CONTENT_TYPE,
             P_FILE_BLOB      => L_FILE_BODY
         );
-        INSERT INTO DEMO_TABLE (
+        HTP.PARAGRAPH;
+        HTP.PRINT('Inserted file #' || i || ': ' || L_FILE_NAME);
+        HTP.BR;
+        INSERT INTO BODY_JSON_DEMO_TABLE (
             FILE_NAME,
             FILE_BODY,
             CONTENT_TYPE,
@@ -176,9 +256,6 @@ BEGIN
                    JSON_VALUE(L_BODY_JSON, '$.submitted_by'),
                    JSON_VALUE(L_BODY_JSON, '$.file_visibility'),
                    :shape );
-        HTP.PARAGRAPH;
-        HTP.PRINT('Inserted File: ' || L_FILE_NAME);
-        HTP.BR;
     END LOOP;
 END;
 ```
@@ -187,7 +264,7 @@ To test this `:body_json` implicit parameter a curl command such as the one belo
 
 > **NOTE:** You may have observed the included query parameter in the above `POST` request. In this example, we illustrate how automatic binding of query parameters (e.g., `shape=triangle` can be used in ORDS `POST` Resource Handlers).
 
-```shell
+```sh
 curl --location 'https://gf641ea24ecc468-ordsdemo.adb.us-ashburn-1.oraclecloudapps.com/ords/ordsdemo/demo_api/demo?shape=triangle' \
 --form 'files=@"demo-3.sql"' \
 --form 'files=@"demo-2.sql"' \
