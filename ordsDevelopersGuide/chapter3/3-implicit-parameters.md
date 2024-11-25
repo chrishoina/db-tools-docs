@@ -10,7 +10,7 @@ This chapter describes the implicit parameters used in REST service handlers tha
 
 The following table lists the implicit parameters:
 
-Note:Parameter names are case sensitive. For example, :CURRENT_USER is not a valid implicit parameter.
+> **Note:** Parameter names are case sensitive. For example, :CURRENT_USER is not a valid implicit parameter.
 
 Table 3-1 List of Implicit Parameters
 
@@ -40,8 +40,6 @@ ORDS also supports, under various conditions, automatic binding of the following
 - Form data
 - JSON objects
 
-#### Examples
-
 When query parameters are provided, they are always automatically bound by Resource Handlers. Whereas automatic binding behavior of form data and `JSON` objects are dependent on the following two factors:
 
 1. Where and how the `:body`, `:body_text`, and `:body_json` implicit parameters are used, *and*
@@ -53,6 +51,8 @@ When query parameters are provided, they are always automatically bound by Resou
      - *with multiple files*
 
 > **NOTE:** Sections **3.1.1 About the :body parameter**, **3.1.2 About the :body_text parameter**, and **3.1.3 About the :body_json parameter** will cover in detail automatic binding behavior under various conditions.
+
+#### Examples
 
 ##### Query Parameters
 
