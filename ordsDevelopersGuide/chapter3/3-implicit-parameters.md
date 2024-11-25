@@ -56,7 +56,7 @@ When query parameters are provided, they are always automatically bound by Resou
 
 ##### Query Parameters
 
-ORDS supports automatic binding of query parameters for POST requests with all Content-types (i.e., `application/x-www-form-urlencoded,` `application/json,` `multipart/form-data` - *with a single file,* `multipart/form-data` - *with multiple files*).
+ORDS supports automatic binding of query parameters for POST requests with all Content Types (i.e., `application/x-www-form-urlencoded,` `application/json,` `multipart/form-data` - *with a single file,* `multipart/form-data` - *with multiple files*).
 
 An HTTP request is issued:
 
@@ -74,7 +74,7 @@ RESULT: triangle
 
 ##### Form Data
 
-ORDS supports automatic binding of `POST` request body form data, under various conditions. Refer to the`:body`, `:body_text`, and `:body_json` sections of this document for detailed guidance. For illustrative purposes, the following example assumes a `POST` request is being issued to an ORDS Resource Handler with *none* of the previously mentioned "`:body_`" implicit parameters.
+ORDS supports automatic binding of `POST` request body form data under various conditions. For detailed guidance, refer to the `:body`, `:body_text`, and `:body_json` sections of this document. For illustrative purposes, the following example assumes a `POST` request is being issued to an ORDS Resource Handler with *none* of the previously mentioned "`:body_`" implicit parameters.
 
 An HTTP request is issued (in the form of a curl command):
 
@@ -95,7 +95,7 @@ End;
 Hello: Greatest Ever
 ```
 
-> **NOTE:** Refer to the`:body`, `:body_text`, and `:body_json` sections of this document for detailed guidance on when automatic binding of form data can be utilized.
+> **NOTE:** Refer to the `:body`, `:body_text`, and `:body_json` sections of this document for detailed guidance on when automatic binding of form data can be utilized.
 
 ##### JSON items
 
@@ -130,9 +130,9 @@ The `:body_json` implicit parameter can be used with `POST` Resource Handlers to
 
 Additionally, the `:body_json` implicit parameter can be used in `multipart/form-data` `POST` requests that *may* include one or more files as well as an accompanying `JSON` object (e.g., as is the case with HTML form data). Form data, bound to the `:body_json` implicit parameter, continues to be received as a `JSON` object while files can be processed with the `ORDS.BODY_FILE_COUNT LOOP` function and the `ORDS.GET_BODY_FILE` procedure.
 
-> [^3.1]: In a scenario such as this, the form data in the `POST` body is sent as a `JSON` object, and then handled as a `CLOB` data type in the Oracle database. While *you can* store `JSON` in the Oracle database as `JSON`, `VARCHAR2`, `CLOB`, and `BLOB`, ORDS uses the `CLOB` data type to ensure backward compatibility with earlier releases of the Oracle database.
+> [^3.1]: In a scenario such as this, the form data in the `POST` body is sent as a `JSON` object and then handled as a `CLOB` data type in the Oracle database. While *you can* store `JSON` in the Oracle database as `JSON`, `VARCHAR2`, `CLOB`, and `BLOB`, ORDS uses the `CLOB` data type to ensure backward compatibility with earlier releases of the Oracle database.
 
-Similar to the `:body` and `:body_text` implicit parameters, when the`:body_json` implicit parameter is included in a Resource Handler, **it must be invoked and dereferenced**, in order to be used. The `:body_json` parameter can be invoked in various ways. Some examples:
+Similar to the `:body` and `:body_text` implicit parameters, when the `:body_json` implicit parameter is included in a Resource Handler, **it must be invoked and dereferenced**, in order to be used. The `:body_json` parameter can be invoked in various ways. Some examples:
 
 - The `DBMS_OUTPUT` package such as `dbms_output.put_line(:body_json);`
 - The hypertext procedures (htp) and functions (htf) packages, such as in `htp.print(:body_json);`
@@ -327,6 +327,6 @@ An API testing tool, such as Postman can be used as well:
 
 ![A Postman example.](./images/3.1-body-json-postman-example-image-4.png " ")
 
-Querying the target database, reveals the updates from these tests:
+Querying the target database reveals the updates from these tests:
 
 ![Test results in the BODY_JSON_DEMO_TABLE](./images/3.1-table-results-from-body-json-tests-image-5.png " ")
