@@ -209,8 +209,8 @@ BEGIN
         ) VALUES ( L_FILE_NAME,
                    L_FILE_BODY,
                    L_CONTENT_TYPE,
-                   JSON_VALUE(L_BODY_JSON, '$.submitted_by'),
                    JSON_VALUE(L_BODY_JSON, '$.file_visibility'),
+                   JSON_VALUE(L_BODY_JSON, '$.submitted_by'),
                    :shape );
     END LOOP;
 END;
@@ -278,8 +278,8 @@ BEGIN
                                   ) VALUES ( L_FILE_NAME,
                                             L_FILE_BODY,
                                             L_CONTENT_TYPE,
-                                            JSON_VALUE(L_BODY_JSON, ''$.submitted_by''),
                                             JSON_VALUE(L_BODY_JSON, ''$.file_visibility''),
+                                            JSON_VALUE(L_BODY_JSON, ''$.submitted_by''),
                                             :shape );
                               END LOOP;
                           END;');
