@@ -12,7 +12,7 @@ JWTs enable developers to delegate authentication and subsequent authorization o
 
 ### How it works
 
-ORDS acts as a resource server in a typical OAuth 2.0 [^2.9] (or OpenID Connect) flow, making it convenient for clients, users, developers, applications to access protected ORDS APIs from with a web application.
+ORDS acts as a resource server in a typical OAuth 2.0[^2.9] (or OpenID Connect) flow, making it convenient for clients, users, developers, applications to access protected ORDS APIs from with a web application.
 
 You can create a JWT Profile for any REST-Enabled schema to provide ORDS with a
 mechanism to validate JWT bearer tokens. If a JWT bearer token is validated, then ORDS
@@ -36,7 +36,7 @@ This section explains how to create an ORDS JWT Profile.
 • JWT Identity Provider Details
 • Making Requests to ORDS Using a JWT Bearer Token
 
-[^2.9] https://datatracker.ietf.org/doc/html/rfc6749#section-1.2
+[^2.9]: https://datatracker.ietf.org/doc/html/rfc6749#section-1.2
 
 ### 2.9.1 About JSON Web Tokens (JWTs)
 This section introduces you to the JSON Web Tokens.
