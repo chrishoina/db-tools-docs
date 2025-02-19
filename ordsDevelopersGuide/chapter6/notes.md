@@ -4,7 +4,7 @@
 
 ### 8.1.1 Create an OAuth2.0 JWT Profile
 
-#### Format
+#### 8.1.1.1 Format
 
 ```sql
 PROCEDURE create_jwt_profile(
@@ -17,13 +17,13 @@ PROCEDURE create_jwt_profile(
   );
 ```
 
-#### Description
+#### 8.1.1.2 Description
 
-This procedure creates an OAuth2 JWT Profile for *your* schema.[^8.1.1] The profile is used to validate JWTs, as well as validate that the `subject` property in the JWT has the appropriate scope (as defined in the related ORDS privilege) for this schema.
+This procedure creates an OAuth2 JWT Profile for *your* schema.[^8.1.1.1.2] The profile is used to validate JWTs, as well as validate that the `subject` property in the JWT has the appropriate scope (as defined in the related ORDS privilege) for this schema.
 
-[^8.1.1]: Test
+[^8.1.1.1.2]: As the ADMIN user, you can create JWT Profiles for other users (Schemas). In order to do this, you'll need to refer to the `CREATE_JWT_PROFILE` procedure in the `ORDS_SECURITY_ADMIN` PL/SQL Package.
 
-#### Parameters
+#### 8.1.1.3 Parameters
 
 | Parameter | Description | Notes |
 | --------- | ----------- | ----- |
@@ -34,9 +34,11 @@ This procedure creates an OAuth2 JWT Profile for *your* schema.[^8.1.1] The prof
 | `p_allowed_skew` |The number of seconds allowed to skew time claims provided in the JWT.|- *Optional*<p></p>- Defaults to 0 &nbsp;&nbsp;&nbsp;secs|
 | `p_allowed_age` |The maximum allowed age  of a JWT in seconds, regardless of  expired claim.|- *Optional*<p></p>- Default to 0 &nbsp;&nbsp;&nbsp;secs|
 
-#### Usage Notes
+> :bulb: **Tip:** You can review existing a JWT Profile with the `USER_ORDS_JWT_PROFILE` View. Use the following SQL query `SELECT * USER_ORDS_JWT_PROFILE;`, or fully-qualified version `SELECT * FROM ORDS_METADATA.USER_ORDS_JWT_PROFILE;`.
 
-#### Examples
+#### 8.1.1.4 Usage Notes
+
+#### 8.1.1.5 Examples
 
 ##### Oracle Identity Access Management
 
@@ -74,14 +76,23 @@ BEGIN
 END;
 ```
 
-### Delete an OAuth2.0 JWT Profile
+> :memo: **Note:** Identify providers may differ on how certain parameters should be structured. For example, OCI Identity Access Management uses the Primary Audience of an Integrated Application and requires a trailing slash for the `AUD` claim, whereas Microsoft Entra uses the Application (client) ID as the `AUD` claim. Please refer to your Identity Provider's documentation for guidance on how claims should be structured.
 
-/**
-   * Delete a JWT Profile associated with this schema.
-   */
-  PROCEDURE delete_jwt_profile;
+### 8.1.2 Delete an OAuth2.0 JWT Profile
 
-#### Examples
+#### 8.1.2.1 Format
+
+`PROCEDURE delete_jwt_profile;`
+
+#### 8.1.2.2 Description
+
+This procedure deletes an existing JWT Profile. JWT bearer tokens will no longer be accepted when authorizing requests to those protected resources.
+
+#### 8.1.2.3 Usage notes
+
+For this operation to take effect, use the `COMMIT` statement after calling this method.
+
+#### 8.1.2.4 Examples
 
 *As an PL/SQL Anonymous Block:*
 
@@ -99,9 +110,36 @@ EXECUTE ORDS_SECURITY.DELETE_JWT_PROFILE;
 COMMIT;
 ```
 
-## OAuth2.0 Client actions
+## 8.2 OAuth2.0 Client actions
 
-### Delete an OAuth2.0 Client registration
+### 8.2.1 Delete an OAuth2.0 Client registration
+
+#### 8.2.1.1 Delete an OAuth2.0 Client registration *by `id`*
+
+##### Format
+
+```sql
+PROCEDURE delete_client(
+      p_client_key IN ords_types.t_client_key
+  );
+```
+
+##### Description
+
+Deletes an OAuth2.0 client registration using the ID of the client.[^8.2.1.1]
+
+> :memo: **Note:** The ID and the Client ID are different values. The ID of the client is the unique identifer used for functions and identification *within* the database. Whereas the Client ID is the ID that is associated with a registered client application (i.e. the value ususally stored in your application's environment variables file).
+
+[^8.2.1.1]: You can obtain the details of your OAuth2.0 client registrations with the `ORDS_METADATA.USER_ORDS_CLIENTS` ORDS-provided view. Simply execute a `SELECT * FROM ORDS_METADATA.USER_ORDS_CLIENTS;` query to review the details of your client registrations. 
+
+##### Parameters
+##### Usage notes
+##### Examples
+
+BEGIN
+    ORDS_SECURITY.DELETE_CLIENT(10598);
+    COMMIT;
+END;
 
 /**
    * Delete an OAuth client registration.
@@ -113,6 +151,14 @@ COMMIT;
       p_client_key IN ords_types.t_client_key
   );
 
+#### 8.2.1.1 Delete an OAuth2.0 Client registration *by `client_id`*
+
+##### Format
+##### Description
+##### Parameters
+##### Usage notes
+##### Examples
+
   /**
    * Delete an OAuth client registration.
    *
@@ -123,6 +169,13 @@ COMMIT;
       p_name IN VARCHAR
   );
 
+#### 8.2.1.1 Delete an OAuth2.0 Client registration *by `name`*
+
+##### Format
+##### Description
+##### Parameters
+##### Usage notes
+##### Examples
   /**
    * Grant an OAuth client with the specified role.
    *
@@ -133,7 +186,7 @@ COMMIT;
    *                    This value must must not be null.
    */
 
-### Importing an OAuth2.0 client
+### 8.2.2 Importing an OAuth2.0 client
 
 /**
    * Import an OAuth client
@@ -234,7 +287,7 @@ COMMIT;
       p_code_duration    IN NUMBER   DEFAULT NULL
   );
 
-### Register an OAuth2.0 client
+### 8.2.3 Register an OAuth2.0 client
 
   /**
    * Register an OAuth client
@@ -323,7 +376,7 @@ COMMIT;
       p_code_duration    IN NUMBER   DEFAULT NULL
       );
 
-### Updating an OAuth2.0 client registration
+### 8.2.4 Updating an OAuth2.0 client registration
 
 /**
    * Update an OAuth client registration.
@@ -477,7 +530,7 @@ COMMIT;
       p_code_duration    IN NUMBER
   );
 
-### Verifying an OAuth2.0 ID and secret
+### 8.2.5 Verifying an OAuth2.0 ID and secret
 
 /**
    * Verifies the client identifier and secret
@@ -496,9 +549,9 @@ COMMIT;
   ) RETURN sys_refcursor;
 END ORDS_SECURITY;
 
-## OAuth2.0 Client Role and Privilege actions
+## 8.3 OAuth2.0 Client Role and Privilege actions
 
-### Updating OAuth2.0 client privileges
+### 8.3.1 Updating OAuth2.0 client privileges
 
 /**
    * Updates the OAuth client privileges
@@ -526,7 +579,7 @@ END ORDS_SECURITY;
       p_privilege_names IN VARCHAR2
   );
 
-### Granting an OAuth2.0 client role
+### 8.3.2 Granting an OAuth2.0 client role
 
 /**
    * Grant an OAuth client with the specified role.
@@ -582,9 +635,9 @@ END ORDS_SECURITY;
       p_client_name IN VARCHAR2,
       p_role_name   IN VARCHAR2);
 
-## Managing OAuth2.0 Client Secrets
+## 8.4 Managing OAuth2.0 Client Secrets
 
-### Generate (Rotate) a new OAuth2.0 secret by client_key
+### 8.4.1 Generate (Rotate) a new OAuth2.0 secret by client_key
 
 /**
    * Generates a new OAuth client secret and, if required, deletes all existing client sessions.
@@ -613,7 +666,7 @@ END ORDS_SECURITY;
       p_revoke_sessions IN BOOLEAN DEFAULT FALSE
   ) RETURN ords_types.t_client_credentials;
 
-### Generate (Rotate) a new OAuth2.0 secret by client name
+### 8.4.2 Generate (Rotate) a new OAuth2.0 secret by client name
 
    /**
     * Generates a new OAuth client secret and, if required, deletes all existing client sessions.
@@ -642,7 +695,7 @@ END ORDS_SECURITY;
        p_revoke_sessions IN BOOLEAN DEFAULT FALSE
   ) RETURN VARCHAR2;
 
-### Revoke an OAuth2.0 client's secret by client_key
+### 8.4.3 Revoke an OAuth2.0 client's secret by client_key
 
   /**
    * Revoke one or both OAuth client secrets and revokes all sessions when required
@@ -669,7 +722,7 @@ END ORDS_SECURITY;
       p_revoke_sessions      IN BOOLEAN                    DEFAULT FALSE
   ) RETURN ords_types.t_client_credentials;
 
-### Revoke an OAuth2.0 client's secret by client name
+### 8.4.4 Revoke an OAuth2.0 client's secret by client name
 
   /**
    * Revoke a OAuth client secret and revokes all sessions when required
@@ -689,11 +742,11 @@ END ORDS_SECURITY;
       p_revoke_sessions IN BOOLEAN  DEFAULT FALSE
   );
 
-## Managing OAuth2.0 client tokens
+## 8.5 Managing OAuth2.0 client tokens
 
-### Updating access token duration for an OAuth2.0 client
+### 8.5.1 Updating access token duration for an OAuth2.0 client
 
-#### Updating an OAuth2.0 client's access token duration by client_key
+#### 8.5.1.1 Updating an OAuth2.0 client's access token duration by client_key
 
 /**
    * Updates the OAuth client token durations
@@ -711,7 +764,7 @@ END ORDS_SECURITY;
       p_code_duration    IN NUMBER
   );
 
-#### Updating an OAuth2.0 client's access token duration by client name
+#### 8.5.1.2 Updating an OAuth2.0 client's access token duration by client name
 
   /**
    * Updates the OAuth client token durations
@@ -729,9 +782,9 @@ END ORDS_SECURITY;
       p_code_duration    IN NUMBER
   );
 
-## Managing an OAuth2.0 client's logo
+## 8.6 Managing an OAuth2.0 client's logo
 
-### Updating an OAuth2.0 client's logo using the client's key
+### 8.6.1 Updating an OAuth2.0 client's logo using the client's key
 
   /**
    * Updates the OAuth client logo file
@@ -747,7 +800,7 @@ END ORDS_SECURITY;
       p_logo         IN BLOB
   );
 
-### Updating an OAuth2.0 client's logo using the client's name
+### 8.6.2 Updating an OAuth2.0 client's logo using the client's name
 
   /**
    * Updates the OAuth client logo file
