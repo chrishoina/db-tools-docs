@@ -8,11 +8,7 @@
 
 ## Create
 
-### JWT Profile
-
-#### Procedures
-
-##### CREATE_JWT_PROFILE
+## CREATE_JWT_PROFILE
 
 ###### Format
 
