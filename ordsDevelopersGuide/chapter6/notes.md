@@ -38,6 +38,45 @@ This procedure creates an OAuth2 JWT Profile for *your* schema.[^8.1.1.1.2] The 
 
 #### 8.1.1.4 Usage Notes
 
+If a JWT profile already exists, then it must be deleted first. For this operation to take effect,
+include the `COMMIT` statement after calling the `ORDS_SECURITY.DELETE_JWT_PROFILE;` procedure. 
+
+You can execute this procedure seperately or from with the same block as the `ORDS_SECURITY.CREATE_JWT_PROFILE;` procedure.
+
+*Executing the `ORDS_SECURITY.DELETE_JWT_PROFILE;` separately*
+
+```sql
+BEGIN
+    ORDS_SECURITY.DELETE_JWT_PROFILE();
+    COMMIT;
+END;
+
+```
+
+*As a simple `EXECUTE` command:*
+
+```sql
+EXECUTE ORDS_SECURITY.DELETE_JWT_PROFILE;
+COMMIT;
+```
+
+*Including in the same block as the `CREATE_JWT_PROFLE` procedure.*
+
+```sql
+BEGIN
+    ORDS_SECURITY.DELETE_JWT_PROFILE;
+    ORDS_SECURITY.CREATE_JWT_PROFILE(
+    p_issuer => 'https://identity.oraclecloud.com/',
+    p_audience => 'ords/myapplication/api' ,
+    p_jwk_url =>'https://
+    idcs-10a10a10a10a10a10a10a10a.identity.oraclecloud.com/admin/v1/SigningCert/
+    jwk'
+    );
+    COMMIT;
+END;
+/
+```
+
 #### 8.1.1.5 Examples
 
 ##### Oracle Identity Access Management
