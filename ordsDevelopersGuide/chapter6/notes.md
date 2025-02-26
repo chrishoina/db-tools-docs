@@ -125,7 +125,7 @@ END;
 
 #### 8.1.2.2 Description
 
-This procedure deletes an existing JWT Profile. JWT bearer tokens will no longer be accepted when authorizing requests to those protected resources.
+This procedure deletes an existing JWT Profile. Once a JWT profile has been deleted, JWT bearer tokens will no longer be accepted when authorizing requests to those protected resources.
 
 #### 8.1.2.3 Usage notes
 
@@ -155,7 +155,8 @@ COMMIT;
 
 #### 8.2.1.1 Delete an OAuth2.0 Client registration *by `id`*
 
-##### Format
+<!-- Need clarification from Dick on the correct syntax for these. -->
+##### 8.2.1.1.1 Format
 
 ```sql
 PROCEDURE delete_client(
@@ -163,22 +164,29 @@ PROCEDURE delete_client(
   );
 ```
 
-##### Description
+##### 8.2.1.1.2 Description
 
 Deletes an OAuth2.0 client registration using the ID of the client.[^8.2.1.1]
 
 > :memo: **Note:** The ID and the Client ID are different values. The ID of the client is the unique identifer used for functions and identification *within* the database. Whereas the Client ID is the ID that is associated with a registered client application (i.e. the value ususally stored in your application's environment variables file).
 
-[^8.2.1.1]: You can obtain the details of your OAuth2.0 client registrations with the `ORDS_METADATA.USER_ORDS_CLIENTS` ORDS-provided view. Simply execute a `SELECT * FROM ORDS_METADATA.USER_ORDS_CLIENTS;` query to review the details of your client registrations. 
+[^8.2.1.1]: You can obtain the details of your OAuth2.0 client registrations with the `ORDS_METADATA.USER_ORDS_CLIENTS` ORDS-provided view. Simply execute a `SELECT * FROM ORDS_METADATA.USER_ORDS_CLIENTS;` query to review the details of your client registrations.
 
-##### Parameters
-##### Usage notes
-##### Examples
+##### 8.2.1.1.3 Parameters
 
+##### 8.2.1.1.4 Usage notes
+
+##### 8.2.1.1.5 Examples
+
+```sql
 BEGIN
-    ORDS_SECURITY.DELETE_CLIENT(10598);
-    COMMIT;
+    ORDS_SECURITY.DELETE_CLIENT(
+    p_client_key => ords_types.oauth_client_key(p_id => 10604)
+    );
+COMMIT;
 END;
+/
+```
 
 /**
    * Delete an OAuth client registration.
@@ -211,10 +219,34 @@ END;
 #### 8.2.1.1 Delete an OAuth2.0 Client registration *by `name`*
 
 ##### Format
+
+```sql
+PROCEDURE delete_client(
+      p_client_key IN ords_types.t_client_key
+  );
+```
+
 ##### Description
+
+Deletes an OAuth2.0 client registration using the ID of the client.[^8.2.1.1]
+
+> :memo: **Note:** The ID and the Client ID are different values. The ID of the client is the unique identifer used for functions and identification *within* the database. Whereas the Client ID is the ID that is associated with a registered client application (i.e. the value ususally stored in your application's environment variables file).
+
+[^8.2.1.1]: You can obtain the details of your OAuth2.0 client registrations with the `ORDS_METADATA.USER_ORDS_CLIENTS` ORDS-provided view. Simply execute a `SELECT * FROM ORDS_METADATA.USER_ORDS_CLIENTS;` query to review the details of your client registrations.
+
 ##### Parameters
 ##### Usage notes
+
 ##### Examples
+
+```sql
+FROM
+    ORDS_METADATA.USER_ORDS_CLIENTS BEGIN
+    ORDS_SECURITY.DELETE_CLIENT(p_name => 'testclient');
+    COMMIT;
+END;
+```
+
   /**
    * Grant an OAuth client with the specified role.
    *
@@ -226,7 +258,7 @@ END;
    */
 
 ### 8.2.2 Importing an OAuth2.0 client
-
+<!-- What is the purpose or use case for the import procedure? What are you importing from? -->
 /**
    * Import an OAuth client
    *
