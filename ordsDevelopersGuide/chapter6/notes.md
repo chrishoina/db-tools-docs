@@ -7,14 +7,14 @@
 #### 8.1.1.1 Format
 
 ```sql
-PROCEDURE create_jwt_profile(
-      p_issuer       IN oauth_jwt_profile.issuer%type,
-      p_audience     IN oauth_jwt_profile.audience%type,
-      p_jwk_url      IN oauth_jwt_profile.jwk_url%type,
-      p_description  IN oauth_jwt_profile.description%type  DEFAULT NULL,
-      p_allowed_skew IN oauth_jwt_profile.allowed_skew%type DEFAULT NULL,
-      p_allowed_age  IN oauth_jwt_profile.allowed_age%type  DEFAULT NULL
-  );
+PROCEDURE CREATE_JWT_PROFILE (
+    P_ISSUER       IN OAUTH_JWT_PROFILE.ISSUER%TYPE,
+    P_AUDIENCE     IN OAUTH_JWT_PROFILE.AUDIENCE%TYPE,
+    P_JWK_URL      IN OAUTH_JWT_PROFILE.JWK_URL%TYPE,
+    P_DESCRIPTION  IN OAUTH_JWT_PROFILE.DESCRIPTION%TYPE DEFAULT NULL,
+    P_ALLOWED_SKEW IN OAUTH_JWT_PROFILE.ALLOWED_SKEW%TYPE DEFAULT NULL,
+    P_ALLOWED_AGE  IN OAUTH_JWT_PROFILE.ALLOWED_AGE%TYPE DEFAULT NULL
+);
 ```
 
 #### 8.1.1.2 Description
@@ -39,7 +39,7 @@ This procedure creates an OAuth2 JWT Profile for *your* schema.[^8.1.1.1.2] The 
 #### 8.1.1.4 Usage Notes
 
 If a JWT profile already exists, then it must be deleted first. For this operation to take effect,
-include the `COMMIT` statement after calling the `ORDS_SECURITY.DELETE_JWT_PROFILE;` procedure. 
+include the `COMMIT` statement after calling the `ORDS_SECURITY.DELETE_JWT_PROFILE;` procedure.
 
 You can execute this procedure seperately or from with the same block as the `ORDS_SECURITY.CREATE_JWT_PROFILE;` procedure.
 
@@ -60,7 +60,7 @@ EXECUTE ORDS_SECURITY.DELETE_JWT_PROFILE;
 COMMIT;
 ```
 
-*Including in the same block as the `CREATE_JWT_PROFLE` procedure.*
+*Included in the same block as the `CREATE_JWT_PROFLE` procedure.*
 
 ```sql
 BEGIN
@@ -121,7 +121,9 @@ END;
 
 #### 8.1.2.1 Format
 
-`PROCEDURE delete_jwt_profile;`
+```sql
+PROCEDURE DELETE_JWT_PROFILE;
+```
 
 #### 8.1.2.2 Description
 
@@ -153,72 +155,64 @@ COMMIT;
 
 ### 8.2.1 Delete an OAuth2.0 Client registration
 
-#### 8.2.1.1 Delete an OAuth2.0 Client registration *by `id`*
+An OAuth2.0 client configuration can be delete using one of three "keys." Deleting by a client's name is the easist method.
 
-<!-- Need clarification from Dick on the correct syntax for these. -->
+#### 8.2.1.1 Delete an OAuth2.0 Client registration *by `name`*
+
 ##### 8.2.1.1.1 Format
 
 ```sql
-PROCEDURE delete_client(
-      p_client_key IN ords_types.t_client_key
-  );
+PROCEDURE DELETE_CLIENT (
+    P_NAME IN VARCHAR2
+);
+```
+
+```sql
+PROCEDURE DELETE_CLIENT (
+    P_CLIENT_KEY IN ORDS_TYPES.T_CLIENT_KEY
+);
 ```
 
 ##### 8.2.1.1.2 Description
 
-Deletes an OAuth2.0 client registration using the ID of the client.[^8.2.1.1]
-
-> :memo: **Note:** The ID and the Client ID are different values. The ID of the client is the unique identifer used for functions and identification *within* the database. Whereas the Client ID is the ID that is associated with a registered client application (i.e. the value ususally stored in your application's environment variables file).
+Deletes an OAuth2.0 client registration using the ID of the OAuth2.0 client name.[^8.2.1.1]
 
 [^8.2.1.1]: You can obtain the details of your OAuth2.0 client registrations with the `ORDS_METADATA.USER_ORDS_CLIENTS` ORDS-provided view. Simply execute a `SELECT * FROM ORDS_METADATA.USER_ORDS_CLIENTS;` query to review the details of your client registrations.
 
 ##### 8.2.1.1.3 Parameters
 
-##### 8.2.1.1.4 Usage notes
+| Parameter | Description | Notes |
+| --------- | ----------- | ----- |
+| p_name | The name of the client registration to be deleted. This value must not be null. | |
 
-##### 8.2.1.1.5 Examples
+##### 8.2.1.1.4  Usage notes
+
+Use the example COMMIT statement after calling this method for this operation to take effect.
+
+##### Examples
 
 ```sql
 BEGIN
-    ORDS_SECURITY.DELETE_CLIENT(
-    p_client_key => ords_types.oauth_client_key(p_id => 10604)
-    );
+    ORDS_SECURITY.DELETE_CLIENT(P_NAME => 'test_client');
+COMMIT;
+
+END;
+/
+```
+
+```sql
+BEGIN
+ORDS_SECURITY.DELETE_CLIENT(
+    p_client_key => ords_types.t_client_key(p_name=>'test_client')
+);
 COMMIT;
 END;
 /
 ```
 
-/**
-   * Delete an OAuth client registration.
-   *
-   * @param p_client_key The key (id|name|client_id) of the client to be deleted
-   *                     A minimum of one key must be supplied.
-   */
-  PROCEDURE delete_client(
-      p_client_key IN ords_types.t_client_key
-  );
+#### 8.2.1.2 Delete an OAuth2.0 Client registration *by `id`*
 
-#### 8.2.1.1 Delete an OAuth2.0 Client registration *by `client_id`*
-
-##### Format
-##### Description
-##### Parameters
-##### Usage notes
-##### Examples
-
-  /**
-   * Delete an OAuth client registration.
-   *
-   * @param p_name The name of the client to be deleted.
-   *               This value must not be null
-   */
-  PROCEDURE delete_client(
-      p_name IN VARCHAR
-  );
-
-#### 8.2.1.1 Delete an OAuth2.0 Client registration *by `name`*
-
-##### Format
+##### 8.2.1.2.1 Format
 
 ```sql
 PROCEDURE delete_client(
@@ -226,36 +220,74 @@ PROCEDURE delete_client(
   );
 ```
 
-##### Description
+##### 8.2.1.2.2 Description
 
-Deletes an OAuth2.0 client registration using the ID of the client.[^8.2.1.1]
+Deletes an OAuth2.0 client registration using the ID of the client.[^8.2.1.2.2]
 
 > :memo: **Note:** The ID and the Client ID are different values. The ID of the client is the unique identifer used for functions and identification *within* the database. Whereas the Client ID is the ID that is associated with a registered client application (i.e. the value ususally stored in your application's environment variables file).
 
-[^8.2.1.1]: You can obtain the details of your OAuth2.0 client registrations with the `ORDS_METADATA.USER_ORDS_CLIENTS` ORDS-provided view. Simply execute a `SELECT * FROM ORDS_METADATA.USER_ORDS_CLIENTS;` query to review the details of your client registrations.
+[^8.2.1.2.2]: You can obtain the details of your OAuth2.0 client registrations with the `ORDS_METADATA.USER_ORDS_CLIENTS` ORDS-provided view. Simply execute a `SELECT * FROM ORDS_METADATA.USER_ORDS_CLIENTS;` query to review the details of your client registrations.
 
-##### Parameters
-##### Usage notes
+##### 8.2.1.2.3 Parameters
 
-##### Examples
+| Parameter | Description | Notes |
+| --------- | ----------- | ----- |
+| p_client_key | The key of the client registration to be deleted. A minimum of one key must be supplied. |*One of:*<ul><li>`p_id`</li><li>`p_client_id`</li></ul>  |
+
+##### 8.2.1.2.4 Usage notes
+
+Use the example `COMMIT` statement after calling this method for this operation to take effect.
+
+##### 8.2.1.2.5 Examples
 
 ```sql
-FROM
-    ORDS_METADATA.USER_ORDS_CLIENTS BEGIN
-    ORDS_SECURITY.DELETE_CLIENT(p_name => 'testclient');
-    COMMIT;
+BEGIN
+PROCEDURE DELETE_CLIENT (
+    P_CLIENT_KEY IN ORDS_TYPES.T_CLIENT_KEY(p_id => 10604)
+);
+COMMIT;
 END;
+/
 ```
 
-  /**
-   * Grant an OAuth client with the specified role.
-   *
-   *
-   * @param p_client_key The key (id|name|client_id) of the client to be deleted
-   *                     A minimum of one key must be supplied.
-   * @param p_role_name The name of a role that either belongs to the schema or is a built in role.
-   *                    This value must must not be null.
-   */
+#### 8.2.1.3 Delete an OAuth2.0 Client registration *by `client_id`*
+
+##### 8.2.1.3.1 Format
+
+```sql
+PROCEDURE ORDS_SECURITY.DELETE_CLIENT(
+      p_client_key IN ords_types.t_client_key
+);
+```
+
+##### 8.2.1.3.2 Description[^8.2.1.3.2]
+
+> :memo: **Note:** The ID and the Client ID are different values. The ID of the client is the unique identifer used for functions and identification *within* the database. Whereas the Client ID is the ID that is associated with a registered client application (i.e. the value ususally stored in your application's environment variables file).
+
+[^8.2.1.3.2]: You can obtain the details of your OAuth2.0 client registrations with the `ORDS_METADATA.USER_ORDS_CLIENTS` ORDS-provided view. Simply execute a `SELECT * FROM ORDS_METADATA.USER_ORDS_CLIENTS;` query to review the details of your client registrations.
+
+##### 8.2.1.3.3 Parameters
+
+| Parameter | Description | Notes |
+| --------- | ----------- | ----- |
+| p_client_key | The key of the client registration to be deleted. A minimum of one key must be supplied. |*One of:*<ul><li>`p_id`</li><li>`p_client_id`</li></ul>  |
+
+##### 8.2.1.3.4 Usage notes
+
+Use the example COMMIT statement after calling this method for this operation to take effect.
+
+##### 8.2.1.3.5 Examples
+
+```sql
+BEGIN
+PROCEDURE DELETE_CLIENT (
+    P_CLIENT_KEY IN ORDS_TYPES.T_CLIENT_KEY(
+        p_client_id => '7a8ZBfjTmkxX6fSBBLIPig..')
+);
+COMMIT;
+END;
+/
+```
 
 ### 8.2.2 Importing an OAuth2.0 client
 <!-- What is the purpose or use case for the import procedure? What are you importing from? -->
