@@ -394,7 +394,8 @@ END;
   );
 
 ### 8.2.3 Register an OAuth2.0 client
-
+<!-- Why us the function over the procedure?  -->
+When
   /**
    * Register an OAuth client
    *
@@ -484,7 +485,91 @@ END;
 
 ### 8.2.4 Updating an OAuth2.0 client registration
 
+#### 8.2.4.1 Updating an OAuth2.0 client registration *by `client_key`*
+
+##### 8.2.4.1.1 Function
+
 /**
+   * Update an OAuth client registration.
+   *
+   * @param p_client_key The key (id|name|client_id) of the client to be modified.
+   *                     A minimum of one key must be supplied.
+   * @param p_new_name Human readable name for the client, displayed to the end user
+   *                   during the approval phase of three-legged OAuth.
+   *                   When null, the old name is preserved.
+   * @param p_description Human readable description of the purpose of the
+   *                      client, displayed to the end user during the
+   *                      approval phase of three-legged OAuth. May be null
+   *                      if p_grant_type == 'client_credentials', non null
+   *                      otherwise.
+   * @param p_origins_allowed allowed origins
+   * @param p_redirect_uri Client controlled URI to which redirect containing
+   *                       OAuth access token/error will be sent. May be null
+   *                      if p_grant_type == 'client_credentials', non null
+   *                      otherwise.
+   * @param p_support_email Support e-mail for client's users
+   * @param p_support_uri Support URI for client's users
+   * @return The client key (id|name|client_id) of the updated client.
+   */
+    FUNCTION UPDATE_CLIENT (
+        P_CLIENT_KEY      IN ORDS_TYPES.T_CLIENT_KEY,
+        P_NEW_NAME        IN VARCHAR2 DEFAULT NULL,
+        P_DESCRIPTION     IN VARCHAR2,
+        P_ORIGINS_ALLOWED IN VARCHAR2,
+        P_REDIRECT_URI    IN VARCHAR2,
+        P_SUPPORT_EMAIL   IN VARCHAR2,
+        P_SUPPORT_URI     IN VARCHAR2
+    ) RETURN ORDS_TYPES.T_CLIENT_KEY;
+
+<!-- What is the difference between these two fuctions?  -->
+
+  /**
+   * Update an OAuth client registration.
+   *
+   * @param p_client_key The key (id|name|client_id) of the client to be modified.
+   *                     A minimum of one key must be supplied.
+   * @param p_new_name Human readable name for the client, displayed to the end user
+   *                   during the approval phase of three-legged OAuth.
+   *                   When null, the old name is preserved.
+   * @param p_description Human readable description of the purpose of the
+   *                      client, displayed to the end user during the
+   *                      approval phase of three-legged OAuth. May be null
+   *                      if p_grant_type == 'client_credentials', non null
+   *                      otherwise.
+   * @param p_privilege_names Names of the privileges that the client wishes to
+   *                          access. Each privilege name must be separated by a comma character.
+   * @param p_origins_allowed allowed origins
+   * @param p_redirect_uri Client controlled URI to which redirect containing
+   *                       OAuth access token/error will be sent. May be null
+   *                      if p_grant_type == 'client_credentials', non null
+   *                      otherwise.
+   * @param p_support_email Support e-mail for client's users
+   * @param p_support_uri Support URI for client's users
+   * @param p_token_duration   Duration of the access token (bearer) in seconds. Null uses ORDS instance default value
+   *                           Which can be set by property or 3600 seconds by default.
+   * @param p_refresh_duration Duration of refresh token in seconds.
+   *                           Null uses ORDS instance default value set by a property or 86400 seconds.
+   * @param p_code_duration    Duration of the code token in seconds (only applicable when grant_type is authorization
+   *                           code. If the value is set to null or the grant_type is not authorization_code. The lifetime
+   *                           will be the one defined in the ords instance access_token/12 (300 by default).
+   * @return The client key (id|name|client_id) of the updated client.
+   */
+    FUNCTION UPDATE_CLIENT (
+        P_CLIENT_KEY       IN ORDS_TYPES.T_CLIENT_KEY,
+        P_NEW_NAME         IN VARCHAR2 DEFAULT NULL,
+        P_DESCRIPTION      IN VARCHAR2,
+        P_PRIVILEGE_NAMES  IN VARCHAR2,
+        P_ORIGINS_ALLOWED  IN VARCHAR2,
+        P_REDIRECT_URI     IN VARCHAR2,
+        P_SUPPORT_EMAIL    IN VARCHAR2,
+        P_SUPPORT_URI      IN VARCHAR2,
+        P_TOKEN_DURATION   IN NUMBER,
+        P_REFRESH_DURATION IN NUMBER,
+        P_CODE_DURATION    IN NUMBER
+    ) RETURN ORDS_TYPES.T_CLIENT_KEY;
+
+##### 8.2.4.1.2 Procedure
+
    * Update an OAuth client registration.
    *
    * @param p_client_key The key (id|name|client_id) of the client to be modified.
@@ -516,7 +601,13 @@ END;
       p_support_uri     IN VARCHAR2
   ) RETURN ords_types.t_client_key;
 
-  /**
+#### 8.2.4.2 Updating an OAuth2.0 client registration *by `name`*
+
+##### 8.2.4.2.1 Function
+
+##### 8.2.4.2.2 Procedure
+
+ /**
    * Update an OAuth client registration.
    *
    * @param p_name The name of the client to be modified.
@@ -537,60 +628,17 @@ END;
    * @param p_support_email Support e-mail for client's users
    * @param p_support_uri Support URI for client's users
    */
-  PROCEDURE update_client(
-      p_name            IN VARCHAR2,
-      p_new_name        IN VARCHAR2 DEFAULT NULL,
-      p_description     IN VARCHAR2,
-      p_origins_allowed IN VARCHAR2,
-      p_redirect_uri    IN VARCHAR2,
-      p_support_email   IN VARCHAR2,
-      p_support_uri     IN VARCHAR2
-  );
+    PROCEDURE UPDATE_CLIENT (
+        P_NAME            IN VARCHAR2,
+        P_NEW_NAME        IN VARCHAR2 DEFAULT NULL,
+        P_DESCRIPTION     IN VARCHAR2,
+        P_ORIGINS_ALLOWED IN VARCHAR2,
+        P_REDIRECT_URI    IN VARCHAR2,
+        P_SUPPORT_EMAIL   IN VARCHAR2,
+        P_SUPPORT_URI     IN VARCHAR2
+    );
 
-  /**
-   * Update an OAuth client registration.
-   *
-   * @param p_client_key The key (id|name|client_id) of the client to be modified.
-   *                     A minimum of one key must be supplied.
-   * @param p_new_name Human readable name for the client, displayed to the end user
-   *                   during the approval phase of three-legged OAuth.
-   *                   When null, the old name is preserved.
-   * @param p_description Human readable description of the purpose of the
-   *                      client, displayed to the end user during the
-   *                      approval phase of three-legged OAuth. May be null
-   *                      if p_grant_type == 'client_credentials', non null
-   *                      otherwise.
-   * @param p_privilege_names Names of the privileges that the client wishes to
-   *                          access. Each privilege name must be separated by a comma character.
-   * @param p_origins_allowed allowed origins
-   * @param p_redirect_uri Client controlled URI to which redirect containing
-   *                       OAuth access token/error will be sent. May be null
-   *                      if p_grant_type == 'client_credentials', non null
-   *                      otherwise.
-   * @param p_support_email Support e-mail for client's users
-   * @param p_support_uri Support URI for client's users
-   * @param p_token_duration   Duration of the access token (bearer) in seconds. Null uses ORDS instance default value
-   *                           Which can be set by property or 3600 seconds by default.
-   * @param p_refresh_duration Duration of refresh token in seconds.
-   *                           Null uses ORDS instance default value set by a property or 86400 seconds.
-   * @param p_code_duration    Duration of the code token in seconds (only applicable when grant_type is authorization
-   *                           code. If the value is set to null or the grant_type is not authorization_code. The lifetime
-   *                           will be the one defined in the ords instance access_token/12 (300 by default).
-   * @return The client key (id|name|client_id) of the updated client.
-   */
-  FUNCTION update_client(
-      p_client_key       IN ords_types.t_client_key,
-      p_new_name         IN VARCHAR2 DEFAULT NULL,
-      p_description      IN VARCHAR2,
-      p_privilege_names  IN VARCHAR2,
-      p_origins_allowed  IN VARCHAR2,
-      p_redirect_uri     IN VARCHAR2,
-      p_support_email    IN VARCHAR2,
-      p_support_uri      IN VARCHAR2,
-      p_token_duration   IN NUMBER,
-      p_refresh_duration IN NUMBER,
-      p_code_duration    IN NUMBER
-  ) RETURN ords_types.t_client_key;
+<!-- What is the difference, why two?  -->
 
   /**
    * Update an OAuth client registration.
@@ -622,19 +670,19 @@ END;
    *                           code. If the value is set to null or the grant_type is not authorization_code. The lifetime
    *                           will be the one defined in the ords instance access_token/12 (300 by default).
    */
-  PROCEDURE update_client(
-      p_name             IN VARCHAR2,
-      p_new_name         IN VARCHAR2 DEFAULT NULL,
-      p_description      IN VARCHAR2,
-      p_privilege_names  IN VARCHAR2,
-      p_origins_allowed  IN VARCHAR2,
-      p_redirect_uri     IN VARCHAR2,
-      p_support_email    IN VARCHAR2,
-      p_support_uri      IN VARCHAR2,
-      p_token_duration   IN NUMBER,
-      p_refresh_duration IN NUMBER,
-      p_code_duration    IN NUMBER
-  );
+    PROCEDURE UPDATE_CLIENT (
+        P_NAME             IN VARCHAR2,
+        P_NEW_NAME         IN VARCHAR2 DEFAULT NULL,
+        P_DESCRIPTION      IN VARCHAR2,
+        P_PRIVILEGE_NAMES  IN VARCHAR2,
+        P_ORIGINS_ALLOWED  IN VARCHAR2,
+        P_REDIRECT_URI     IN VARCHAR2,
+        P_SUPPORT_EMAIL    IN VARCHAR2,
+        P_SUPPORT_URI      IN VARCHAR2,
+        P_TOKEN_DURATION   IN NUMBER,
+        P_REFRESH_DURATION IN NUMBER,
+        P_CODE_DURATION    IN NUMBER
+    );
 
 ### 8.2.5 Verifying an OAuth2.0 ID and secret
 
@@ -714,6 +762,13 @@ END ORDS_SECURITY;
       p_client_name IN VARCHAR2,
       p_role_name   IN VARCHAR2
   );
+### 8.3.3 Revoking an OAuth2.0 client role
+
+#### 8.3.3.1 Revoking an OAuth2.0 client role *by `client_name`*
+
+#### 8.3.3.2 Revoking an OAuth2.0 client role *by `client_id`*
+
+#### 8.3.3.3 Revoking an OAuth2.0 client role *by `id`*
 
 /**
    * Revoke the specified role from an OAuth client, preventing
@@ -743,7 +798,36 @@ END ORDS_SECURITY;
 
 ## 8.4 Managing OAuth2.0 Client Secrets
 
-### 8.4.1 Generate (Rotate) a new OAuth2.0 secret by client_key
+### 8.4.1 Generate (Rotate) a new OAuth2.0 secret *by client `name`*
+
+/**
+    * Generates a new OAuth client secret and, if required, deletes all existing client sessions.
+    *
+    * If two client secrets are already registerd then the oldest will be overwritten.
+    * Any existing client secrets will also remain in effect unless revoked
+    * using the p_revoke_existing parameter.
+    *
+    * IMPORTANT NOTES
+    *
+    * The generated client secret will not be stored using this method and so requires the caller to
+    * save the returned value for future use. The view USER_ORDS_CLIENTS will not return the value either.
+    *
+    * The view USER_ORDS_CLIENTS cannot return secrets that are not stored.
+    *
+    * @param p_name The name of the client to be modified.
+    *               This value must not be null.
+    * @param p_revoke_existing Revokes any exisiting secrets. (Default FALSE)
+    * @param p_revoke_sessions Deletes all existing client sessions when TRUE. (Default FALSE)
+    * @return The registered client secret value. This value must be saved by the caller for future reference.
+    */
+
+   FUNCTION rotate_client_secret(
+       p_name            IN VARCHAR2,
+       p_revoke_existing IN BOOLEAN DEFAULT FALSE,
+       p_revoke_sessions IN BOOLEAN DEFAULT FALSE
+  ) RETURN VARCHAR2;
+
+### 8.4.2 Generate (Rotate) a new OAuth2.0 secret *by `client_d`*
 
 /**
    * Generates a new OAuth client secret and, if required, deletes all existing client sessions.
@@ -772,38 +856,33 @@ END ORDS_SECURITY;
       p_revoke_sessions IN BOOLEAN DEFAULT FALSE
   ) RETURN ords_types.t_client_credentials;
 
-### 8.4.2 Generate (Rotate) a new OAuth2.0 secret by client name
+### 8.4.3 Generate (Rotate) a new OAuth2.0 secret *by `id`*`
 
-   /**
-    * Generates a new OAuth client secret and, if required, deletes all existing client sessions.
-    *
-    * If two client secrets are already registerd then the oldest will be overwritten.
-    * Any existing client secrets will also remain in effect unless revoked
-    * using the p_revoke_existing parameter.
-    *
-    * IMPORTANT NOTES
-    *
-    * The generated client secret will not be stored using this method and so requires the caller to
-    * save the returned value for future use. The view USER_ORDS_CLIENTS will not return the value either.
-    *
-    * The view USER_ORDS_CLIENTS cannot return secrets that are not stored.
-    *
-    * @param p_name The name of the client to be modified.
-    *               This value must not be null.
-    * @param p_revoke_existing Revokes any exisiting secrets. (Default FALSE)
-    * @param p_revoke_sessions Deletes all existing client sessions when TRUE. (Default FALSE)
-    * @return The registered client secret value. This value must be saved by the caller for future reference.
-    */
+   
 
-   FUNCTION rotate_client_secret(
-       p_name            IN VARCHAR2,
-       p_revoke_existing IN BOOLEAN DEFAULT FALSE,
-       p_revoke_sessions IN BOOLEAN DEFAULT FALSE
-  ) RETURN VARCHAR2;
-
-### 8.4.3 Revoke an OAuth2.0 client's secret by client_key
+### 8.4.3 Revoke an OAuth2.0 client's secret *by client `name`*
 
   /**
+   * Revoke a OAuth client secret and revokes all sessions when required
+   *
+   * By default this will only revoke the oldest secret but can be used to revoke one or both secrets
+   * if they match the client secret value.
+   *
+   * @param p_name Human readable name for the client, displayed to the end user
+   *               during the approval phase of three-legged OAuth.
+   *               This value must not be null
+   * @param p_client_secret The value of the client secret. When NULL, the oldest secret is revoked
+   * @param p_revoke_sessions Deletes all existing client sessions when TRUE. (Default FALSE)
+   */
+  PROCEDURE revoke_client_secret(
+      p_name            IN VARCHAR2,
+      p_client_secret   IN VARCHAR2 DEFAULT NULL,
+      p_revoke_sessions IN BOOLEAN  DEFAULT FALSE
+  );
+
+### 8.4.4 Revoke an OAuth2.0 client's secret *by `client_key`
+
+ /**
    * Revoke one or both OAuth client secrets and revokes all sessions when required
    *
    * By default this will only revoke the oldest secret but can be used to revoke one or both secrets
@@ -828,31 +907,12 @@ END ORDS_SECURITY;
       p_revoke_sessions      IN BOOLEAN                    DEFAULT FALSE
   ) RETURN ords_types.t_client_credentials;
 
-### 8.4.4 Revoke an OAuth2.0 client's secret by client name
-
-  /**
-   * Revoke a OAuth client secret and revokes all sessions when required
-   *
-   * By default this will only revoke the oldest secret but can be used to revoke one or both secrets
-   * if they match the client secret value.
-   *
-   * @param p_name Human readable name for the client, displayed to the end user
-   *               during the approval phase of three-legged OAuth.
-   *               This value must not be null
-   * @param p_client_secret The value of the client secret. When NULL, the oldest secret is revoked
-   * @param p_revoke_sessions Deletes all existing client sessions when TRUE. (Default FALSE)
-   */
-  PROCEDURE revoke_client_secret(
-      p_name            IN VARCHAR2,
-      p_client_secret   IN VARCHAR2 DEFAULT NULL,
-      p_revoke_sessions IN BOOLEAN  DEFAULT FALSE
-  );
 
 ## 8.5 Managing OAuth2.0 client tokens
 
 ### 8.5.1 Updating access token duration for an OAuth2.0 client
 
-#### 8.5.1.1 Updating an OAuth2.0 client's access token duration by client_key
+#### 8.5.1.1 Updating an OAuth2.0 client's access token duration *by `client_name`*
 
 /**
    * Updates the OAuth client token durations
@@ -870,7 +930,7 @@ END ORDS_SECURITY;
       p_code_duration    IN NUMBER
   );
 
-#### 8.5.1.2 Updating an OAuth2.0 client's access token duration by client name
+#### 8.5.1.2 Updating an OAuth2.0 client's access token duration *by `client_id`*
 
   /**
    * Updates the OAuth client token durations
@@ -890,29 +950,10 @@ END ORDS_SECURITY;
 
 ## 8.6 Managing an OAuth2.0 client's logo
 
-### 8.6.1 Updating an OAuth2.0 client's logo using the client's key
-
+### 8.6.1 Updating an OAuth2.0 client's logo using the `client_name`
 <!-- What is the use case? How would a user actually accomplish this? Would the need to rest-enable this procedure and then POST? Or would they need to create a table and then reference it in the procedure? Or would they need to do this via sqlcl? Or would they use the cloud_dbms package to upload?  -->
 
-  /**
-   * Updates the OAuth client logo file
-   *
-   * @param p_client_key The key (id|name|client_id) of the client to be modified.
-   *                     A minimum of one key must be supplied.
-   * @param p_content_type The content type of the logo
-   * @param p_logo The logo binary
-   */
-  PROCEDURE update_client_logo(
-      p_client_key   IN ords_types.t_client_key,
-      p_content_type IN VARCHAR2,
-      p_logo         IN BLOB
-  );
-
-### 8.6.2 Updating an OAuth2.0 client's logo using the client's name
-
-<!-- What is the use case? How would a user actually accomplish this? Would the need to rest-enable this procedure and then POST? Or would they need to create a table and then reference it in the procedure? Or would they need to do this via sqlcl? Or would they use the cloud_dbms package to upload?  -->
-
-  /**
+ /**
    * Updates the OAuth client logo file
    *
    * @param p_name The name of the client to be modified.
@@ -925,3 +966,38 @@ END ORDS_SECURITY;
       p_content_type IN VARCHAR2,
       p_logo         IN BLOB
   );
+
+### 8.6.2 Updating an OAuth2.0 client's logo using the `client_id`
+
+<!-- What is the use case? How would a user actually accomplish this? Would the need to rest-enable this procedure and then POST? Or would they need to create a table and then reference it in the procedure? Or would they need to do this via sqlcl? Or would they use the cloud_dbms package to upload?  -->
+
+/**
+* Updates the OAuth client logo file
+*
+* @param p_client_key The key (id|name|client_id) of the client to be modified.
+*                     A minimum of one key must be supplied.
+* @param p_content_type The content type of the logo
+* @param p_logo The logo binary
+*/
+PROCEDURE update_client_logo(
+    p_client_key   IN ords_types.t_client_key,
+    p_content_type IN VARCHAR2,
+    p_logo         IN BLOB
+);
+ 
+
+### 8.6.2 Updating an OAuth2.0 client's logo using the `id`
+
+/**
+* Updates the OAuth client logo file
+*
+* @param p_client_key The key (id|name|client_id) of the client to be modified.
+*                     A minimum of one key must be supplied.
+* @param p_content_type The content type of the logo
+* @param p_logo The logo binary
+*/
+PROCEDURE update_client_logo(
+    p_client_key   IN ords_types.t_client_key,
+    p_content_type IN VARCHAR2,
+    p_logo         IN BLOB
+);
