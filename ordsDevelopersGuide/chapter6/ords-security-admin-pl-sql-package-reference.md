@@ -1,4 +1,5 @@
 # 8 ORDS_SECURITY PL/SQL Package Reference
+<!-- Example pandoc 3-implicit-parameters.md -f markdown -t docx -o 3-implicit-parameters.md.docx -->
 <!-- Reference for examples https://confluence.oraclecorp.com/confluence/display/MDCDBT/ORDS+OAuth+Secure+Sample+Scripts+and+Scenarios -->
 ## 8.1 JWT Profile actions
 
