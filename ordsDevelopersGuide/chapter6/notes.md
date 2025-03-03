@@ -290,7 +290,9 @@ END;
 ```
 
 ### 8.2.2 Importing an OAuth2.0 client
-<!-- What is the purpose or use case for the import procedure? What are you importing from? -->
+<!-- What is the purpose or use case for the import procedure? What are you importing from? --> 
+<!-- Is there a working example that we can reference?  -->
+
 /**
    * Import an OAuth client
    *
@@ -889,6 +891,8 @@ END ORDS_SECURITY;
 
 ### 8.6.1 Updating an OAuth2.0 client's logo using the client's key
 
+<!-- What is the use case? How would a user actually accomplish this? Would the need to rest-enable this procedure and then POST? Or would they need to create a table and then reference it in the procedure? Or would they need to do this via sqlcl? Or would they use the cloud_dbms package to upload?  -->
+
   /**
    * Updates the OAuth client logo file
    *
@@ -904,6 +908,8 @@ END ORDS_SECURITY;
   );
 
 ### 8.6.2 Updating an OAuth2.0 client's logo using the client's name
+
+<!-- What is the use case? How would a user actually accomplish this? Would the need to rest-enable this procedure and then POST? Or would they need to create a table and then reference it in the procedure? Or would they need to do this via sqlcl? Or would they use the cloud_dbms package to upload?  -->
 
   /**
    * Updates the OAuth client logo file
