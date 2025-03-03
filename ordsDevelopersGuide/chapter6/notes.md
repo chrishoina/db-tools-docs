@@ -1,5 +1,5 @@
 # 8 ORDS_SECURITY PL/SQL Package Reference
-
+<!-- Reference for examples https://confluence.oraclecorp.com/confluence/display/MDCDBT/ORDS+OAuth+Secure+Sample+Scripts+and+Scenarios -->
 ## 8.1 JWT Profile actions
 
 ### 8.1.1 Create an OAuth2.0 JWT Profile
